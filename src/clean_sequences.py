@@ -12,7 +12,7 @@ import config
 import wandb
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--generation_model', type=str, default='opt-6.7b')
+parser.add_argument('--generation_model', type=str, default='opt-125m')
 parser.add_argument('--run_id', type=str, default='run_1')
 args = parser.parse_args()
 
@@ -35,8 +35,8 @@ torch.manual_seed(seed_value)
 
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
-# TODO: should I use the opt-350m model?
-generation_tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-350m", use_fast=False, cache_dir=config.data_dir)
+# NOTE: should I use the opt-350m model???
+#generation_tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-350m", use_fast=False, cache_dir=config.data_dir)
 
 wandb.init(project='credal_prediction_for_llms', id=args.run_id, config=args, resume='allow')
 
