@@ -1,31 +1,17 @@
 import json
 
 from src import config
-import evaluate
 import pandas as pd
-import torch
 from datasets import Dataset
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-with open(f'{config.data_dir}/coqa-dev-v1.0.json', 'r') as infile:
+with open(f'{config.data_dir}/sets/coqa-dev-v1.0.json', 'r') as infile:
     data = json.load(infile)['data']
 
-rouge = evaluate.load('rouge')
-
-tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-large-mnli")
-
-model = AutoModelForSequenceClassification.from_pretrained("microsoft/deberta-large-mnli").cuda()
-
 dataset = {}
-
 dataset['story'] = []
 dataset['question'] = []
 dataset['answer'] = []
 dataset['additional_answers'] = []
-dataset['rouge1'] = []
-dataset['rouge2'] = []
-dataset['rougeL'] = []
-dataset['semantic_variability'] = []
 dataset['id'] = []
 
 # loop through every sample in the coqa dev set
@@ -60,39 +46,6 @@ for sample_id, sample in enumerate(data):
             story = story + '.'
         all_answers = [answers[question_index]['input_text']] + additional_answers_list
 
-        answer_list_1 = []
-        answer_list_2 = []
-        has_semantically_different_answers = False
-        inputs = []
-
-        # This computes the syntactic similarity across the reference answers
-        for i, reference_answer in enumerate(all_answers):
-            for j in range(4):
-                if i != j:
-                    answer_list_1.append(all_answers[i])
-                    answer_list_2.append(all_answers[j])
-
-                    qa_1 = question['input_text'] + ' ' + all_answers[i]
-                    qa_2 = question['input_text'] + ' ' + all_answers[j]
-
-                    input = qa_1 + ' [SEP] ' + qa_2
-
-                    inputs.append(input)
-
-        encoded_input = tokenizer.batch_encode_plus(inputs, padding=True)
-
-        prediction = model(torch.tensor(encoded_input['input_ids'], device='cuda'))['logits']
-
-        predicted_label = torch.argmax(prediction, dim=1)
-        if 0 in predicted_label:
-            has_semantically_different_answers = True
-
-        dataset['semantic_variability'].append(has_semantically_different_answers)
-
-        results = rouge.compute(predictions=answer_list_1, references=answer_list_2)
-        dataset['rouge1'].append(results['rouge1'].mid.fmeasure)
-        dataset['rouge2'].append(results['rouge2'].mid.fmeasure)
-        dataset['rougeL'].append(results['rougeL'].mid.fmeasure)
 
 dataset_df = pd.DataFrame.from_dict(dataset)
 
