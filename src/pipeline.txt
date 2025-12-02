@@ -1,0 +1,3 @@
+srun python clean_generated_strings.py  --generation_model=$model --run_id=$run_id; python get_semantic_similarities.py --generation_model=$model --run_id=$run_id; python get_likelihoods.py --evaluation_model=$model --generation_model=$model --run_id=$run_id; srun python get_prompting_based_uncertainty.py --run_id_for_few_shot_prompt=$run_id --run_id_for_evaluation=$run_id; python compute_confidence_measure.py --generation_model=$model --evaluation_model=$model --run_id=$run_id
+
+

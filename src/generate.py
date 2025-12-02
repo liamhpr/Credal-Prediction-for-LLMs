@@ -2,9 +2,8 @@ import argparse
 import os
 import pathlib
 import pickle
-from lib2to3.pgen2.tokenize import tokenize
+#from lib2to3.pgen2.tokenize import tokenize
 
-from src.utils import utils
 import logging
 import config
 import datasets
@@ -14,9 +13,11 @@ import torch
 import tqdm
 import wandb
 import random
+import utils.utils as utils
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 utils.setup_logger()
+logging.info('Starting generate.py...')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--type_of_question', type=str)
@@ -35,11 +36,12 @@ parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for 
 parser.add_argument('--dataset', type=str, default='coqa')
 args = parser.parse_args()
 
+
 logging.debug('args: %s', args)
 
 logging.info('Starting wandb')
 
-run = wandb.init(
+wandb.init(
     # Set the wandb entity where your project will be logged (generally your team name).
     entity="liam-heppner-ludwig-maximilian-university-of-munich",
     # Set the wandb project where this run will be logged.
@@ -69,7 +71,7 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 #opt-6.7b
 model = AutoModelForCausalLM.from_pretrained(f"facebook/{args.model}",
                                              torch_dtype=torch.float16,
-                                             cache_dir=config.hf_cache_dir).cuda()
+                                             cache_dir=config.hf_cache_dir).cuda() # NOTE: Set this to cuda for running on cluster
 
 #opt-6.7b
 tokenizer = AutoTokenizer.from_pretrained(f"facebook/{args.model}", use_fast=False)
