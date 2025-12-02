@@ -1,9 +1,10 @@
-name: unanswerable
+name: thesis-env
 channels:
   - pytorch
   - defaults
   - conda-forge
 dependencies:
+  - pip
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
   - blas=1.0=mkl
