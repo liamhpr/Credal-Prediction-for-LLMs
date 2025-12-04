@@ -1,0 +1,39 @@
+/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py:30: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import parse_version
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/__init__.py", line 26, in <module>
+    from wandb import sdk as wandb_sdk
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/sdk/__init__.py", line 7, in <module>
+    from .wandb_artifacts import Artifact  # noqa: F401
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/sdk/wandb_artifacts.py", line 29, in <module>
+    from wandb.apis import InternalApi, PublicApi
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/apis/__init__.py", line 32, in <module>
+    from .public import Api as PublicApi  # noqa
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/apis/public.py", line 34, in <module>
+    from wandb.data_types import WBValue
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/data_types.py", line 33, in <module>
+    from .sdk.data_types import _dtypes
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/wandb/sdk/data_types/_dtypes.py", line 394, in <module>
+    NumberType.types.append(np.float_)
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/numpy/__init__.py", line 400, in __getattr__
+    raise AttributeError(
+AttributeError: `np.float_` was removed in the NumPy 2.0 release. Use `np.float64` instead.
+Using run_id: 
+Using model: opt-350m
+Starting generate.py
+Traceback (most recent call last):
+  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 9, in <module>
+    import datasets
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/__init__.py", line 37, in <module>
+    from .arrow_dataset import Dataset, concatenate_datasets
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 63, in <module>
+    from .arrow_writer import ArrowWriter, OptimizedTypedSequence
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/arrow_writer.py", line 26, in <module>
+    from .features import Features, Image, Value
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/__init__.py", line 18, in <module>
+    from .features import Array2D, Array3D, Array4D, Array5D, ClassLabel, Features, Sequence, Value
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 580, in <module>
+    class _ArrayXDExtensionType(pa.PyExtensionType):
+AttributeError: module 'pyarrow' has no attribute 'PyExtensionType'. Did you mean: 'ExtensionType'?
+srun: error: hpdar06c01s01: task 0: Exited with exit code 1
