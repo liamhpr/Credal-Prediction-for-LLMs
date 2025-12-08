@@ -1,0 +1,70 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.2
+    framework: huggingface
+    huggingface_version: 4.20.1
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.10.19
+    start_time: 1765210245.95372
+    t:
+      1:
+      - 1
+      - 5
+      - 11
+      - 49
+      - 51
+      - 53
+      - 55
+      - 71
+      2:
+      - 1
+      - 5
+      - 11
+      - 49
+      - 51
+      - 53
+      - 55
+      - 71
+      3:
+      - 14
+      - 16
+      - 23
+      4: 3.10.19
+      5: 0.13.2
+      6: 4.20.1
+      8:
+      - 5
+dataset:
+  desc: null
+  value: coqa
+decoding_method:
+  desc: null
+  value: beam_search
+fraction_of_data_to_use:
+  desc: null
+  value: 0.02
+model:
+  desc: null
+  value: opt-350m
+num_beams:
+  desc: null
+  value: 1
+num_generations_per_prompt:
+  desc: null
+  value: 5
+run_id:
+  desc: null
+  value: 88339k28
+temperature:
+  desc: null
+  value: 0.5
+top_p:
+  desc: null
+  value: 1.0
+type_of_question:
+  desc: null
+  value: null

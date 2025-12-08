@@ -1,0 +1,33 @@
+{
+    "os": "Linux-6.4.0-150600.23.60-default-x86_64-with-glibc2.38",
+    "python": "3.10.19",
+    "heartbeatAt": "2025-12-08T16:10:47.168595",
+    "startedAt": "2025-12-08T16:10:45.918133",
+    "docker": null,
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gpu_count": 4,
+    "cpu_count": 96,
+    "cuda": null,
+    "args": [
+        "--num_generations_per_prompt",
+        "5",
+        "--model",
+        "opt-350m",
+        "--fraction_of_data_to_use",
+        "0.02",
+        "--run_id",
+        "88339k28",
+        "--temperature",
+        "0.5",
+        "--num_beams",
+        "1",
+        "--top_p",
+        "1.0"
+    ],
+    "state": "running",
+    "program": "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py",
+    "codePath": "generate.py",
+    "host": "hpdar06c01s01",
+    "username": "ra54sov2",
+    "executable": "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/bin/python"
+}
