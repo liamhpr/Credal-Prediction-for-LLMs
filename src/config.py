@@ -1,7 +1,4 @@
-import os
-base_dir = os.path.dirname(os.path.abspath(__file__))
-
-data_dir = os.path.join(base_dir, 'data/')
-hf_datasets_cache = os.path.join(base_dir, 'hf_dir/hf_datasets_cache')
-hf_cache_dir = os.path.join(base_dir, 'hf_dir/hf_cache_dir') # NOTE: NOT IN THE ORIGINAL FILE OF LORENZ KUHN
-output_dir = os.path.join(base_dir, 'output/')
+data_dir = './data/'
+hf_datasets_cache = './hf_dir/hf_datasets_cache/'
+hf_cache_dir = './hf_dir/hf_cache_dir/'
+output_dir = './output/'

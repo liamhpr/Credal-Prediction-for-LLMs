@@ -71,10 +71,10 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 #opt-6.7b
 model = AutoModelForCausalLM.from_pretrained(f"facebook/{args.model}",
                                              torch_dtype=torch.float16,
-                                             cache_dir=config.hf_cache_dir).cuda() # NOTE: Set this to cuda for running on cluster
+                                             cache_dir=config.hf_cache_dir).cuda()
 
 #opt-6.7b
-tokenizer = AutoTokenizer.from_pretrained(f"facebook/{args.model}", use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained(f"facebook/{args.model}", cache_dir=config.hf_cache_dir, use_fast=False)
 
 if args.dataset == 'coqa':
     dataset = datasets.load_from_disk(f'{config.data_dir}/sets/coqa_dataset')
