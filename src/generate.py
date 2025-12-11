@@ -83,6 +83,12 @@ elif args.dataset == 'trivia_qa':
     raise # I did not implement the dataset yet
     #dataset = datasets.load_from_disk(f'{config.output_dir}/trivia_qa')
 
+if args.fraction_of_data_to_use < 1.0:
+    train_dataset = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
+else:
+    train_dataset = dataset
+
+
 
 # Define the CoQA prompt formatting (from Kuhn's encode function)
 def encode(examples):
