@@ -1,0 +1,166 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            4y3jdevihrfaaj2etztru0krp1wfov1o:
+                args:
+                    - --num_generations_per_prompt
+                    - "5"
+                    - --model
+                    - opt-350m
+                    - --fraction_of_data_to_use
+                    - "0.02"
+                    - --run_id
+                    - vjeqc4p3
+                    - --temperature
+                    - "0.5"
+                    - --num_beams
+                    - "1"
+                    - --top_p
+                    - "1.0"
+                codePath: generate.py
+                codePathLocal: generate.py
+                cpu_count: 48
+                cpu_count_logical: 96
+                cudaVersion: "12.9"
+                disk:
+                    /:
+                        total: "270322917376"
+                        used: "24729268224"
+                email: liam.heppner@campus.lmu.de
+                executable: /dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/bin/python
+                gpu: NVIDIA A100-SXM4-80GB
+                gpu_count: 4
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-4e06edca-8bcb-ca7e-1fc1-dc01cf5fca80
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-d4112d3e-3485-0265-3e24-097a9cf14344
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-e876f762-a1f1-6893-2ad2-e8a17161596d
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-3b9652ac-dbc2-91d3-fc66-fe6437d60927
+                host: hpdar06c01s01
+                memory:
+                    total: "540645834752"
+                os: Linux-6.4.0-150600.23.60-default-x86_64-with-glibc2.38
+                program: /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py
+                python: CPython 3.10.19
+                root: /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src
+                slurm:
+                    cluster_name: hlai
+                    conf: /etc/slurm/slurm.conf
+                    cpu_bind: quiet,mask_cpu:0x00003F07E00000003F07E000
+                    cpu_bind_list: 0x00003F07E00000003F07E000
+                    cpu_bind_type: 'mask_cpu:'
+                    cpu_bind_verbose: quiet
+                    cpus_on_node: "24"
+                    cpus_per_task: "24"
+                    distribution: cyclic
+                    gtids: "0"
+                    job_account: lxcusers
+                    job_cpus_per_node: "24"
+                    job_cpus_per_node_pack_group_0: "24"
+                    job_gid: "4157379"
+                    job_gpus: "2"
+                    job_id: "49987"
+                    job_name: credal_prediction_for_llms
+                    job_nodelist: hpdar06c01s01
+                    job_num_nodes: "1"
+                    job_partition: hlai_std
+                    job_qos: normal
+                    job_uid: "4424990"
+                    job_user: ra54sov2
+                    jobid: "49987"
+                    launch_node_ipaddr: 10.156.153.151
+                    localid: "0"
+                    mem_per_cpu: "6379"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: hpdar06c01s01
+                    nprocs: "1"
+                    ntasks: "1"
+                    prio_process: "0"
+                    procid: "0"
+                    srun_comm_host: 10.156.153.151
+                    srun_comm_port: "33125"
+                    step_gpus: "2"
+                    step_id: "0"
+                    step_launcher_port: "33125"
+                    step_nodelist: hpdar06c01s01
+                    step_num_nodes: "1"
+                    step_num_tasks: "1"
+                    step_tasks_per_node: "1"
+                    stepid: "0"
+                    submit_dir: /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src
+                    submit_host: hpdar06c01s01
+                    task_pid: "40121"
+                    tasks_per_node: "1"
+                    topology_addr: hpdar06c01s01
+                    topology_addr_pattern: node
+                    umask: "0022"
+                    working_cluster: hlai:10.156.79.3:7806:9216:109
+                startedAt: "2025-12-11T19:34:50.289831Z"
+                writerId: 4y3jdevihrfaaj2etztru0krp1wfov1o
+        m: []
+        python_version: 3.10.19
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 51
+                - 53
+                - 71
+                - 100
+            "2":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 51
+                - 53
+                - 71
+                - 100
+            "3":
+                - 14
+                - 16
+            "4": 3.10.19
+            "5": 0.23.1
+            "6": 4.20.1
+            "12": 0.23.1
+            "13": linux-x86_64
+dataset:
+    value: coqa
+decoding_method:
+    value: beam_search
+fraction_of_data_to_use:
+    value: 0.02
+model:
+    value: opt-350m
+num_beams:
+    value: 1
+num_generations_per_prompt:
+    value: 5
+run_id:
+    value: vjeqc4p3
+temperature:
+    value: 0.5
+top_p:
+    value: 1
+type_of_question:
+    value: null

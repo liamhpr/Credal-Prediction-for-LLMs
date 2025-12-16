@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --clusters=hlai
-#SBATCH --cpus-per-task=24
-#SBATCH --gres=gpu:1
+#SBATCH --gpus=1
 #SBATCH --job-name="credal_prediction_for_llms"
 
 source ~/.bashrc
