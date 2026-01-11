@@ -1,0 +1,18 @@
+Using run_id: 1iwpl4i9
+Using model: opt-350m
+Starting generate.py
+Traceback (most recent call last):
+  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 9, in <module>
+    import datasets
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/__init__.py", line 37, in <module>
+    from .arrow_dataset import Dataset, concatenate_datasets
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 63, in <module>
+    from .arrow_writer import ArrowWriter, OptimizedTypedSequence
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/arrow_writer.py", line 26, in <module>
+    from .features import Features, Image, Value
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/__init__.py", line 18, in <module>
+    from .features import Array2D, Array3D, Array4D, Array5D, ClassLabel, Features, Sequence, Value
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 580, in <module>
+    class _ArrayXDExtensionType(pa.PyExtensionType):
+AttributeError: module 'pyarrow' has no attribute 'PyExtensionType'. Did you mean: 'ExtensionType'?
+srun: error: hpdar06c01s01: task 0: Exited with exit code 1

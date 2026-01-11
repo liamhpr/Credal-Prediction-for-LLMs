@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--evaluation_model', type=str, default='opt-350m')
 parser.add_argument('--generation_model', type=str, default='opt-350m')
 parser.add_argument('--run_id', type=str, default='run_1')
+parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 device = 'cuda'
@@ -40,10 +41,10 @@ torch.manual_seed(seed_value)
 
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
-model = AutoModelForCausalLM.from_pretrained(f"facebook/{args.evaluation_model}",
+model = AutoModelForCausalLM.from_pretrained(f"/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
-tokenizer = AutoTokenizer.from_pretrained(f"facebook/{args.evaluation_model}",
+tokenizer = AutoTokenizer.from_pretrained(f"/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
                                           use_fast=False,
                                           cache_dir=config.data_dir)
 
@@ -62,12 +63,18 @@ wandb.init(
 
 run_name = wandb.run.name
 
+if args.use_test_split: 
+    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+else:
+    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+
+
 opt_models = ['opt-125m', 'opt-350m', 'opt-1.3b', 'opt-2.7b', 'opt-6.7b', 'opt-13b', 'opt-30b']
 
-with open(f'{config.output_dir}/{run_name}/{args.generation_model}_generations.pkl', 'rb') as infile:
+with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:
     sequences = pickle.load(infile)
 
-with open(f'{config.output_dir}/{run_name}/{args.generation_model}_generations_similarities.pkl', 'rb') as infile:
+with open(f'{path_prefix}{args.generation_model}_generations_similarities.pkl', 'rb') as infile:
     similarities_dict = pickle.load(infile)
 
 
@@ -118,6 +125,8 @@ def get_neg_loglikelihoods(model, sequences):
                 average_of_last_layer_token_embeddings = torch.mean(hidden_states[-1], dim=1)
                 sequence_embeddings.append(average_of_last_layer_token_embeddings)
 
+
+            sequence_lls = -average_neg_log_likelihoods # NOTE: Store log-likelihodds to later compute the likelihood of the clusters
             most_likely_generation = sample['most_likely_generation_ids'].to(device)
             target_ids = most_likely_generation.clone()
             target_ids[:len(prompt)] = -100
@@ -136,11 +145,37 @@ def get_neg_loglikelihoods(model, sequences):
                                  output_hidden_states=True)
             hidden_states = model_output['hidden_states']
             average_neg_log_likelihood_of_second_most_likely_gen = model_output['loss']
-            second_most_likely_generation_embedding = torch.mean(hidden_states[-1], dim=1)
+            #second_most_likely_generation_embedding = torch.mean(hidden_states[-1], dim=1)
 
             neg_log_likelihood_of_most_likely_gen = average_neg_log_likelihood_of_most_likely_gen * (
                 len(most_likely_generation) - len(prompt))
 
+
+
+            # NOTE: The next block is by me to compute the likelihoods of the clusters:
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            semantic_ids = torch.tensor(
+                similarities_dict[id_[0]]['semantic_set_ids'])
+
+            unique_clusters = torch.unique(semantic_ids)
+            cluster_log_likelihoods = []
+            cluster_sizes = []
+
+            for c in unique_clusters:
+                idx = semantic_ids == c
+                ll = sequence_lls[idx]
+
+                # log p(cluster | prompt)
+                cluster_ll = torch.logsumexp(ll, dim=0)
+
+                cluster_log_likelihoods.append(cluster_ll)
+                cluster_sizes.append(idx.sum())
+
+            cluster_log_likelihoods = torch.stack(cluster_log_likelihoods)
+            cluster_sizes = torch.tensor(cluster_sizes)
+            # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             sequence_embeddings = torch.stack(sequence_embeddings)
             result_dict['prompt'] = prompt
             result_dict['generations'] = generations
@@ -157,6 +192,19 @@ def get_neg_loglikelihoods(model, sequences):
             result_dict['neg_log_likelihood_of_most_likely_gen'] = neg_log_likelihood_of_most_likely_gen
             result_dict['semantic_set_ids'] = torch.tensor(similarities_dict[id_[0]]['semantic_set_ids'], device=device)
             result_dict['id'] = id_
+            # NOTE: These entries are for cluster log-likelihoods
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            result_dict['cluster_log_likelihoods'] = cluster_log_likelihoods
+            result_dict['cluster_sizes'] = cluster_sizes
+            result_dict['num_clusters'] = len(unique_clusters)
+
+            # WARNING: Delete next two lines after testing
+            print(result_dict['cluster_log_likelihoods'])
+            print(torch.softmax(result_dict['cluster_log_likelihoods'], dim=0))
+            # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
             result.append(result_dict)
 
         return result
@@ -164,6 +212,6 @@ def get_neg_loglikelihoods(model, sequences):
 
 likelihoods = get_neg_loglikelihoods(model, sequences)
 
-with open(f'{config.data_dir}/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl',
-          'wb') as outfile:
- 
+print(f'storing likelihoods in {path_prefix}{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl')
+with open(f'{path_prefix}{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl', 'wb') as outfile:
+    pickle.dump(likelihoods, outfile)

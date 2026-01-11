@@ -14,11 +14,12 @@ import utils.utils as utils
 import wandb
 
 utils.setup_logger()
-logging.info('Starting clean_generated_strings.py...')
+logging.info('Starting clean_generated_string.py...')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--generation_model', type=str, default='opt-350m')
 parser.add_argument('--run_id', type=str, default='run_1')
+parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 device = 'cuda'
@@ -59,9 +60,16 @@ wandb.init(
 
 run_name = wandb.run.name
 
-tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-350m", use_fast=False, cache_dir=config.data_dir)
 
-with open(f'{config.output_dir}/{run_name}/{args.generation_model}_generations.pkl', 'rb') as infile:
+if args.use_test_split: 
+    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+else:
+    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+
+tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", use_fast=False, cache_dir=config.data_dir)
+
+   
+with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:
     sequences = pickle.load(infile)
 
 cleaned_sequences = []
@@ -95,6 +103,6 @@ for sample in tqdm(sequences):
     sample['cleaned_generations'] = cleaned_generations
     cleaned_sequences.append(sample)
 
-with open(f'{config.output_dir}/{run_name}/{args.generation_model}_generations.pkl', 'wb') as outfile:
+with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'wb') as outfile:
     pickle.dump(cleaned_sequences, outfile)
 

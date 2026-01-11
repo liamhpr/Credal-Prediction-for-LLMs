@@ -12,18 +12,18 @@ import logging
 
 utils.setup_logger()
 
-logging.info('loading %s/sets/coqa-dev-v1.0.json', config.data_dir)
-with open(f'{config.data_dir}/sets/coqa-dev-v1.0.json', 'r') as infile:
+logging.info('loading /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/coqa-dev-v1.0.json')
+with open('/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/coqa-dev-v1.0.json', 'r') as infile:
     data = json.load(infile)['data']
 
 logging.info('loading rouge...')
 rouge = evaluate.load('rouge')
 
 logging.info('loading tokenizer...')
-tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-large-mnli")
+tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-mnli")
 
 logging.info('loading model...')
-model = AutoModelForSequenceClassification.from_pretrained("microsoft/deberta-large-mnli").cpu()
+model = AutoModelForSequenceClassification.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-mnli").cuda()
 logging.info('everything loaded')
 
 dataset = {}
@@ -91,7 +91,7 @@ for sample_id, sample in enumerate(data):
 
         encoded_input = tokenizer.batch_encode_plus(inputs, padding=True)
 
-        prediction = model(torch.tensor(encoded_input['input_ids'], device='cpu'))['logits']
+        prediction = model(torch.tensor(encoded_input['input_ids'], device='cuda'))['logits']
 
         predicted_label = torch.argmax(prediction, dim=1)
         if 0 in predicted_label:
@@ -109,5 +109,5 @@ dataset_df = pd.DataFrame.from_dict(dataset)
 
 dataset = Dataset.from_pandas(dataset_df)
 
-logging.info('saving parsed dataset to: %s/sets/coqa_dataset', config.data_dir)
-dataset.save_to_disk(f'{config.data_dir}/sets/coqa_dataset')
+logging.info('saving parsed dataset to: /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/coqa_dataset')
+dataset.save_to_disk('/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/coqa_dataset')

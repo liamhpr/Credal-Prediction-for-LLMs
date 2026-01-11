@@ -164,7 +164,7 @@ def get_margin_probability_uncertainty_measure(log_likelihoods):
 
 list_of_results = []
 
-with open(f'{config.output_dir}/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl',
+with open(f'{config.output_dir}sequences/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl',
           'rb') as infile:
     sequences = pickle.load(infile)
     list_of_results.append((args.evaluation_model, sequences))
@@ -223,7 +223,7 @@ for i in range(len(average_predictive_entropy_on_subsets)):
     overall_results[f'number_of_semantic_sets_on_subset_{i + 1}'] = number_of_semantic_sets_on_subsets[i]
 overall_results['average_pointwise_mutual_information'] = average_pointwise_mutual_information
 
-with open(f'{config.output_dir}/{run_name}/aggregated_likelihoods_{args.generation_model}_generations.pkl',
+with open(f'{config.output_dir}sequences/{run_name}/aggregated_likelihoods_{args.generation_model}_generations.pkl',
           'wb') as outfile:
     pickle.dump(overall_results, outfile)
 

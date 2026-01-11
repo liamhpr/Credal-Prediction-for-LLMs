@@ -1,0 +1,16 @@
+Using run_id: mr77jypk
+Using model: opt-350m
+Starting generate.py
+Traceback (most recent call last):
+  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 17, in <module>
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/transformers/__init__.py", line 30, in <module>
+    from . import dependency_versions_check
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/transformers/dependency_versions_check.py", line 36, in <module>
+    from .utils import is_tokenizers_available
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/transformers/utils/__init__.py", line 58, in <module>
+    from .hub import (
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/transformers/utils/hub.py", line 32, in <module>
+    from huggingface_hub import (
+ImportError: cannot import name 'get_hf_file_metadata' from 'huggingface_hub' (/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/huggingface_hub/__init__.py)
+srun: error: hpdar06c01s01: task 0: Exited with exit code 1

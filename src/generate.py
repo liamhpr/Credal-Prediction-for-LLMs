@@ -26,7 +26,6 @@ parser.add_argument('--fraction_of_data_to_use', type=float, default=0.9)
 parser.add_argument('--model', type=str, default='opt-125m')
 parser.add_argument('--run_id', type=str, default='run_1')
 parser.add_argument('--temperature', type=float, default=1.0) # NOTE: should be 1 for calculating the logits
-
 #randomness of answers <1.0 the distribution becomes more peaked -> the model is more confident; >1.0 the distribution flattens -> the model is less confident and picks more random answers
 
 
@@ -34,6 +33,7 @@ parser.add_argument('--num_beams', type=int, default=1) #WARNING: changed defaul
 parser.add_argument('--decoding_method', type=str, default='beam_search')
 parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for calculating the logits
 parser.add_argument('--dataset', type=str, default='coqa')
+parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 
@@ -56,6 +56,12 @@ wandb.init(
 run_name = wandb.run.name
 
 
+if args.use_test_split: 
+    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+else:
+    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+
+
 # set seed value to get the same generations and results each run
 seed_value = 10
 os.environ['PYTHONHASHSEED'] = str(seed_value)
@@ -69,35 +75,46 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
 
 #opt-6.7b
-model = AutoModelForCausalLM.from_pretrained(f"facebook/{args.model}",
+model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
                                              torch_dtype=torch.float16,
                                              cache_dir=config.hf_cache_dir).cuda()
 
 #opt-6.7b
-tokenizer = AutoTokenizer.from_pretrained(f"facebook/{args.model}", cache_dir=config.hf_cache_dir, use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", cache_dir=config.hf_cache_dir, use_fast=False)
 
-if args.dataset == 'coqa':
-    dataset = datasets.load_from_disk(f'{config.data_dir}/sets/coqa_dataset')
-    id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
-elif args.dataset == 'trivia_qa':
-    raise # I did not implement the dataset yet
-    #dataset = datasets.load_from_disk(f'{config.output_dir}/trivia_qa')
+if not args.use_test_split:
+    if args.dataset == 'coqa':
+        dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+        id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
+    elif args.dataset == 'trivia_qa':
+        raise # I did not implement the dataset yet
+        #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
-if args.fraction_of_data_to_use < 1.0:
-    train_dataset = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
+    if args.fraction_of_data_to_use < 1.0:
+        #NOTE:  I use only 10% of the whole dataset and split that again for test cases
+        subset_size = int(len(dataset) * 0.1)
+        dataset = dataset.select(range(subset_size))
+
+        datasplit = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)
+        train_dataset = datasplit['train']
+        test_dataset = datasplit['test']
+        pathlib.Path(f'{config.data_dir}test_datasets/{run_name}').mkdir(parents=True, exist_ok=True)
+        test_dataset.save_to_disk(f'{config.data_dir}test_datasets/{run_name}/')
+    else:
+        train_dataset = dataset
 else:
-    train_dataset = dataset
+    train_dataset = datasets.load_from_disk(f'{config.data_dir}test_datasets/{run_name}/')
+    id_to_question_mapping = dict(zip(train_dataset['id'], train_dataset['question']))
 
 
-
-# Define the CoQA prompt formatting (from Kuhn's encode function)
 def encode(examples):
     return tokenizer(examples['story'] + ' Q: ' + examples['question'] + ' A:', truncation=False, padding=False)
 
 def encode_and_format_dataset(dataset):
-    dataset = dataset.map(encode, batched=False, load_from_cache_files=False)
+    dataset = dataset.map(encode, batched=False, load_from_cache_file=False)
     # Ensure you keep 'id', 'answer', 'additional_answers', etc., for evaluation later
     dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'], output_all_columns=True)
+    return dataset
 
 if args.dataset == 'coqa':
     questions = encode_and_format_dataset(train_dataset)
@@ -150,11 +167,11 @@ def get_generations(model, dataloader, number_of_generations):
                                      device=device)
 
             # NOTE: Tensor to store the total log likelihood for each sampled sequence
-            log_likelihoods = torch.zeros(number_of_generations, device=device)
+            # log_likelihoods = torch.zeros(number_of_generations, device=device)
 
             for i in range(number_of_generations):
 
-                generation_output = model.generate(input_ids,
+                generation = model.generate(input_ids,
                                             do_sample=True,
                                             num_return_sequences=1,
                                             num_beams=args.num_beams,
@@ -162,10 +179,14 @@ def get_generations(model, dataloader, number_of_generations):
                                             eos_token_id=period_token_id,
                                             temperature=args.temperature,
                                             bad_words_ids=question_framing_ids,
-                                            top_p=args.top_p, 
-                                            output_scores=True,
-                                            return_dict_in_generate=True)
+                                            top_p=args.top_p)
+                                            #output_scores=True,
+                                            #return_dict_in_generate=True
 
+
+                generations[i, :generation.shape[1]] = generation
+
+                """
                 # NOTE: Extract the generated sequence IDs and the logit scores
                 generation = generation_output.sequences[0] # The single generated sequence
                 scores = generation_output.scores # Tuple of logits
@@ -193,7 +214,7 @@ def get_generations(model, dataloader, number_of_generations):
 
                 # Store the total log likelihood for the current sample
                 log_likelihoods[i] = sequence_log_prob
-
+                """
 
             generations = torch.reshape(generations, (-1, number_of_generations, generations.shape[-1]))
             for i in range(generations.shape[0]):
@@ -261,10 +282,10 @@ def get_generations(model, dataloader, number_of_generations):
                     sequence_dict['exact_match'] = max(results['exact_match'], sequence_dict['exact_match'])
                     rouge_results = rouge.compute(predictions=predictions, references=references)
                     for rouge_type in rouge_types:
-                        sequence_dict[rouge_type + '_to_target'] = max(rouge_results[rouge_type].mid.fmeasure,
+                        sequence_dict[rouge_type + '_to_target'] = max(rouge_results[rouge_type],
                                                                        sequence_dict[rouge_type + '_to_target'])
 
-                sequence_dict['log_likelihoods'] = log_likelihoods.to('cpu') # Store the entire tensor of size M
+                #sequence_dict['log_likelihoods'] = log_likelihoods.to('cpu') # Store the entire tensor of size M
                 sequences.append(sequence_dict)
 
     return sequences
@@ -273,8 +294,9 @@ def get_generations(model, dataloader, number_of_generations):
 logging.info('Generating %s generations', args.num_generations_per_prompt)
 sequences = get_generations(model, dataloader, args.num_generations_per_prompt)
 
-pathlib.Path(f'{config.output_dir}/sequences/' + run_name).mkdir(parents=True, exist_ok=True)
+pathlib.Path(f'{config.output_dir}sequences/' + run_name + '/train_split').mkdir(parents=True, exist_ok=True)
+pathlib.Path(f'{config.output_dir}sequences/' + run_name + '/test_split').mkdir(parents=True, exist_ok=True)
 
-with open(f'{config.output_dir}/sequences/{run_name}/{args.model}_generations.pkl', 'wb') as outfile:
+with open(f'{path_prefix}{args.model}_generations.pkl', 'wb') as outfile:
     pickle.dump(sequences, outfile)
 

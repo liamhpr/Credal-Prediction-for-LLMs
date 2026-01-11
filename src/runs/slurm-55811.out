@@ -1,0 +1,38 @@
+Using run_id: 6377flfs
+Using model: opt-350m
+Starting generate.py
+2025-12-21 12:57:58 INFO     Starting generate.py...
+2025-12-21 12:57:58 INFO     Starting wandb
+wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 6377flfs
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20251221_125759-6377flfs
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run easy-grass-21
+wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
+wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/6377flfs
+Traceback (most recent call last):
+  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 80, in <module>
+    dataset = datasets.load_from_disk(f'{config.data_dir}/sets/coqa_dataset')
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/load.py", line 1739, in load_from_disk
+    return Dataset.load_from_disk(dataset_path, fs, keep_in_memory=keep_in_memory)
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 1202, in load_from_disk
+    dataset_info = DatasetInfo.from_dict(json.load(dataset_info_file))
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/info.py", line 272, in from_dict
+    return cls(**{k: v for k, v in dataset_info_dict.items() if k in field_names})
+  File "<string>", line 20, in __init__
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/info.py", line 141, in __post_init__
+    self.features = Features.from_dict(self.features)
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 1562, in from_dict
+    obj = generate_from_dict(dic)
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 1263, in generate_from_dict
+    return {key: generate_from_dict(value) for key, value in obj.items()}
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 1263, in <dictcomp>
+    return {key: generate_from_dict(value) for key, value in obj.items()}
+  File "/dss/dsshome1/03/ra54sov2/.conda/envs/thesis-env/lib/python3.10/site-packages/datasets/features/features.py", line 1267, in generate_from_dict
+    return Sequence(feature=generate_from_dict(obj["feature"]), length=obj["length"])
+KeyError: 'length'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33measy-grass-21[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/6377flfs[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20251221_125759-6377flfs/logs[0m
+srun: error: hpdar06c01s01: task 0: Exited with exit code 1

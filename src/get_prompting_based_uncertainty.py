@@ -61,8 +61,8 @@ wandb.init(
 #wandb.init(project='credal-prediction-for-large-language-models', id=args.run_id_for_few_shot_prompt, config=args, resume='allow')
 model_name = wandb.config.model
 
-generation_tokenizer = AutoTokenizer.from_pretrained(f"facebook/opt-350m", use_fast=False, cache_dir=config.data_dir)
-model = AutoModelForCausalLM.from_pretrained(f"facebook/{model_name}",
+generation_tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", use_fast=False, cache_dir=config.data_dir)
+model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
 
@@ -75,7 +75,7 @@ if model_name == 'opt-30b':
 
 run_name = wandb.run.name
 
-with open(f'{config.output_dir} /{run_name}/{model_name}_generations.pkl', 'rb') as infile:
+with open(f'{config.output_dir}sequences/{run_name}/{model_name}_generations.pkl', 'rb') as infile:
     sequences_for_few_shot_prompt = pickle.load(infile)
 
 wandb.finish()
@@ -141,5 +141,5 @@ with torch.no_grad():
     p_true_auroc = sklearn.metrics.roc_auc_score(1 - torch.tensor(corrects), torch.tensor(p_trues))
 
     # Store p_true aurocs in a pickle file
-    with open(f'{config.output_dir}/{run_name}/{model_name}_p_true_aurocs.pkl', 'wb') as outfile:
+    with open(f'{config.output_dir}sequences/{run_name}/{model_name}_p_true_aurocs.pkl', 'wb') as outfile:
         pickle.dump(p_true_auroc, outfile)
