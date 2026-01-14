@@ -41,10 +41,12 @@ torch.manual_seed(seed_value)
 
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
-model = AutoModelForCausalLM.from_pretrained(f"/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
+model_path = config.get_model_path(args.generation_model)
+
+model = AutoModelForCausalLM.from_pretrained(model_path,
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
-tokenizer = AutoTokenizer.from_pretrained(f"/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
+tokenizer = AutoTokenizer.from_pretrained(model_path,
                                           use_fast=False,
                                           cache_dir=config.data_dir)
 
@@ -200,8 +202,8 @@ def get_neg_loglikelihoods(model, sequences):
             result_dict['num_clusters'] = len(unique_clusters)
 
             # WARNING: Delete next two lines after testing
-            print(result_dict['cluster_log_likelihoods'])
-            print(torch.softmax(result_dict['cluster_log_likelihoods'], dim=0))
+            #print(result_dict['cluster_log_likelihoods'])
+            #print(torch.softmax(result_dict['cluster_log_likelihoods'], dim=0))
             # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

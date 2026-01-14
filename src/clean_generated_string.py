@@ -66,7 +66,9 @@ if args.use_test_split:
 else:
     path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
 
-tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", use_fast=False, cache_dir=config.data_dir)
+model_path = config.get_model_path(args.generation_model)
+
+tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, cache_dir=config.data_dir)
 
    
 with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:

@@ -14,7 +14,7 @@ print(rid)
 EOF
 )
 
-model='opt-350m'
+model='opt-6.7b'
 
 echo "Using run_id: $run_id"
 echo "Using model: $model"
@@ -47,7 +47,7 @@ python get_likelihoods.py \
                    --generation_model $model \
                    --run_id $run_id;
 
-echo 'Pipeline finished successfully';
+echo 'Pipeline for train split finished successfully';
 
 
 echo 'Starting generate.py for test split';
@@ -79,5 +79,12 @@ python get_likelihoods.py \
                    --run_id $run_id \
 		   --use_test_split;
 
-echo 'Pipeline finished successfully';
+echo 'Pipeline for test split finished successfully';
+
+echo 'Starting credal_prediction.py';
+python credal_prediction.py \
+		   --evaluation_model $model \
+		   --generation_model $model \
+		   --run_id $run_id;
+echo 'credal_prediction.py finished successfully'; 
 "

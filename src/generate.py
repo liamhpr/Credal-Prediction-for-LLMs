@@ -61,6 +61,7 @@ if args.use_test_split:
 else:
     path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
 
+model_path = config.get_model_path(args.model)
 
 # set seed value to get the same generations and results each run
 seed_value = 10
@@ -75,12 +76,12 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
 
 #opt-6.7b
-model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
+model = AutoModelForCausalLM.from_pretrained(model_path,
                                              torch_dtype=torch.float16,
                                              cache_dir=config.hf_cache_dir).cuda()
 
 #opt-6.7b
-tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", cache_dir=config.hf_cache_dir, use_fast=False)
+tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=config.hf_cache_dir, use_fast=False)
 
 if not args.use_test_split:
     if args.dataset == 'coqa':
@@ -91,9 +92,11 @@ if not args.use_test_split:
         #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
     if args.fraction_of_data_to_use < 1.0:
-        #NOTE:  I use only 10% of the whole dataset and split that again for test cases
-        subset_size = int(len(dataset) * 0.1)
+        #NOTE:  I use only 2% of the whole dataset and split that again for test cases
+        subset_size = int(len(dataset) * 0.02)
         dataset = dataset.select(range(subset_size))
+        print(f'length of dataset: {len(dataset)}')
+        print(f'length of subset: {len(dataset)}')
 
         datasplit = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)
         train_dataset = datasplit['train']

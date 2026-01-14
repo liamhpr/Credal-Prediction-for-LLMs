@@ -43,7 +43,8 @@ torch.manual_seed(seed_value)
 
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
-generation_tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", use_fast=False, cache_dir=config.data_dir)
+model_path = config.get_model_path(args.generation_model)
+generation_tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, cache_dir=config.data_dir)
 
 tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-large-mnli")
 model = AutoModelForSequenceClassification.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-large-mnli").cuda()
