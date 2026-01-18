@@ -33,7 +33,7 @@ parser.add_argument('--num_beams', type=int, default=1) #WARNING: changed defaul
 parser.add_argument('--decoding_method', type=str, default='beam_search')
 parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for calculating the logits
 parser.add_argument('--dataset', type=str, default='coqa')
-parser.add_argument('--use_test_split', action='store_true')
+#parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 
@@ -56,10 +56,11 @@ wandb.init(
 run_name = wandb.run.name
 
 
-if args.use_test_split: 
-    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
-else:
-    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+#if args.use_test_split: 
+#   path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+#else:
+#   path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+path prefix = f'{config.output_dir}sequences/{run_name}/'
 
 model_path = config.get_model_path(args.model)
 

@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--evaluation_model', type=str, default='opt-350m')
 parser.add_argument('--generation_model', type=str, default='opt-350m')
 parser.add_argument('--run_id', type=str, default='run_1')
-parser.add_argument('--use_test_split', action='store_true')
+#parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 device = 'cuda'
@@ -65,10 +65,12 @@ wandb.init(
 
 run_name = wandb.run.name
 
-if args.use_test_split: 
-    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
-else:
-    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+#if args.use_test_split: 
+#    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+#else:
+#    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+path_prefix = f'{config.output_dir}sequences/{run_name}/'
+
 
 
 opt_models = ['opt-125m', 'opt-350m', 'opt-1.3b', 'opt-2.7b', 'opt-6.7b', 'opt-13b', 'opt-30b']
@@ -163,6 +165,8 @@ def get_neg_loglikelihoods(model, sequences):
             unique_clusters = torch.unique(semantic_ids)
             cluster_log_likelihoods = []
             cluster_sizes = []
+            cluster_max_lls = []
+            cluster_min_lls = []
 
             for c in unique_clusters:
                 idx = semantic_ids == c
@@ -171,11 +175,24 @@ def get_neg_loglikelihoods(model, sequences):
                 # log p(cluster | prompt)
                 cluster_ll = torch.logsumexp(ll, dim=0)
 
+                cluster_max_ll = torch.max(ll)
+                cluster_min_ll = torch.min(ll)
+
+                cluster_max_prob = torch.exp(cluster_max_ll)
+                cluster_min_prob = torch.exp(cluster_min_ll)
+
                 cluster_log_likelihoods.append(cluster_ll)
                 cluster_sizes.append(idx.sum())
 
+                cluster_max_lls.append(cluster_max_ll)
+                cluster_min_lls.append(cluster_min_ll)
+
             cluster_log_likelihoods = torch.stack(cluster_log_likelihoods)
             cluster_sizes = torch.tensor(cluster_sizes)
+
+            cluster_max_lls = torch.stack(cluster_max_lls)
+            cluster_min_lls = torch.stack(cluster_min_lls)
+
             # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             sequence_embeddings = torch.stack(sequence_embeddings)

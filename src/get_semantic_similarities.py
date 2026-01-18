@@ -21,7 +21,7 @@ logging.info('Starting get_semantic_similarities.py...')
 parser = argparse.ArgumentParser()
 parser.add_argument('--generation_model', type=str, default='opt-350m')
 parser.add_argument('--run_id', type=str, default='run_1')
-parser.add_argument('--use_test_split', action='store_true')
+#parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
 device = 'cuda'
@@ -63,10 +63,11 @@ wandb.init(
 
 run_name = wandb.run.name
 
-if args.use_test_split: 
-    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
-else:
-    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+#if args.use_test_split: 
+#    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
+#else:
+#    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
+path_prefix = f'{config.output_dir}sequences/{run_name}/'
 
 with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:
     sequences = pickle.load(infile)
