@@ -1,0 +1,9 @@
+*
+!parse_coqa.py
+!src/
+!src/**
+src/hf_dir/
+src/wandb/
+src/runs/
+src/model/
+src/output/
