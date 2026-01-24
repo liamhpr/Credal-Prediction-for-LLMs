@@ -152,8 +152,41 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 
     return torch.tensor(entropies)
 
+
+# WARNING: The next block is written by me to compute the likelihoods of the clusters: (NOT FINISHED YET!)
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
-    pass
+    """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
+    if log_likelihoods.ndim == 3:
+        # (M, S, K)
+        M = log_likelihoods.shape[0]
+        # make sure logM has same dtype/device
+        logM = torch.log(torch.tensor(M, dtype=log_likelihoods.dtype, device=log_likelihoods.device))
+    elif log_likelihoods.ndim == 2:
+        # (S, K) -> single model, nothing to average
+        logM = 0
+    else:
+        raise ValueError(f'unexpected tensor shape {log_likelihoods.shape}')
+
+    mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - logM
+
+    # sequence_probs_softmax = torch.nn.functional.softmax(log_likelihoods, dim=0)
+
+    semantic_set_ids = semantic_set_ids[0]
+
+
+    for row_index in range(mean_across_models.shape[0]):
+        aggregated_likelihoods = []
+        row = mean_across_models[row_index]
+        semantic_set_ids_row = semantic_set_ids[row_index]
+        for semantic_set_id in torch.unique(semantic_set_ids_row):
+            # compute cluster log-likelihood  
+            aggregated_likelihoods.append(torch.logsumexp(row[semantic_set_ids_row == semantic_set_id], dim=0))
+        aggregated_likelihoods = torch.tensor(aggregated_likelihoods)
+    # WARNING: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
 def get_margin_probability_uncertainty_measure(log_likelihoods):
     """Compute margin probability uncertainty measure"""

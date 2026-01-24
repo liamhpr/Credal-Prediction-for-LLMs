@@ -44,7 +44,7 @@ torch.manual_seed(seed_value)
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--generation_model', type=str, default='opt-350m') # NOTE: the default was set to opt-1.3b
+parser.add_argument('--generation_model', type=str, default='opt-1.3b') # NOTE: the default was set to opt-1.3b
 parser.add_argument('--run_id_for_few_shot_prompt', type=str, default='run_1')
 parser.add_argument('--run_id_for_evaluation', type=str, default='run_1')
 args = parser.parse_args()
@@ -61,8 +61,8 @@ wandb.init(
 #wandb.init(project='credal-prediction-for-large-language-models', id=args.run_id_for_few_shot_prompt, config=args, resume='allow')
 model_name = wandb.config.model
 
-generation_tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c", use_fast=False, cache_dir=config.data_dir)
-model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/hf_models/snapshots/08ab08cc4b72ff5593870b5d527cf4230323703c",
+generation_tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b", use_fast=False, cache_dir=config.data_dir)
+model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b",
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
 

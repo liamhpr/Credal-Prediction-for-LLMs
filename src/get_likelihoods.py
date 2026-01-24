@@ -130,9 +130,6 @@ def get_neg_loglikelihoods(model, sequences):
                 sequence_embeddings.append(average_of_last_layer_token_embeddings)
 
 
-            sequence_lls = -neg_log_likelihoods # NOTE: Store log-likelihodds to later compute the likelihood of the clusters
-            avg_sequence_lls = -average_neg_log_likelihoods
-
             most_likely_generation = sample['most_likely_generation_ids'].to(device)
             target_ids = most_likely_generation.clone()
             target_ids[:len(prompt)] = -100
@@ -156,55 +153,6 @@ def get_neg_loglikelihoods(model, sequences):
             neg_log_likelihood_of_most_likely_gen = average_neg_log_likelihood_of_most_likely_gen * (
                 len(most_likely_generation) - len(prompt))
 
-
-
-            # NOTE: The next block is written by me to compute the likelihoods of the clusters:
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            sequence_probs_softmax = torch.nn.functional.softmax(sequence_lls, dim=0)
-
-            semantic_ids = torch.tensor(
-                similarities_dict[id_[0]]['semantic_set_ids']
-            )
-
-            unique_clusters = torch.unique(semantic_ids)
-            cluster_log_likelihoods = []
-            avg_cluster_log_likelihoods = []
-            cluster_sizes = []
-            cluster_max_probs = []
-            cluster_min_probs = []
-
-            for c in unique_clusters:
-                idx = semantic_ids == c
-                ll = sequence_lls[idx]
-                avg_ll = avg_sequence_lls[idx]
-
-                # log p(cluster | prompt) 
-                cluster_ll = torch.logsumexp(ll, dim=0)
-                # length-normalized sequence likelihood
-                avg_cluster_ll = torch.logsumexp(avg_ll, dim=0)
-
-                probs = sequence_probs_softmax[idx]
-                # find the maximum log likelihood for each cluster
-                max_p = torch.max(probs)
-                min_p = torch.min(probs)
-
-                cluster_log_likelihoods.append(cluster_ll)
-                avg_cluster_log_likelihoods.append(avg_cluster_ll)
-                cluster_sizes.append(idx.sum())
-                cluster_max_probs.append(max_p)
-                cluster_min_probs.append(min_p)
-
-
-            cluster_log_likelihoods = torch.stack(cluster_log_likelihoods)
-            avg_cluster_log_likelihoods = torch.stack(avg_cluster_log_likelihoods)
-            cluster_sizes = torch.tensor(cluster_sizes)
-
-            cluster_max_probs = torch.stack(cluster_max_probs)
-            cluster_min_probs = torch.stack(cluster_min_probs)
-
-            # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             sequence_embeddings = torch.stack(sequence_embeddings)
             result_dict['prompt'] = prompt
             result_dict['generations'] = generations
@@ -221,20 +169,6 @@ def get_neg_loglikelihoods(model, sequences):
             result_dict['neg_log_likelihood_of_most_likely_gen'] = neg_log_likelihood_of_most_likely_gen
             result_dict['semantic_set_ids'] = torch.tensor(similarities_dict[id_[0]]['semantic_set_ids'], device=device)
             result_dict['id'] = id_
-            # NOTE: These entries are for cluster log-likelihoods
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            result_dict['cluster_log_likelihoods'] = cluster_log_likelihoods
-            result_dict['avg_cluster_log_likelihoods'] = avg_cluster_log_likelihoods
-            result_dict['cluster_sizes'] = cluster_sizes
-            result_dict['num_clusters'] = len(unique_clusters)
-
-            # WARNING: Delete next two lines after testing
-            # print(result_dict['cluster_log_likelihoods'])
-            # print(torch.softmax(result_dict['cluster_log_likelihoods'], dim=0))
-            # NOTE: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
             result.append(result_dict)
 
         return result
