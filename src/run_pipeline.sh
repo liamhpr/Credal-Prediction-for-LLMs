@@ -47,5 +47,16 @@ python get_likelihoods.py \
                    --generation_model $model \
                    --run_id $run_id;
 
+echo 'Starting get_prompting_based_uncertainty.py';
+python get_prompting_based_uncertainty.py \
+		   --run_id_for_few_shot_prompt=$run_id \
+		   --run_id_for_evaluation=$run_id;
+
+echo 'Starting compute_confidence_measure.py';
+python compute_confidence_measure.py \
+		   --generation_model=$model \
+		   --evaluation_model=$model \
+		   --run_id=$run_id;
+
 echo 'Pipeline finished successfully';
 "
