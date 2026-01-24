@@ -61,8 +61,10 @@ wandb.init(
 #wandb.init(project='credal-prediction-for-large-language-models', id=args.run_id_for_few_shot_prompt, config=args, resume='allow')
 model_name = wandb.config.model
 
-generation_tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b", use_fast=False, cache_dir=config.data_dir)
-model = AutoModelForCausalLM.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b",
+model_path = config.get_model_path(args.generation_model)
+
+generation_tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, cache_dir=config.data_dir)
+model = AutoModelForCausalLM.from_pretrained(model_path,
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
 

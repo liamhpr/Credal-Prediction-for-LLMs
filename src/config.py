@@ -10,5 +10,8 @@ def get_model_path(model):
     elif model == 'opt-6.7b':
         print('using the opt-6.7b model')
         return '/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-6.7b'
+    elif model == 'opt-1.3b':
+        print('using the opt-1.3b model')
+        return '/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b'
     else: 
         raise(f'unknown model: {model}')

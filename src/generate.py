@@ -1,6 +1,6 @@
 import argparse
 import os
-import pathlib
+import "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b"pathlib
 import pickle
 #from lib2to3.pgen2.tokenize import tokenize
 
@@ -60,7 +60,7 @@ run_name = wandb.run.name
 #   path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
 #else:
 #   path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
-path prefix = f'{config.output_dir}sequences/{run_name}/'
+path_prefix = f'{config.output_dir}sequences/{run_name}/'
 
 model_path = config.get_model_path(args.model)
 
