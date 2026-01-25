@@ -159,47 +159,42 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
     """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
-    if log_likelihoods.ndim == 3:
-        # (M, S, K)
-        M = log_likelihoods.shape[0]
-        # make sure logM has same dtype/device
-        logM = torch.log(torch.tensor(M, dtype=log_likelihoods.dtype, device=log_likelihoods.device))
-    elif log_likelihoods.ndim == 2:
-        # (S, K) -> single model, nothing to average
-        logM = 0
-    else:
-        raise ValueError(f'unexpected tensor shape {log_likelihoods.shape}')
+    M = log_likelihoods.shape[0]
+    logM = torch.log(torch.tensor(M, dtype=log_likelihoods.dtype, device=log_likelihoods.device))
 
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - logM
 
-    # NOTE: Should I use the normalized probabilities for copmuting the difference between upper and lower bound??? 
-    # sequence_probs_softmax = torch.nn.functional.softmax(log_likelihoods, dim=0)
-
     semantic_set_ids = semantic_set_ids[0]
-    upperbounds = []
-    lowerbounds =[]
+    all_upperbounds = []
+    all_lowerbounds =[]
 
     for row_index in range(mean_across_models.shape[0]): # for each question do:
-        aggregated_cluster_likelihoods = []
-        row = mean_across_models[row_index]
+        row_log_probs = mean_across_models[row_index]
         semantic_set_ids_row = semantic_set_ids[row_index]
+
+        aggregated_cluster_likelihoods = []
         deltas = []
+
+        # NOTE: Should I normalize the sequence probabilities to compute the cluster lls and lower and upper bounds???
+        # normalized_sequence_probs = torch.nn.functional.softmax(row_log_probs, dim=0)
+
         for semantic_set_id in torch.unique(semantic_set_ids_row): # for each cluster do:
             # compute cluster log-likelihood  
-            sequence_probs = torch.exp(row[semantic_set_ids_row == semantic_set_id])
+            sequence_probs = torch.exp(row_log_probs[semantic_set_ids_row == semantic_set_id])
             max_p = torch.max(sequence_probs ) # find highest sequence probability
             min_p = torch.min(sequence_probs ) # find lowest sequence probability
             deltas.append(max_p - min_p) # compute difference between highest and lowest probability  
 
-            aggregated_cluster_likelihood = torch.logsumexp(row[semantic_set_ids_row == semantic_set_id], dim=0) # compute cluster likelihood
+            aggregated_cluster_likelihood = torch.logsumexp(row_log_probs[semantic_set_ids_row == semantic_set_id], dim=0) # compute cluster likelihood
             aggregated_cluster_likelihoods.append(aggregated_cluster_likelihood) # store cluster likelihood
 
         aggregated_cluster_likelihoods = torch.tensor(aggregated_cluster_likelihoods) # store cluster likelihoods as tensor
         normalized_cluster_lls = torch.nn.functional.softmax(aggregated_cluster_likelihoods, dim=0) # apply softmax to cluster likelihoods
-        upperbounds = torch.tensor(normalized_cluster_lls) # use normalized cluster likelihoods as upper bounds
+        current_upperbounds = torch.tensor(normalized_cluster_lls) # use normalized cluster likelihoods as upper bounds
+        all_upperbounds.append(current_upperbounds)
 
         deltas = torch.tensor(deltas) # store differences between upper and lower bounds as tensor
-        lowerbounds.append(upperbounds - deltas) # compute lower bounds
+        all_lowerbounds.append(current_upperbounds - deltas) # compute lower bounds
 
         # FIX: Compute upper and lower shannon entropy using the lower and upper bounds
         # The lower and upper bounds are not valid yet as I currently only have one single distribution, the uppper bounds
