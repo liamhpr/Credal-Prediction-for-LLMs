@@ -188,7 +188,7 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
             # compute cluster log-likelihood  
             sequence_probs = torch.exp(row[semantic_set_ids_row == semantic_set_id])
             max_p = torch.max(sequence_probs ) # find highest sequence probability
-            min_p = torch.max(sequence_probs ) # find lowest sequence probability
+            min_p = torch.min(sequence_probs ) # find lowest sequence probability
             deltas.append(max_p - min_p) # compute difference between highest and lowest probability  
 
             aggregated_cluster_likelihood = torch.logsumexp(row[semantic_set_ids_row == semantic_set_id], dim=0) # compute cluster likelihood
