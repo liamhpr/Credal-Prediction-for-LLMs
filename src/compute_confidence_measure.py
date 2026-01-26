@@ -188,12 +188,11 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
             aggregated_cluster_likelihood = torch.logsumexp(row_log_probs[semantic_set_ids_row == semantic_set_id], dim=0) # compute cluster likelihood
             aggregated_cluster_likelihoods.append(aggregated_cluster_likelihood) # store cluster likelihood
 
-        aggregated_cluster_likelihoods = torch.tensor(aggregated_cluster_likelihoods) # store cluster likelihoods as tensor
-        normalized_cluster_lls = torch.nn.functional.softmax(aggregated_cluster_likelihoods, dim=0) # apply softmax to cluster likelihoods
-        current_upperbounds = torch.tensor(normalized_cluster_lls) # use normalized cluster likelihoods as upper bounds
+        aggregated_cluster_likelihoods = torch.stack(aggregated_cluster_likelihoods) # store cluster likelihoods as tensor
+        current_upperbounds = torch.nn.functional.softmax(aggregated_cluster_likelihoods, dim=0) # apply softmax to cluster likelihoods
         all_upperbounds.append(current_upperbounds)
 
-        deltas = torch.tensor(deltas) # store differences between upper and lower bounds as tensor
+        deltas = torch.stack(deltas) # store differences between upper and lower bounds as tensor
         all_lowerbounds.append(current_upperbounds - deltas) # compute lower bounds
 
         # FIX: Compute upper and lower shannon entropy using the lower and upper bounds
