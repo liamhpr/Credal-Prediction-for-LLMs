@@ -10,6 +10,8 @@ import wandb
 import utils.utils as utils 
 import logging
 
+from probly.quantification.classification import upper_entropy, lower_entropy
+
 utils.setup_logger()
 logging.info('Starting compute_confidence_measure.py...')
 
@@ -157,6 +159,30 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
+    """ 
+    Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
+    Expects intervals of shape (N_samples, N_classes, 2).
+    """
+    n_instances = intervals.shape[0]
+    results = []
+
+    # Process in batches to save memory/compute
+    for start in range(0, n_instances, batch_size):
+        end = min(start + batch_size, n_instances)
+        batch = intervals[start:end]
+
+        # NOTE:the upper and lower shannon entropy might be calculated differently depending on the version:
+        # probly expects the bounds. Depending on version, it might take 
+        # (N, K, 2) or separate (N, K) arrays. 
+        # Assuming standard usage of passing the interval structure:
+        ue = upper_entropy(batch, n_jobs=n_jobs)
+        le = upper_entropy(batch, n_jobs=n_jobs)
+
+        results.append(ue - le)
+
+    return np.concatenate(results, axis=0)
+
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
     """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
     M = log_likelihoods.shape[0]
@@ -195,9 +221,21 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
         deltas = torch.stack(deltas) # store differences between upper and lower bounds as tensor
         all_lowerbounds.append(current_upperbounds - deltas) # compute lower bounds
 
-        # FIX: Compute upper and lower shannon entropy using the lower and upper bounds
-        # The lower and upper bounds are not valid yet as I currently only have one single distribution, the uppper bounds
+    # NOTE: This next part is the computation of the entropy diff (epistemic uncertainty)
 
+    # Convert to numpy for Probly
+    # Stack to shape (N_samples, N_classes)
+    np_lowerbounds = torch.stack(all_lowerbounds).detach().cpu().numpy()
+    np_upperbounds = torch.stack(all_upperbounds).detach().cpu().numpy()
+
+    # Combine into shape (N_samples, N_classes, 2)
+    # credal_intervals[i, j, 0] is lower bound
+    # credal_intervals[i, j, 1] is upper bound
+    credal_intervals = np.stack([np_lowerbounds, np_upperbounds], axis=-1)
+
+    entropy_diffs_np = batched_entropy_diff(credal_intervals)
+
+    return torch.from_numpy(entropy_diffs_np).to(log_likelihoods.device)
     #  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
