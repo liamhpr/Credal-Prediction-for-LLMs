@@ -9,8 +9,8 @@ import torch
 import wandb
 import utils.utils as utils 
 import logging
-
-#from probly.quantification.classification import upper_entropy, lower_entropy
+import scipy.optimize
+from joblib import Parallel, delayed
 
 utils.setup_logger()
 logging.info('Starting compute_confidence_measure.py...')
@@ -160,16 +160,126 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 # >>>>>>>>>>>>>>>>>>>>>                         Credal Entropy                             <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>                                                                    <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+def entropy(p):
+    """Helper: Shannon Entropy in nats (base e). Handles 0 log 0"""
+    # Add a tiny epsilon to avoid log(0), or use specialized func
+    p = np.clip(p, 1e-12, 1.0)
+    return -np.sum(p*np.log(p))
+
+def neg_entropy(p):
+    """Helper: Negative Entropy (for minimization to achieve MaxEnt)"""
+    return -entropy(p)
+
+def solve_credal_entropy(bounds):
+    """
+    Computes Lower and Upper Shannon Entropy for a single credal set defined by bounds.
+    Bounds: (K, 2) array where col 0 is Lower, col 1 is Upper 
+    """
+    K = bounds.shape[0]
+    lower_bounds = bounds[:, 0]
+    upper_bounds = bounds[:, 1]
+
+    # 1. Sanity Check: Is the set empty?
+    # sum(lower) must be <= 1 and sum(upper) must be >= 1
+    assert (np.sum(lower_bounds) > 1.0 + 1e-6 or np.sum(upper_bounds) < 1.0 - 1e-6)
+
+    x0 = (lower_bounds + upper_bounds)/ 2.0
+    x0 = x0 / np.sum(x0)
+
+    # Constraints: sum(p) = 1
+    constraints = [{'type': 'eq', 'fun': lambda x: np.sum(x) - 1.0}]
+
+    #Box bounds for optimization
+    scipy_bounds = [(l, u) for l, u in bounds]
+
+    # --- A. Compute UPPER Entropy (Maximize H -> Minimize -H) ---
+    # This is a Convex Optimization Problem (easy/reliable for SLSQP)
+    res_max = scipy.optimize.minimize(
+        neg_entropy, 
+        x0,
+        method='SLSQP',
+        bounds=scipy_bounds,
+        constraints=constraints
+    )
+
+    ue = -res_max.fun if res_max.success else entropy(x0)
+
+    # --- B. Compute LOWER Entropy (Minimize H) ---
+    # Minimizing a concave function (entropy) is mathematically hard (non-convex).
+    # The minimum always lies at a vertex of the polytope.
+    # Heuristic for 2022 stack: Try to concentrate mass on one class (k) 
+    # as much as possible to minimize uncertainty.
+    best_le = np.inf
+
+    # Strategy: For each class, try to maximize its prob (make it "certain")
+    # This approximates finding the vertex with lowest entropy.
+    for k in range(K):
+        # Construct a "spiky" guess centered on class k
+        # Set k to its max, others to min, then normalize
+        p_guess = lower_bounds.copy()
+
+        # How much slack do we have to distribute?
+        current_sum = np.sum(p_guess)
+        slack = 1.0 - current_sum
+
+        # Add as much slack as possible to class k
+        can_add = upper_bounds[k] - p_guess[k]
+        add_amount = min(slack, can_add)
+        p_guess[k] += add_amount
+
+        # If there is still slack, distribute it to others (greedy)
+        # (This part is simple distribution to ensure sum=1 for the solver start)
+        slack = 1.0 - np.sum(p_guess)
+        if slack > 1e-9:
+            # Distribute remaining slack to whoever has room
+            for j in range(K):
+                can_add = upper_bounds[j] - p_guess[j]
+                amt = min(slack, can_add)
+                p_guess[j] += amt
+                slack -= amt
+                if slack < 1e-9: break
+
+        # Run optimization starting from this "spiky" guess
+        res_min = scipy.optimize.minimize(
+            entropy, # Minimize H directly
+            p_guess, 
+            method='SLSQP',
+            bounds=scipy_bounds,
+            constraints=constraints
+        )
+
+        le_candidate = res_min.fun if res_min.success else entropy(p_guess)
+        if le_candidate < best_le:
+            best_le = le_candidate
+
+    return best_le, ue
+
+
 
 def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
-    raise ("not working with the probly library")
     """ 
     Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
     Expects intervals of shape (N_samples, N_classes, 2).
     """
     n_instances = intervals.shape[0]
-    results = []
 
+    # Use Joblib to parallelize the expensive scipy optimization
+    # This replaces the batch loop with parallel execution
+    results = Parallel(n_jobs=n_jobs)(
+        delayed(solve_credal_entropy)(intervals[i])
+        for i in range(n_instances)
+    )
+
+    results = np.array(results) # Shape (N, 2)
+
+    # results[:, 0] is Lower Entropy
+    # results[:, 1] is Upper Entropy
+    diffs = results[:, 1] - results[:, 0]
+
+    return diffs
+
+
+    """
     # Process in batches to save memory/compute
     for start in range(0, n_instances, batch_size):
         end = min(start + batch_size, n_instances)
@@ -185,6 +295,7 @@ def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
         results.append(ue - le)
 
     return np.concatenate(results, axis=0)
+    """
 
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
     """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
