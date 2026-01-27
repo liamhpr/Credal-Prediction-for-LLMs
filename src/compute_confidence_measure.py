@@ -138,6 +138,7 @@ def get_predictive_entropy(log_likelihoods):
 
 def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     """Compute the semantic entropy"""
+    semantic_set_ids = semantic_set_ids.to(log_likelihoods.device)
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - torch.log(torch.tensor(log_likelihoods.shape[0]))
     # This is ok because all the models have the same semantic set ids
     semantic_set_ids = semantic_set_ids[0]
