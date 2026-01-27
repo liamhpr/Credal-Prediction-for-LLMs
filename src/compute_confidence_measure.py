@@ -10,7 +10,7 @@ import wandb
 import utils.utils as utils 
 import logging
 
-from probly.quantification.classification import upper_entropy, lower_entropy
+#from probly.quantification.classification import upper_entropy, lower_entropy
 
 utils.setup_logger()
 logging.info('Starting compute_confidence_measure.py...')
@@ -162,6 +162,7 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
+    raise ("not working with the probly library")
     """ 
     Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
     Expects intervals of shape (N_samples, N_classes, 2).

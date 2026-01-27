@@ -10,14 +10,14 @@ import utils.utils as utils
 #import accelerate
 #import matplotlib.pyplot as plt
 import numpy as np
-#import seaborn as sns
+import seaborn as sns
 import sklearn
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import config
-#sns.color_palette("pastel")
+sns.color_palette("pastel")
 import wandb
 #from config import device_map
 
@@ -54,7 +54,7 @@ wandb.init(
     entity="liam-heppner-ludwig-maximilian-university-of-munich",
     # Set the wandb project where this run will be logged.
     project="credal-prediction-for-large-language-models",
-    id=args.run_id,
+    id=args.run_id_for_few_shot_prompt,
     config=args,
     resume='allow'
 )
