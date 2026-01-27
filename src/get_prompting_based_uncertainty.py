@@ -8,7 +8,7 @@ import logging
 import utils.utils as utils
 
 #import accelerate
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import sklearn
