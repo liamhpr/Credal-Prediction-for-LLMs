@@ -1,8 +1,0 @@
-Using run_id: krckcue9
-Using model: opt-350m
-Starting generate.py
-  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 3
-    import "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/opt-1.3b"pathlib
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-SyntaxError: invalid syntax
-srun: error: hpdar06c01s01: task 0: Exited with exit code 1

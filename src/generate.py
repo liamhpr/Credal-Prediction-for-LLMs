@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle
+import pathlib
 #from lib2to3.pgen2.tokenize import tokenize
 
 import logging
@@ -283,8 +284,7 @@ def get_generations(model, dataloader, number_of_generations):
 logging.info('Generating %s generations', args.num_generations_per_prompt)
 sequences = get_generations(model, dataloader, args.num_generations_per_prompt)
 
-pathlib.Path(f'{config.output_dir}sequences/' + run_name + '/train_split').mkdir(parents=True, exist_ok=True)
-pathlib.Path(f'{config.output_dir}sequences/' + run_name + '/test_split').mkdir(parents=True, exist_ok=True)
+pathlib.Path(f'{config.output_dir}sequences/' + run_name).mkdir(parents=True, exist_ok=True)
 
 with open(f'{path_prefix}{args.model}_generations.pkl', 'wb') as outfile:
     pickle.dump(sequences, outfile)
