@@ -34,8 +34,9 @@ seed_value = 10
 if not pathlib.Path(f'{config.data_dir}/trivia_qa').exists():
 
     print('Preprocessing dataset')
-    val_data = datasets.load_dataset("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/validation-00000-of-00001.parquet")
-    train_data = datasets.load_dataset("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/train-00000-of-00001.parquet")
+    val_data = datasets.load_dataset("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/mandarjoshi___trivia_qa", "rc.nocontext", split="validation")
+    train_data = datasets.load_dataset("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/data/sets/mandarjoshi___trivia_qa", "rc.nocontext", split="train")
+
     data_for_few_shot_prompt = train_data.select(range(0, 10))
 
     few_shot_prompt = 'This is a bot that correctly answers questions. \n'
