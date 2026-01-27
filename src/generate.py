@@ -84,31 +84,17 @@ model = AutoModelForCausalLM.from_pretrained(model_path,
 #opt-6.7b
 tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=config.hf_cache_dir, use_fast=False)
 
-if not args.use_test_split:
-    if args.dataset == 'coqa':
-        dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
-        id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
-    elif args.dataset == 'trivia_qa':
-        raise # I did not implement the dataset yet
-        #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
+if args.dataset == 'coqa':
+    dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+    id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
+elif args.dataset == 'trivia_qa':
+    raise # I did not implement the dataset yet
+    #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
-    if args.fraction_of_data_to_use < 1.0:
-        #NOTE:  I use only 2% of the whole dataset and split that again for test cases
-        subset_size = int(len(dataset) * 0.02)
-        dataset = dataset.select(range(subset_size))
-        print(f'length of dataset: {len(dataset)}')
-        print(f'length of subset: {len(dataset)}')
-
-        datasplit = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)
-        train_dataset = datasplit['train']
-        test_dataset = datasplit['test']
-        pathlib.Path(f'{config.data_dir}test_datasets/{run_name}').mkdir(parents=True, exist_ok=True)
-        test_dataset.save_to_disk(f'{config.data_dir}test_datasets/{run_name}/')
-    else:
-        train_dataset = dataset
+if args.fraction_of_data_to_use < 1.0:
+    train_dataset = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
 else:
-    train_dataset = datasets.load_from_disk(f'{config.data_dir}test_datasets/{run_name}/')
-    id_to_question_mapping = dict(zip(train_dataset['id'], train_dataset['question']))
+    train_dataset = dataset
 
 
 def encode(examples):
