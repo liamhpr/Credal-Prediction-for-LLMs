@@ -1,5 +1,6 @@
 *
 !parse_coqa.py
+!parse_triviaqa.py
 !src/
 !src/**
 src/hf_dir/
