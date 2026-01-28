@@ -304,7 +304,6 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - logM
 
-    semantic_set_ids = semantic_set_ids.to(log_likelihoods.device)
     semantic_set_ids = semantic_set_ids[0]
     all_upperbounds = []
     all_lowerbounds =[]
@@ -321,7 +320,7 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 
         for semantic_set_id in torch.unique(semantic_set_ids_row): # for each cluster do:
             # compute cluster log-likelihood  
-            sequence_probs = torch.exp(row_log_probs[semantic_set_ids_row == semantic_set_id])
+            sequence_probs = torch.exp(row_log_probs.to(semantic_set_ids_row.device)[semantic_set_ids_row == semantic_set_id])
             max_p = torch.max(sequence_probs ) # find highest sequence probability
             min_p = torch.min(sequence_probs ) # find lowest sequence probability
             deltas.append(max_p - min_p) # compute difference between highest and lowest probability  
