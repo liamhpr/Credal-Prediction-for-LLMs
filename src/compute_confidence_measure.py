@@ -138,6 +138,7 @@ def get_predictive_entropy(log_likelihoods):
 
 def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     """Compute the semantic entropy"""
+    print("\n\nShape of log_likelihoods:",log_likelihoods.shape,"\n\n")
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - torch.log(torch.tensor(log_likelihoods.shape[0]))
     # This is ok because all the models have the same semantic set ids
     semantic_set_ids = semantic_set_ids[0]
@@ -160,21 +161,20 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 # >>>>>>>>>>>>>>>>>>>>>                         Credal Entropy                             <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>                                                                    <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+"""
 def entropy(p):
-    """Helper: Shannon Entropy in nats (base e). Handles 0 log 0"""
+    #Helper: Shannon Entropy in nats (base e). Handles 0 log 0
     # Add a tiny epsilon to avoid log(0), or use specialized func
     p = np.clip(p, 1e-12, 1.0)
     return -np.sum(p*np.log(p))
 
 def neg_entropy(p):
-    """Helper: Negative Entropy (for minimization to achieve MaxEnt)"""
+    #Helper: Negative Entropy (for minimization to achieve MaxEnt)
     return -entropy(p)
 
 def solve_credal_entropy(bounds):
-    """
-    Computes Lower and Upper Shannon Entropy for a single credal set defined by bounds.
-    Bounds: (K, 2) array where col 0 is Lower, col 1 is Upper 
-    """
+    #Computes Lower and Upper Shannon Entropy for a single credal set defined by bounds.
+    #Bounds: (K, 2) array where col 0 is Lower, col 1 is Upper 
     K = bounds.shape[0]
     lower_bounds = bounds[:, 0]
     upper_bounds = bounds[:, 1]
@@ -257,10 +257,9 @@ def solve_credal_entropy(bounds):
 
 
 def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
-    """ 
-    Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
-    Expects intervals of shape (N_samples, N_classes, 2).
-    """
+
+    #Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
+    #Expects intervals of shape (N_samples, N_classes, 2).
     n_instances = intervals.shape[0]
 
     # Use Joblib to parallelize the expensive scipy optimization
@@ -279,26 +278,8 @@ def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
     return diffs
 
 
-    """
-    # Process in batches to save memory/compute
-    for start in range(0, n_instances, batch_size):
-        end = min(start + batch_size, n_instances)
-        batch = intervals[start:end]
-
-        # NOTE:the upper and lower shannon entropy might be calculated differently depending on the version:
-        # probly expects the bounds. Depending on version, it might take 
-        # (N, K, 2) or separate (N, K) arrays. 
-        # Assuming standard usage of passing the interval structure:
-        ue = upper_entropy(batch, n_jobs=n_jobs)
-        le = upper_entropy(batch, n_jobs=n_jobs)
-
-        results.append(ue - le)
-
-    return np.concatenate(results, axis=0)
-    """
-
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
-    """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
+    #Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set
     M = log_likelihoods.shape[0]
     logM = torch.log(torch.tensor(M, dtype=log_likelihoods.dtype, device=log_likelihoods.device))
 
@@ -350,7 +331,7 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     entropy_diffs_np = batched_entropy_diff(credal_intervals)
 
     return torch.from_numpy(entropy_diffs_np).to(log_likelihoods.device)
-
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>                                                                    <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

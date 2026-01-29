@@ -29,7 +29,7 @@ parser.add_argument('--temperature', type=float, default=1.0) # NOTE: should be 
 #randomness of answers <1.0 the distribution becomes more peaked -> the model is more confident; >1.0 the distribution flattens -> the model is less confident and picks more random answers
 
 
-parser.add_argument('--num_beams', type=int, default=1) #WARNING: changed default to 1 | number of sequences evaluated
+parser.add_argument('--num_beams', type=int, default=5)
 parser.add_argument('--decoding_method', type=str, default='beam_search')
 parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for calculating the logits
 parser.add_argument('--dataset', type=str, default='coqa')
