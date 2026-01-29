@@ -150,7 +150,9 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
         for semantic_set_id in torch.unique(semantic_set_ids_row): # for each cluster do:
             aggregated_likelihoods.append(torch.logsumexp(row[semantic_set_ids_row == semantic_set_id], dim=0)) # compute and append each cluster likelihood
         aggregated_likelihoods = torch.tensor(aggregated_likelihoods) - llh_shift # create a tensor from the cluster likelihoods
-        entropy = - torch.sum(aggregated_likelihoods, dim=0) / torch.tensor(aggregated_likelihoods.shape[0]) # compute entropy
+        # compute entropy 
+        # aggregated_likelihoods.shape[0] should be the cluster size (the numbmer of sequences in the cluster)
+        entropy = - torch.sum(aggregated_likelihoods, dim=0) / torch.tensor(aggregated_likelihoods.shape[0]) 
         entropies.append(entropy) # append entropy (entropy over the answers for one question)
 
     return torch.tensor(entropies)
