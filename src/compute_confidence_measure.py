@@ -160,6 +160,8 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
         # aggregated_likelihoods.shape[0] should be the cluster size (the numbmer of sequences in the cluster)
         entropy = - torch.sum(aggregated_likelihoods, dim=0) / torch.tensor(aggregated_likelihoods.shape[0]) 
         entropies.append(entropy) # append entropy (entropy over the answers for one question)
+        print("aggregated lls:", aggregated_likelihoods[row_index], " | entropy:", entropy)
+        
 
     return torch.tensor(entropies)
 
