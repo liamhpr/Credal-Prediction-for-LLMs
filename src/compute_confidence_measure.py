@@ -378,8 +378,8 @@ predictive_entropy_over_concepts = get_predictive_entropy_over_concepts(-overall
                                                                         overall_results['semantic_set_ids'])
 unnormalised_entropy_over_concepts = get_predictive_entropy_over_concepts(-overall_results['neg_log_likelihoods'],
                                                                           overall_results['semantic_set_ids'])
-credal_entropy_over_concepts = get_credal_entropy_over_concepts(-overall_results['average_neg_log_likelihoods'], 
-                                                                        overall_results['semantic_set_ids'])
+#credal_entropy_over_concepts = get_credal_entropy_over_concepts(-overall_results['average_neg_log_likelihoods'], 
+#                                                                        overall_results['semantic_set_ids'])
 
 margin_measures = get_margin_probability_uncertainty_measure(-overall_results['average_neg_log_likelihoods'])
 unnormalised_margin_measures = get_margin_probability_uncertainty_measure(-overall_results['neg_log_likelihoods'])
