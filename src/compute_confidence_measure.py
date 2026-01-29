@@ -138,8 +138,13 @@ def get_predictive_entropy(log_likelihoods):
 
 def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     """Compute the semantic entropy"""
+
     print("\n\nShape of log_likelihoods:",log_likelihoods.shape,"\n\n")
+    # log_likelihoods is of size (1, Questions, Number of answers)
+    # the next line just squeezes the tensor by removing the first dimension  
+    # leaving us with a tensor of size (Questions, Number of answers)
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - torch.log(torch.tensor(log_likelihoods.shape[0]))
+
     # This is ok because all the models have the same semantic set ids
     semantic_set_ids = semantic_set_ids[0]
     entropies = []
@@ -286,7 +291,12 @@ def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
 
 def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
     """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
+
+    semantic_set_ids = semantic_set_ids.to(log_likelihoods.device)
     print("\n\nShape of log_likelihoods:",log_likelihoods.shape,"\n\n")
+    # log_likelihoods is of size (1, Questions, Number of answers)
+    # the next line just squeezes the tensor by removing the first dimension  
+    # leaving us with a tensor of size (Questions, Number of answers)
     M = log_likelihoods.shape[0]
     logM = torch.log(torch.tensor(M, dtype=log_likelihoods.dtype, device=log_likelihoods.device))
 
@@ -308,7 +318,7 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 
         for semantic_set_id in torch.unique(semantic_set_ids_row): # for each cluster do:
             # compute cluster log-likelihood  
-            sequence_probs = torch.exp(row_log_probs.to(semantic_set_ids_row.device)[semantic_set_ids_row == semantic_set_id])
+            sequence_probs = torch.exp(row_log_probs[semantic_set_ids_row == semantic_set_id])
             max_p = torch.max(sequence_probs ) # find highest sequence probability
             min_p = torch.min(sequence_probs ) # find lowest sequence probability
             deltas.append(max_p - min_p) # compute difference between highest and lowest probability  
