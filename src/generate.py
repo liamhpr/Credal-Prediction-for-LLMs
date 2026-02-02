@@ -145,13 +145,15 @@ def get_model_likelihood(model, tokenizer, dataset):
         else:
             answer_text = example['answer']
 
-        prompt_text = f"{story} Q: {question} A:"
-        full_text = f"{prompt_text} {answer_text}"
-
-        prompt_inputs = tokenizer(prompt_text, return_tensors='pt')
-        prompt_len = prompt_inputs.input_ids.shape[1]
-        
+        full_text = f"{story} Q: {question} A: {answer_text}"
         full_inputs = tokenizer(full_text, return_tensors='pt').to(device)
+
+        # 2. Determine Prompt Length dynamically
+        # We encode the prompt alone just to get its length, but we must be careful
+        # about special tokens (BOS) being added twice.
+        prompt_text = f"{story} Q: {question} A:"
+        prompt_ids_test = tokenizer(prompt_text, add_special_tokens=False).input_ids
+        prompt_len = len(prompt_ids_test)
         
         # Create Labels
         target_ids = full_inputs.input_ids.clone()
