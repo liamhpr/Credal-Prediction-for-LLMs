@@ -10,6 +10,7 @@ import datasets
 import evaluate
 import numpy as np
 import torch
+from torch.nn import CrossEntropyLoss
 import tqdm
 import wandb
 import random
@@ -33,6 +34,9 @@ parser.add_argument('--num_beams', type=int, default=5)
 parser.add_argument('--decoding_method', type=str, default='beam_search')
 parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for calculating the logits
 parser.add_argument('--dataset', type=str, default='coqa')
+parser.add_argument('--t_step_size', type=float, default=0.5)
+parser.add_argument('--max_temperature', type=float, default=10.1)
+parser.add_argument('--alpha', type=float, default=0.8)
 #parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
@@ -84,18 +88,183 @@ model = AutoModelForCausalLM.from_pretrained(model_path,
 #opt-6.7b
 tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=config.hf_cache_dir, use_fast=False)
 
+
+
 if args.dataset == 'coqa':
-    dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
-    id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
+    full_dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+    
+    # Create a proper Train/Test split
+    # If you want a fixed test set size (e.g., 10%)
+    split_dataset = full_dataset.train_test_split(test_size=0.8, seed=seed_value)
+    
+    train_dataset = split_dataset['train']
+    test_dataset = split_dataset['test']
+    
+    # Create mapping for ID reference
+    id_to_question_mapping = dict(zip(full_dataset['id'], full_dataset['question']))
+
+    # removed because of the split for the temperature likelihood 
+    #dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+    #id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
+
 elif args.dataset == 'trivia_qa':
     raise # I did not implement the dataset yet
     #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
 if args.fraction_of_data_to_use < 1.0:
-    train_dataset = dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
+    train_dataset = test_dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
 else:
-    train_dataset = dataset
+    train_dataset = test_dataset
 
+
+
+temperatures = np.arange(0.1, args.max_temperature, args.t_step_size).tolist()
+
+def get_model_likelihood(model, tokenizer, dataset):
+    """
+    Computes the log-likelihood of the ground truth answer for a list of temperatures.
+    Optimized to run the model only once per sample.
+    """
+    model.eval()
+    results = []
+    alpha = args.alpha
+    
+    # Initialize the loss function. 
+    # ignore_index=-100 handles the masked prompt tokens automatically.
+    loss_fct = CrossEntropyLoss(reduction='sum', ignore_index=-100)
+    
+    print(f"Calculating likelihoods for {len(dataset)} samples across temperatures: {temperatures}...")
+    
+    for example in tqdm.tqdm(dataset):
+        # 1. prepare data
+        story = example['story']
+        question = example['question']
+        
+        if isinstance(example['answer'], dict):
+            answer_text = example['answer']['text'][0]
+        else:
+            answer_text = example['answer']
+
+        prompt_text = f"{story} Q: {question} A:"
+        full_text = f"{prompt_text} {answer_text}"
+
+        prompt_inputs = tokenizer(prompt_text, return_tensors='pt')
+        prompt_len = prompt_inputs.input_ids.shape[1]
+        
+        full_inputs = tokenizer(full_text, return_tensors='pt').to(device)
+        
+        # Create Labels
+        target_ids = full_inputs.input_ids.clone()
+        target_ids[:, :prompt_len] = -100 # Mask the prompt
+        
+        # 2. run model once
+        with torch.no_grad():
+            # We do NOT pass labels here, because we want the raw logits
+            outputs = model(full_inputs.input_ids)
+            logits = outputs.logits # Shape: [1, seq_len, vocab_size]
+
+        # 3. shift logits and labels
+        # For Causal LMs:
+        # Logits at index [i] predict the token at index [i+1]
+        shift_logits = logits[..., :-1, :].contiguous()
+        shift_labels = target_ids[..., 1:].contiguous()
+        
+        # Calculate the number of valid answer tokens (where label != -100)
+        # We need this to calculate the Average NLL later
+        valid_token_mask = shift_labels != -100
+        num_answer_tokens = valid_token_mask.sum().item()
+        
+        # If for some reason there are no answer tokens, skip
+        if num_answer_tokens == 0:
+            continue
+
+        sample_result = {
+            'id': example['id'],
+            'question': question,
+            'answer': answer_text,
+            'token_count': num_answer_tokens,
+            'temperatures': {}
+        }
+
+        # 4. compute loss for each temperature
+        for temp in temperatures:
+            # Apply Temperature Scaling
+            # Math: z_new = z_old / T
+            scaled_logits = shift_logits / temp
+
+            # Compute Loss (Sum of NLL)
+            # view(-1, ...) flattens the batch and sequence dimensions for the loss function
+            loss = loss_fct(scaled_logits.view(-1, scaled_logits.size(-1)), 
+                            shift_labels.view(-1))
+            
+            sum_nll = loss.item()
+            avg_nll = sum_nll / num_answer_tokens
+            
+            sample_result['temperatures'][temp] = {
+                'nll_sum': sum_nll,
+                'nll_avg': avg_nll
+            }
+
+        results.append(sample_result)
+
+    """
+    Computes the Global Relative Likelihood over the entire dataset.
+    
+    Mathematical Logic:
+    Likelihood(Dataset | T) = Product(Likelihood(sample_i | T))
+    LogLikelihood(Dataset | T) = Sum(LogLikelihood(sample_i | T))
+    Total_NLL(T) = Sum(NLL_sample_i(T))
+    """
+    if not results:
+        return [], {}
+
+    temps = list(results[0]['temperatures'].keys())
+
+    # 2. Aggregate NLLs across the entire dataset
+    # We initialize a counter for each temperature
+    dataset_nll = {t: 0.0 for t in temps}
+
+    print(f"Aggregating likelihoods over {len(results)} samples...")
+    
+    for sample in results:
+        for t in temps:
+            # We add the NLL sum of this specific answer to the global total
+            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
+
+    # 3. Find the Global Best Temperature (Minimum Total NLL)
+    min_total_nll = min(dataset_nll.values())
+    best_temp = min(dataset_nll, key=dataset_nll.get)
+
+    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
+
+    # 4. Compute Relative Likelihoods
+    global_relative_likelihoods = {}
+    valid_temperatures = []
+    
+    for t in temps:
+        current_nll = dataset_nll[t]
+        
+        # Calculate likelihood ratio in log space
+        # R(t) = exp( Best_NLL - Current_NLL )
+        # Note: Since these are sums over the whole dataset, 
+        # the difference might be large, leading to very small probabilities.
+        diff = min_total_nll - current_nll
+        
+        # Clip to prevent underflow if difference is massive
+        if diff < -700: 
+            rel_lik = 0.0
+        else:
+            rel_lik = np.exp(diff)
+            
+        global_relative_likelihoods[t] = rel_lik
+        
+        if rel_lik >= alpha:
+            valid_temperatures.append(t)
+            
+    print("valid temperatures:", valid_temperatures, "rel_likelihoods:", global_relative_likelihoods)
+    return valid_temperatures, global_relative_likelihoods
+
+valid_temperatures, gobal_relative_likelihoods = get_model_likelihood(model, tokenizer, train_dataset)
 
 def encode(examples):
     return tokenizer(examples['story'] + ' Q: ' + examples['question'] + ' A:', truncation=False, padding=False)

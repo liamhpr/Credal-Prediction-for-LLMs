@@ -306,35 +306,25 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     mean_across_models = torch.logsumexp(log_likelihoods, dim=0) - logM
 
     semantic_set_ids = semantic_set_ids[0]
-    all_upperbounds = []
-    all_lowerbounds =[]
 
     for row_index in range(mean_across_models.shape[0]): # for each question do:
         row_log_probs = mean_across_models[row_index]
         semantic_set_ids_row = semantic_set_ids[row_index]
 
         aggregated_cluster_likelihoods = []
-        deltas = []
+        bounds = []
 
         # NOTE: Should I normalize the sequence probabilities to compute the cluster lls and lower and upper bounds???
         # normalized_sequence_probs = torch.nn.functional.softmax(row_log_probs, dim=0)
 
         for semantic_set_id in torch.unique(semantic_set_ids_row): # for each cluster do:
             # compute cluster log-likelihood  
-            sequence_probs = torch.exp(row_log_probs[semantic_set_ids_row == semantic_set_id])
-            max_p = torch.max(sequence_probs ) # find highest sequence probability
-            min_p = torch.min(sequence_probs ) # find lowest sequence probability
-            deltas.append(max_p - min_p) # compute difference between highest and lowest probability  
-
             aggregated_cluster_likelihood = torch.logsumexp(row_log_probs[semantic_set_ids_row == semantic_set_id], dim=0) # compute cluster likelihood
             aggregated_cluster_likelihoods.append(aggregated_cluster_likelihood) # store cluster likelihood
 
-        aggregated_cluster_likelihoods = torch.stack(aggregated_cluster_likelihoods) # store cluster likelihoods as tensor
-        current_upperbounds = torch.nn.functional.softmax(aggregated_cluster_likelihoods, dim=0) # apply softmax to cluster likelihoods
-        all_upperbounds.append(current_upperbounds)
 
-        deltas = torch.stack(deltas) # store differences between upper and lower bounds as tensor
-        all_lowerbounds.append(current_upperbounds - deltas) # compute lower bounds
+
+
 
     # NOTE: This next part is the computation of the entropy diff (epistemic uncertainty)
 
