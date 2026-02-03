@@ -35,8 +35,9 @@ parser.add_argument('--decoding_method', type=str, default='beam_search')
 parser.add_argument('--top_p', type=float, default=1.0) # NOTE: Should be 1 for calculating the logits
 parser.add_argument('--dataset', type=str, default='coqa')
 parser.add_argument('--t_step_size', type=float, default=0.5)
+parser.add_argument('--min_temperature', type=float, default=0.1)
 parser.add_argument('--max_temperature', type=float, default=10.1)
-parser.add_argument('--alpha', type=float, default=0.8)
+#parser.add_argument('--alpha', type=float, default=0.8)
 #parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
@@ -118,7 +119,7 @@ else:
 
 
 
-temperatures = np.arange(0.1, args.max_temperature, args.t_step_size).tolist()
+temperatures = np.arange(args.min_temperature, args.max_temperature, args.t_step_size).tolist()
 
 def get_model_likelihood(model, tokenizer, dataset):
     """
@@ -127,7 +128,7 @@ def get_model_likelihood(model, tokenizer, dataset):
     """
     model.eval()
     results = []
-    alpha = args.alpha
+    #alpha = args.alpha
     
     # Initialize the loss function. 
     # ignore_index=-100 handles the masked prompt tokens automatically.
@@ -232,7 +233,7 @@ def get_model_likelihood(model, tokenizer, dataset):
 
     # Define "Valid": Within 1 Standard Error of the best 
     # (You can also use 1.96 * SEM for a 95% confidence interval)
-    upper_bound = best_mean + best_sem
+    upper_bound = best_mean + 1.96 * best_sem
 
     valid_temperatures = []
     for t, s in stats.items():
