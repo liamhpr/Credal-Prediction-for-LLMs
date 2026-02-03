@@ -209,6 +209,45 @@ def get_model_likelihood(model, tokenizer, dataset):
 
         results.append(sample_result)
 
+
+    all_nlls = {t: [] for t in temperatures}
+
+    for sample in results: 
+        for t in temperatures:
+            # Use 'nll_avg' (per token)
+            all_nlls[t].append(sample['temperatures'][t]['nll_avg'])
+
+    # Calculate Mean and Standard Error for each T
+    stats = {}
+    for t, nlls in all_nlls.items():
+        mean_nll = np.mean(nlls)
+        # Standard Error = std_dev / sqrt(n_samples)
+        sem = np.std(nlls) / np.sqrt(len(nlls))
+        stats[t] = {'mean': mean_nll, 'sem': sem}
+
+    # find the best temperature (Lowest Mean NLL)
+    best_t = min(stats, key=lambda x: stats[x]['mean'])
+    best_mean = stats[best_t]['mean']
+    best_sem = stats[best_t]['sem']
+
+    # Define "Valid": Within 1 Standard Error of the best 
+    # (You can also use 1.96 * SEM for a 95% confidence interval)
+    upper_bound = best_mean + best_sem
+
+    valid_temperatures = []
+    for t, s in stats.items():
+        print('temperature:', t, 'mean:', s['mean'])
+        if s['mean'] <= upper_bound:
+            valid_temperatures.append(t)
+
+    print(f"Best T: {best_t} (Mean NLL: {best_mean:.4f})")
+    print(f"Valid Range (within 1 SEM): {valid_temperatures}")
+    print("valid temperatures:", valid_temperatures)
+    return valid_temperatures
+
+
+# NOTE: Unused (keep it in case I will need it at some point)
+def get_rel_likelihood():
     """
     Computes the Global Relative Likelihood over the entire dataset.
     
@@ -262,11 +301,11 @@ def get_model_likelihood(model, tokenizer, dataset):
         
         if rel_lik >= alpha:
             valid_temperatures.append(t)
-            
-    print("valid temperatures:", valid_temperatures, "rel_likelihoods:", global_relative_likelihoods)
-    return valid_temperatures, global_relative_likelihoods
+# NOTE: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NOT USED^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-valid_temperatures, gobal_relative_likelihoods = get_model_likelihood(model, tokenizer, train_dataset)
+
+
+valid_temperatures = get_model_likelihood(model, tokenizer, train_dataset)
 
 def encode(examples):
     return tokenizer(examples['story'] + ' Q: ' + examples['question'] + ' A:', truncation=False, padding=False)
