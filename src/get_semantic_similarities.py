@@ -69,9 +69,46 @@ run_name = wandb.run.name
 #    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
 path_prefix = f'{config.output_dir}sequences/{run_name}/'
 
-with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:
-    sequences = pickle.load(infile)
+input_file = f'{path_prefix}{args.generation_model}_all_generations.pkl'
+with open(input_file, 'rb') as infile:
+    all_temperature_sequences = pickle.load(infile)
 
+
+# ============================= STEP 1 AGGREGATIOIN ===============================
+# Collect all unique answers for each question ID across ALL temperatures
+logging.info("Aggregating unique answers across all temperatures...")
+
+global_question_map = {}
+# Structre: {
+#    question_id: {
+#        'question': str,
+#        'unique_texts': set(str),
+#        'cluster_map': dict() <- to be filled later
+#    }
+#}
+
+for temp, samples in all_temperature_sequences.items():
+    for sample in samples:
+        q_id = sample['id'][0] if isinstance(sample['id'], list) else sample['id']
+
+        if q_id not in global_question_map:
+            global_question_map[q_id] = {
+                'question': sample['question'],
+                'unique_texts': set()
+            }
+
+        # Get texts (prefer cleaned if available)
+        if 'cleaned_generated_texts' in sample:
+            texts = sample['cleaned_generated_texts']
+        else:
+            texts = sample['generated_texts']
+
+        global_question_map[q_id]['unique_texts'].update(texts)
+
+
+# ======================= STEP 2: GLOBAL CLUSTERING ============================ 
+# Perform NLI comparison on the unique set for each question 
+logging.info(f"Clustering answers for {len(global_question_map)} unique questions...")
 result_dict = {}
 
 meteor = evaluate.load('meteor')

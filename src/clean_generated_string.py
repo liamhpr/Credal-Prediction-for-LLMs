@@ -71,41 +71,49 @@ model_path = config.get_model_path(args.generation_model)
 
 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, cache_dir=config.data_dir)
 
-   
-with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'rb') as infile:
-    sequences = pickle.load(infile)
+input_file = f'{path_prefix}{args.generation_model}_all_generations.pkl'   
+with open(input_file, 'rb') as infile:
+    all_temperature_sequences = pickle.load(infile)
 
-cleaned_sequences = []
+cleaned_all_temperature_sequences = {}
 
-for sample in tqdm(sequences):
-    cleaned_generations = torch.ones_like(sample['generations'])
-    question = sample['question']
-    generated_texts = sample['generated_texts']
-    cleaned_generated_texts = []
+for temp, sequences in all_temperature_sequences.items():
+    print(f"Cleaning {len(sequences)} sequences for Temperature {temp}...")
+    
+    cleaned_sequences_for_temp = []
 
-    max_len_of_generations = cleaned_generations.shape[-1]
+    for sample in tqdm(sequences):
+        cleaned_generations = torch.ones_like(sample['generations'])
+        question = sample['question']
+        generated_texts = sample['generated_texts']
+        cleaned_generated_texts = []
 
-    strings_to_filter_on = [
-        '.', '\n', 'Q:', 'A:', 'question:', 'answer:', 'Question:', 'Answer:', 'Questions:', 'questions:', 'QUESTION:',
-        'ANSWER:'
-    ]
+        max_len_of_generations = cleaned_generations.shape[-1]
 
-    for i, generated_text in enumerate(generated_texts):
-        for string in strings_to_filter_on:
-            if string in generated_text:
-                generated_text = generated_text.split(string)[0] # only use the part before any filtered word
-        cleaned_generated_texts.append(generated_text)
+        strings_to_filter_on = [
+            '.', '\n', 'Q:', 'A:', 'question:', 'answer:', 'Question:', 'Answer:', 'Questions:', 'questions:', 'QUESTION:',
+            'ANSWER:'
+        ]
 
-        # save the cleaned token IDs
-        clean_ids = torch.cat(
-            [sample['prompt'].to(device),
-             torch.tensor(tokenizer(generated_text)['input_ids'][1:], device=device)])
-        cleaned_generations[i, :min(len(clean_ids), max_len_of_generations)] = clean_ids[:max_len_of_generations]
+        for i, generated_text in enumerate(generated_texts):
+            for string in strings_to_filter_on:
+                if string in generated_text:
+                    generated_text = generated_text.split(string)[0] # only use the part before any filtered word
+            cleaned_generated_texts.append(generated_text)
 
-    sample['cleaned_generated_texts'] = cleaned_generated_texts
-    sample['cleaned_generations'] = cleaned_generations
-    cleaned_sequences.append(sample)
+            # save the cleaned token IDs
+            clean_ids = torch.cat(
+                [sample['prompt'].to(device),
+                 torch.tensor(tokenizer(generated_text)['input_ids'][1:], device=device)])
+            cleaned_generations[i, :min(len(clean_ids), max_len_of_generations)] = clean_ids[:max_len_of_generations]
 
-with open(f'{path_prefix}{args.generation_model}_generations.pkl', 'wb') as outfile:
-    pickle.dump(cleaned_sequences, outfile)
+        sample['cleaned_generated_texts'] = cleaned_generated_texts
+        sample['cleaned_generations'] = cleaned_generations
+        cleaned_sequences_for_temp.append(sample)
 
+    cleaned_all_temperature_sequences[temp] = cleaned_sequences_for_temp
+
+with open(input_file, 'wb') as outfile:
+    pickle.dump(cleaned_all_temperature_sequences, outfile)
+
+logging.info(f"Finished cleaning. Saved to {input_file}")

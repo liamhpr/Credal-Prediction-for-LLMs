@@ -179,7 +179,7 @@ def get_model_likelihood(model, tokenizer, dataset):
         
         # If for some reason there are no answer tokens, skip
         if num_answer_tokens == 0:
-            continue
+            raise Exception("No answer tokens")
 
         sample_result = {
             'id': example['id'],
@@ -242,13 +242,13 @@ def get_model_likelihood(model, tokenizer, dataset):
             valid_temperatures.append(t)
 
     print(f"Best T: {best_t} (Mean NLL: {best_mean:.4f})")
-    print(f"Valid Range (within 1 SEM): {valid_temperatures}")
+    print(f"Valid Range [within 1.96 * 1 SEM (95% confidence intervall)]: {upper_bound}")
     print("valid temperatures:", valid_temperatures)
     return valid_temperatures
 
 
 # NOTE: Unused (keep it in case I will need it at some point)
-def get_rel_likelihood():
+#def get_rel_likelihood():
     """
     Computes the Global Relative Likelihood over the entire dataset.
     
@@ -257,56 +257,54 @@ def get_rel_likelihood():
     LogLikelihood(Dataset | T) = Sum(LogLikelihood(sample_i | T))
     Total_NLL(T) = Sum(NLL_sample_i(T))
     """
-    if not results:
-        return [], {}
+#    if not results:
+#        return [], {}
 
-    temps = list(results[0]['temperatures'].keys())
+#    temps = list(results[0]['temperatures'].keys())
 
     # 2. Aggregate NLLs across the entire dataset
     # We initialize a counter for each temperature
-    dataset_nll = {t: 0.0 for t in temps}
+#    dataset_nll = {t: 0.0 for t in temps}
 
-    print(f"Aggregating likelihoods over {len(results)} samples...")
+#    print(f"Aggregating likelihoods over {len(results)} samples...")
     
-    for sample in results:
-        for t in temps:
+#    for sample in results:
+#        for t in temps:
             # We add the NLL sum of this specific answer to the global total
-            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
+#            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
 
     # 3. Find the Global Best Temperature (Minimum Total NLL)
-    min_total_nll = min(dataset_nll.values())
-    best_temp = min(dataset_nll, key=dataset_nll.get)
+#    min_total_nll = min(dataset_nll.values())
+#    best_temp = min(dataset_nll, key=dataset_nll.get)
 
-    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
+#    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
 
     # 4. Compute Relative Likelihoods
-    global_relative_likelihoods = {}
-    valid_temperatures = []
+#    global_relative_likelihoods = {}
+#    valid_temperatures = []
     
-    for t in temps:
-        current_nll = dataset_nll[t]
+#    for t in temps:
+#        current_nll = dataset_nll[t]
         
         # Calculate likelihood ratio in log space
         # R(t) = exp( Best_NLL - Current_NLL )
         # Note: Since these are sums over the whole dataset, 
         # the difference might be large, leading to very small probabilities.
-        diff = min_total_nll - current_nll
+#        diff = min_total_nll - current_nll
         
-        # Clip to prevent underflow if difference is massive
-        if diff < -700: 
-            rel_lik = 0.0
-        else:
-            rel_lik = np.exp(diff)
+#        # Clip to prevent underflow if difference is massive
+#        if diff < -700: 
+#            rel_lik = 0.0
+#        else:
+#            rel_lik = np.exp(diff)
             
-        global_relative_likelihoods[t] = rel_lik
+#        global_relative_likelihoods[t] = rel_lik
         
-        if rel_lik >= alpha:
-            valid_temperatures.append(t)
+#        if rel_lik >= alpha:
+#            valid_temperatures.append(t)
 # NOTE: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NOT USED^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-
-valid_temperatures = get_model_likelihood(model, tokenizer, train_dataset)
 
 def encode(examples):
     return tokenizer(examples['story'] + ' Q: ' + examples['question'] + ' A:', truncation=False, padding=False)
@@ -333,7 +331,7 @@ rouge = evaluate.load('rouge')
 exact_match_metric = evaluate.load("exact_match")
 
 
-def get_generations(model, dataloader, number_of_generations):
+def get_generations(model, dataloader, number_of_generations, temperature):
     """For a given model, produce a number of generation """
 
     with torch.no_grad():
@@ -367,9 +365,6 @@ def get_generations(model, dataloader, number_of_generations):
                                      dtype=torch.long,
                                      device=device)
 
-            # NOTE: Tensor to store the total log likelihood for each sampled sequence
-            # log_likelihoods = torch.zeros(number_of_generations, device=device)
-
             for i in range(number_of_generations):
 
                 generation = model.generate(input_ids,
@@ -378,44 +373,12 @@ def get_generations(model, dataloader, number_of_generations):
                                             num_beams=args.num_beams,
                                             max_length=input_ids.shape[1] + max_length_of_generated_sequence,
                                             eos_token_id=period_token_id,
-                                            temperature=args.temperature,
+                                            temperature=temperature,
                                             bad_words_ids=question_framing_ids,
                                             top_p=args.top_p)
-                                            #output_scores=True,
-                                            #return_dict_in_generate=True
 
 
                 generations[i, :generation.shape[1]] = generation
-
-                """
-                # NOTE: Extract the generated sequence IDs and the logit scores
-                generation = generation_output.sequences[0] # The single generated sequence
-                scores = generation_output.scores # Tuple of logits
-
-                generations[i, :generation.shape[1]] = generation
-
-                # NOTE: Calculate sequence Log-Likelihood
-                # the generation starts after the prompt, input_ids.shape[1]
-
-                sequence_log_prob = 0.0
-
-                generated_ids = generation[input_ids.shape[1]:]
-
-                assert len(scores) == len(generated_ids), "Mismatch between scores and generated tokens"
-                for token_step, token_id in enumerate(generated_ids):
-                    # scores[token_step] is the logits tensor for all possible next tokens at that step
-                    logits = scores[token_step].squeeze(0) # Remove batch dimension
-                    
-                    # Convert logits to log-probabilities
-                    log_probs = torch.nn.functional.log_softmax(logits, dim=-1)
-
-                    # Get the log probability of the token that was actually chosen
-                    token_log_prob = log_probs[token_id].item()
-                    sequence_log_prob += token_log_prob
-
-                # Store the total log likelihood for the current sample
-                log_likelihoods[i] = sequence_log_prob
-                """
 
             generations = torch.reshape(generations, (-1, number_of_generations, generations.shape[-1]))
             for i in range(generations.shape[0]):
@@ -425,7 +388,9 @@ def get_generations(model, dataloader, number_of_generations):
                         'prompt': batch['input_ids'][i].to('cpu'),
                         'generations': generations[i].to('cpu'),
                         'id': batch['id'],
-                        'question': id_to_question_mapping[batch['id'][0]]
+                        'question': id_to_question_mapping[batch['id'][0]],
+                        # NOTE: store the temperature used for these generations 
+                        'temperature': temperature
                     }
                 elif args.dataset == 'trivia_qa':
                     few_shot_question = tokenizer.decode(input_ids[0])
@@ -435,7 +400,9 @@ def get_generations(model, dataloader, number_of_generations):
                         'generations': generations[i],
                         'id': batch['question_id'],
                         'few_shot_question': tokenizer.decode(input_ids[0]),
-                        'question': question
+                        'question': question,
+                        # NOTE: store the temperature used for these generations 
+                        'temperature': temperature
                     }
 
                 generated_texts = []
@@ -486,17 +453,30 @@ def get_generations(model, dataloader, number_of_generations):
                         sequence_dict[rouge_type + '_to_target'] = max(rouge_results[rouge_type],
                                                                        sequence_dict[rouge_type + '_to_target'])
 
-                #sequence_dict['log_likelihoods'] = log_likelihoods.to('cpu') # Store the entire tensor of size M
                 sequences.append(sequence_dict)
 
     return sequences
 
+# Get the list of valid temperatures using 95% confidence interval logic
+valid_temperatures = get_model_likelihood(model, tokenizer, train_dataset)
 
-logging.info('Generating %s generations', args.num_generations_per_prompt)
-sequences = get_generations(model, dataloader, args.num_generations_per_prompt)
+# Dictionary to store results separated by temperature 
+all_temperature_sequences = {}
+logging.info(f'Starting generation for valid temperatures: {valid_temperatures}')
+
+
+for temp in valid_temperatures:
+    print(f"\n--- Generating {args.num_generations_per_prompt} samples per prompt at Temperature {temp} ---")
+    logging.info('Generating %s generations', args.num_generations_per_prompt)
+    sequences_at_temp = get_generations(model, dataloader, args.num_generations_per_prompt, temperature=temp)
+
+    all_temperature_sequences[temp] = sequences_at_temp
+
 
 pathlib.Path(f'{config.output_dir}sequences/' + run_name).mkdir(parents=True, exist_ok=True)
 
-with open(f'{path_prefix}{args.model}_generations.pkl', 'wb') as outfile:
-    pickle.dump(sequences, outfile)
+output_file = f'{path_prefix}{args.model}_all_generations.pkl'
+with open(output_file, 'wb') as outfile:
+    pickle.dump(all_temperature_sequences, outfile)
 
+logging.info(f"Saved generations for {len(valid_temperatures)} temperatures to {output_file}")
