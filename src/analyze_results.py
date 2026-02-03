@@ -125,7 +125,7 @@ for run_id in run_ids_to_analyze:
 
     # WARNING: IMPLEMENT THE CREDAL ENTROPY OVER CONCEPTS 
     credal_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
-                                                                   result_df['credal_entropy_over_concepts'])
+                                                                   result_df['credal_epistemic_uncertainty'])
     result_dict['credal_entropy_over_concepts_auroc'] = credal_entropy_over_concepts_auroc
     # WARNING:                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

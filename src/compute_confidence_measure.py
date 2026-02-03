@@ -1,4 +1,5 @@
 import argparse
+from ast import Raise
 import os
 import pickle
 import random
@@ -10,6 +11,7 @@ import wandb
 import utils.utils as utils 
 import logging
 import scipy.optimize
+from tqdm import tqdm 
 from joblib import Parallel, delayed
 
 utils.setup_logger()
@@ -269,18 +271,16 @@ def solve_credal_entropy(bounds):
 
 
 
-def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
+def batched_entropy_diff(list_of_bounds, batch_size=128, n_jobs=-1):
     """
     Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
     Expects intervals of shape (N_samples, N_classes, 2).
     """
-    n_instances = intervals.shape[0]
-
     # Use Joblib to parallelize the expensive scipy optimization
     # This replaces the batch loop with parallel execution
     results = Parallel(n_jobs=n_jobs)(
-        delayed(solve_credal_entropy)(intervals[i])
-        for i in range(n_instances)
+        delayed(solve_credal_entropy)(bounds)
+        for bounds in tqdm(list_of_bounds, desc='Optimizing Credal Entropy')
     )
 
     results = np.array(results) # Shape (N, 2)
@@ -292,9 +292,101 @@ def batched_entropy_diff(intervals, batch_size=128, n_jobs=-1):
     return diffs
 
 
-def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids): 
-    """Compute EU (epistemic uncertainty) by computing upper and lower Shannon Entropy over the Credal set"""
+def get_credal_entropy_over_concepts(all_temperatures_likelihoods): 
+    """
+    Transforms the temperature dictionary into a list of Credal Intervals per question.
+    """
 
+    # 1. Pivot Data: Group by Question_ID
+    # Structure: { q_id: { temp: sample_dict } }
+    grouped_data = {}
+
+    for temp, samples in all_temperatures_likelihoods.items():
+        for sample in samples: 
+            # Handle ID being list or int
+            q_id = sample['id'][0] if isinstance(sample['id'], list) else sample['id']
+
+            if q_id not in grouped_data:
+                grouped_data[q_id] = {}
+
+            grouped_data[q_id][temp] = sample
+
+    # 2. Compute Probabilities & Bounds per Question
+    credal_bounds_list = [] # List numpy arrays (K, 2)
+    q_ids_list = []
+
+    logging.info(f"Processing {len(grouped_data)} unique questions to compute bounds...")
+
+    for q_id, temp_dict in grouped_data.items():
+        # Find the total number of Semantic Sets (Clusters) for this question
+        # We look at 'semantic_set_ids' across all temperatures to find the Max ID
+        all_ids = []
+        for sample in temp_dict.values():
+        # semantic_set_ids is a tensor or list
+            ids = sample['semantic_set_ids']
+            if isinstance(ids, torch.Tensor):
+                ids = ids.cpu().numpy()
+            all_ids.extend(ids)
+
+        if not all_ids:
+            raise Exception("all_ids empty")
+
+        num_clusters = max(all_ids) + 1
+        num_temps=  len(temp_dict)
+
+        # Matrix: Rows=Temps, Cols=Clusters
+        # Stores P(Cluster_k | Temp_t)
+        cluster_probs_matrix = np.zeros((num_temps, num_clusters))
+
+        # Compute P(Cluster) for each temperature
+        for i, (temp, sample) in enumerate(temp_dict.items()):
+            # 1. Get Log Likelihoods (P(generation | context))
+            # We use 'average_neg_log_likelihoods' -> NegLogLikelihood per token
+            # To get Total Log Prob: -1 * avg_nll * length (or just use neg_log_likelihoods if available)
+            
+            # Using 'neg_log_likelihoods' (Total NLL) is mathematically safer for P(seq)
+            # Input is POSITIVE NLL. We need NEGATIVE for log-prob.
+            nll = sample['neg_log_likelihoods']
+            if isinstance(nll, torch.Tensor): nll = nll.cpu().numpy()
+
+            log_probs_seq = -1.0 * nll
+
+            # 2. Normalize sequences to get P(seq | temp)
+            # Softmax: exp(x) / sum(exp(x))
+            max_log = np.max(log_probs_seq)
+            exp_probs = np.exp(log_probs_seq - max_log)
+            sum_exp = np.sum(exp_probs)
+            norm_probs_seq = exp_probs / sum_exp
+
+            # 3. Sum probabilities by Cluster ID
+            ids = sample['semantic_set_ids']
+            if isinstance(ids, torch.Tensor): ids = ids.cpu().numpy()
+
+            for seq_idx, cluster_id in enumerate(ids):
+                cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
+
+        # Compute Bounds
+        # Lower Bound: min prob across rows
+        # Upper bound: max prob across rows
+        lower_bounds = np.min(cluster_probs_matrix, axis=0)
+        upper_bounds = np.max(cluster_probs_matrix, axis=0)
+
+        # Stack: (K, 2)
+        bounds = np.stack([lower_bounds, upper_bounds], axis=1)
+        credal_bounds_list.append(bounds)
+        q_ids_list.append(q_id)
+
+    # Solve Optimization (Parallel)
+    logging.info("Optimizing Credal Entropy...")
+    results = Parallel(n_jobs=-1)(delayed(solve_credal_entropy)(b) for b in tqdm(credal_bounds_list))
+    results = np.array(results) # [LowerEnt, UpperEnt]
+    return q_ids_list, results, credal_bounds_list
+
+
+    """
+    END
+    """
+    """
     semantic_set_ids = semantic_set_ids.to(log_likelihoods.device)
     print("\n\nShape of log_likelihoods:",log_likelihoods.shape,"\n\n")
     # log_likelihoods is of size (1, Questions, Number of answers)
@@ -341,6 +433,7 @@ def get_credal_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     entropy_diffs_np = batched_entropy_diff(credal_intervals)
 
     return torch.from_numpy(entropy_diffs_np).to(log_likelihoods.device)
+    """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>                                                                    <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -354,31 +447,67 @@ def get_margin_probability_uncertainty_measure(log_likelihoods):
     return margin_probabilities
 
 
-list_of_results = []
+def get_number_of_unique_elements_per_row(tensor):
+    assert len(tensor.shape) == 2
+    return torch.count_nonzero(torch.sum(torch.nn.functional.one_hot(tensor), dim=1), dim=1)
 
-with open(f'{config.output_dir}sequences/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl',
-          'rb') as infile:
-    sequences = pickle.load(infile)
-    list_of_results.append((args.evaluation_model, sequences))
+#list_of_results = []
 
+"""
+MAIN EXECUTION
+"""
+
+input_path = f'{config.output_dir}sequences/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl'
+logging.info(f"Loading data from {input_path}")
+
+with open(input_path, 'rb') as infile:
+    all_temperatures_likelihoods = pickle.load(infile)
+
+# RUN CREDAL LOGIC (Uses ALL temperatures)
+credal_ids, credal_entropy_results, credal_bounds = get_credal_entropy_over_concepts(all_temperatures_likelihoods)
+epistemic_uncertainty = credal_entropy_results[:, 1] - credal_entropy_results[:, 0]
+
+# Map credal results to ID for easy lookup
+credal_results_map = {
+    id_: {
+        'lower_entropy': credal_entropy_results[i, 0],
+        'upper_entropy': credal_entropy_results[i, 1],
+        'epistemic_uncertainty': epistemic_uncertainty[i]
+    }
+    for i, id_ in enumerate(credal_ids)
+}
+
+# WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
+# I pick T=0.5 if available, otherwise the first one.
+target_temp = 0.5
+if target_temp not in all_temperatures_likelihoods:
+    target_temp = list(all_temperatures_likelihoods.keys())[0]
+    logging.warning(f"Temperature 0.5 not found. Using T={target_temp} for standard metrics.")
+
+logging.info(f"Computing standard metrics on Temperature {target_temp}")
+samples_for_standard_metrics = all_temperatures_likelihoods[target_temp]
+
+# Format data for the old 'get_overall_log_likelihoods' function
+list_of_results = [(args.evaluation_model, samples_for_standard_metrics)]
 overall_results = get_overall_log_likelihoods(list_of_results)
+
+"""
+END
+"""
+
+#with open(input_path,'rb') as infile:
+#    sequences = pickle.load(infile)
+#    list_of_results.append((args.evaluation_model, sequences))
+
+#overall_results = get_overall_log_likelihoods(list_of_results)
 mutual_information = get_mutual_information(-overall_results['neg_log_likelihoods'])
 predictive_entropy = get_predictive_entropy(-overall_results['neg_log_likelihoods'])
 predictive_entropy_over_concepts = get_predictive_entropy_over_concepts(-overall_results['average_neg_log_likelihoods'],
                                                                         overall_results['semantic_set_ids'])
 unnormalised_entropy_over_concepts = get_predictive_entropy_over_concepts(-overall_results['neg_log_likelihoods'],
                                                                           overall_results['semantic_set_ids'])
-#credal_entropy_over_concepts = get_credal_entropy_over_concepts(-overall_results['average_neg_log_likelihoods'], 
-#                                                                        overall_results['semantic_set_ids'])
-
 margin_measures = get_margin_probability_uncertainty_measure(-overall_results['average_neg_log_likelihoods'])
 unnormalised_margin_measures = get_margin_probability_uncertainty_measure(-overall_results['neg_log_likelihoods'])
-
-
-def get_number_of_unique_elements_per_row(tensor):
-    assert len(tensor.shape) == 2
-    return torch.count_nonzero(torch.sum(torch.nn.functional.one_hot(tensor), dim=1), dim=1)
-
 
 number_of_semantic_sets = get_number_of_unique_elements_per_row(overall_results['semantic_set_ids'][0])
 average_predictive_entropy = get_predictive_entropy(-overall_results['average_neg_log_likelihoods'])
@@ -417,11 +546,38 @@ for i in range(len(average_predictive_entropy_on_subsets)):
     overall_results[f'number_of_semantic_sets_on_subset_{i + 1}'] = number_of_semantic_sets_on_subsets[i]
 overall_results['average_pointwise_mutual_information'] = average_pointwise_mutual_information
 
+"""
+MERGE RESULTS
+"""
+# We align the Credal results with the Standard results using IDs
+# (Assuming the order of IDs in overall_results matches the input list, but we double check)
+num_samples = len(overall_results['ids'])
+credal_eu_tensor = torch.zeros(num_samples)
+lower_ent_tensor = torch.zeros(num_samples)
+upper_ent_tensor = torch.zeros(num_samples)
+
+for idx, id_ in enumerate(overall_results['ids']):
+    if id_ in credal_results_map:
+        res = credal_results_map[id_]
+        credal_eu_tensor[idx] = res['epistemic_uncertainty']
+        lower_ent_tensor[idx] = res['lower_entropy']
+        upper_ent_tensor[idx] = res['upper_entropy']
+
+# WARNING: Add to the dictionary
+overall_results['credal_epistemic_uncertainty'] = credal_eu_tensor
+overall_results['credal_lower_entropy'] = lower_ent_tensor
+overall_results['credal_upper_entropy'] = upper_ent_tensor
+"""
+END
+"""
+
 with open(f'{config.output_dir}sequences/{run_name}/aggregated_likelihoods_{args.generation_model}_generations.pkl',
           'wb') as outfile:
     pickle.dump(overall_results, outfile)
 
 if args.verbose:
+    print("\n--- Summary ---")
+    print(f"Standard Metrics (T={target_temp}) computed for {num_samples} samples.")
     print('Margin measure', margin_measures)
     print('Number of semantic sets', number_of_semantic_sets)
     print('predicitve entropy shape: ', predictive_entropy.shape)
@@ -433,4 +589,5 @@ if args.verbose:
     print(average_predictive_entropy_on_subsets[0].shape)
     print(overall_results['pointwise_mutual_information'])
     print(overall_results['margin_measures'])
-
+    print(f"Credal Metrics (All Temps) computed and merged.")
+    print(f"Mean Credal Epistemic Uncertainty: {torch.mean(credal_eu_tensor):.4f}")

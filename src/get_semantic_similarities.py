@@ -109,12 +109,128 @@ for temp, samples in all_temperature_sequences.items():
 # ======================= STEP 2: GLOBAL CLUSTERING ============================ 
 # Perform NLI comparison on the unique set for each question 
 logging.info(f"Clustering answers for {len(global_question_map)} unique questions...")
-result_dict = {}
-
-meteor = evaluate.load('meteor')
 
 deberta_predictions = []
 
+#meteor = evaluate.load('meteor')
+rouge = evaluate.load('rouge')
+rouge_types = ['rouge1', 'rouge2', 'rougeL']
+
+for q_id, data in tqdm(global_question_map.items()):
+    question = data['question']
+    unique_generated_texts = list(data['unique_texts'])
+
+    # Initialize: Every answer is its owon cluster initially 
+    # Map: text -> cluster_id
+    semantic_set_ids = {text: i for i, text in enumerate(unique_generated_texts)}
+
+    # Only run NLI if we have more than 1 unique answer
+    if len(unique_generated_texts) > 1: 
+        # Compare every pair (O(N^2))
+        for i, text_i in enumerate(unique_generated_texts):
+            for j in range(i + 1, len(unique_generated_texts)):
+                text_j = unique_generated_texts[j]
+
+                qa_1 = f"{question} {text_i}"
+                qa_2 = f"{question} {text_j}"
+
+                # Forward comparison
+                input_seq = f"{qa_1} [SEP] {qa_2}"
+                encoded_input = tokenizer.encode(input_seq, padding=True, return_tensors='pt').to(device)
+                logits = model(encoded_input)['logits']
+                predicted_label = torch.argmax(logits, dim=1)
+
+                # Reverse comparison
+                reverse_input_seq =f"{qa_2} [SEP] {qa_1}"
+                encoded_reverse = tokenizer.encode(reverse_input_seq, padding=True, return_tensors='pt').to(device)
+                reverse_logits = model(encoded_reverse)['logits']
+                reverse_predicted_label = torch.argmax(reverse_logits, dim=1)
+
+                deberta_prediction = 1
+                print(qa_1, qa_2, predicted_label, reverse_predicted_label)
+                if 0 in predicted_label or 0 in reverse_predicted_label:
+                    has_semantically_different_answers = True
+                    deberta_prediction = 0
+
+                else:
+                    semantic_set_ids[text_j] = semantic_set_ids[text_i]
+
+                deberta_predictions.append([text_i, text_j, deberta_prediction])
+    
+
+    final_ids = sorted(list(set(semantic_set_ids.values())))
+    id_mapping = {old_id: new_id for new_id, old_id in enumerate(final_ids)}
+
+    final_cluster_map = {text: id_mapping[sid] for text, sid in semantic_set_ids.items()}
+    global_question_map[q_id]['cluster_map'] = final_cluster_map
+
+# ========================= STEP 3: ASSIGNMENT & SYNTACTIC CALC (Per Sample) =====================================
+logging.info("Assigning Cluster IDs back to temperature samples...")
+
+# We will safe the FULL dictionary with the new fields added
+# This preserves the {temp: [samples]} structure for the next script.
+
+for temp, samples in all_temperature_sequences.items():
+    for sample in tqdm(samples, desc=f"Temp {temp}"):
+        q_id = sample['id'][0] if isinstance(sample['id'], list) else sample['id']
+
+        if 'cleaned_generated_texts' in sample:
+            texts = sample['cleaned_generated_texts']
+        else:
+            texts = sample['generated_texts']
+
+        # 1. Assign Semantic IDs using the GLOBAL map
+        # This guarantees consistency across temperatures
+        cluster_map = global_question_map[q_id]['cluster_map']
+        sample['semantic_set_ids'] = [cluster_map[t] for t in texts]
+
+        # 2. Compute Syntactic Similarity (ROUGE)
+        # This is specific to the batch generated at this temperature
+        # (It measures diversity within this specific generation set)
+        syntactic_similarities = {rtype: 0.0 for rtype in rouge_types}
+        
+        if len(texts) > 1: 
+            # Creeate pairs for ROUGE (all-vs-all within this sample)
+            preds = []
+            refs = []
+            for i in texts: 
+                for j in texts:
+                    if i != j:
+                        preds.append(i)
+                        refs.append(j)
+
+            if preds:
+                results = rouge.compute(predictions=preds, references=refs)
+                for rtype in rouge_types:
+                    syntactic_similarities[rtype] = results[rtype]
+
+
+        sample['syntactic_similarities'] = syntactic_similarities
+
+        # Flag if this specific sample produced semantically different answers
+        # (i.e., did this temperature produce > 1 cluster?)
+        unique_clusters_in_sample = set(sample['semantic_set_ids'])
+        sample['has_semantically_different_answers'] = len(unique_clusters_in_sample) > 1
+
+# ================================== STEP 4: SAVE ===========================================
+with open(f'{path_prefix}deberta_predictions_{args.run_id}.csv', 'w', encoding='UTF8', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['qa_1', 'qa_2', 'predictions'])
+    writer.writerows(deberta_predictions)
+
+output_file = f'{path_prefix}{args.generation_model}_generations_similarities.pkl'
+with open(output_file, 'wb') as outfile:
+    pickle.dump(all_temperature_sequences, outfile)
+
+logging.info(f"Finished. Saved processed data to {output_file}")
+
+
+
+
+
+
+
+"""
 for sample in tqdm(sequences):
     question = sample['question']
     if 'cleaned_generated_texts' in sample:
@@ -209,3 +325,4 @@ print(result_dict)
     
 with open(f'{path_prefix}{args.generation_model}_generations_similarities.pkl', 'wb') as outfile:
     pickle.dump(result_dict, outfile)
+"""
