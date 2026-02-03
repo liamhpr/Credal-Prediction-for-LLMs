@@ -11,6 +11,12 @@ import sklearn.metrics
 import torch
 import wandb
 
+# --- CONFIGURATION ---
+# Pick the temperature you want to use for the AUROC analysis (Accuracy vs Uncertainty)
+# This should match the 'target_temp' you used in compute_confidence_measure.py
+ANALYSIS_TEMP = 0.5 
+# ---------------------
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-n', '--run_ids', nargs='+', default=[])
 parser.add_argument('--verbose', type=bool, default=True)
@@ -28,50 +34,77 @@ for run_id in run_ids_to_analyze:
     wandb.init(project='nlg_uncertainty', id=run_id, resume='allow')
     run_name = wandb.run.name
     model_name = wandb.config.model
-    print(run_name)
+    print(f"Analyzing Run: {run_name} | Model: {model_name}")
+
+    def get_samples_for_temp(pkl_path, temp):
+        with open(pkl_path, 'rb') as f:
+            data = pickle.load(f)
+
+        if isinstance(data, dict) and isinstance(list(data.keys())[0], float):
+            if temp in data:
+                return data[temp]
+            else: 
+                # Fallback :Use the first available key
+                fallback = list(data.keys())[0]
+                print(f"Warning: Temp {temp} not found in {pkl_path}. Using {fallback}.")
+                return data[fallback]
+        return data
+
 
     def get_similarities_df():
         """Get the similarities df from the pickle file"""
-        with open(f'{config.output_dir}/{run_name}/{model_name}_generations_similarities.pkl', 'rb') as f:
-            similarities = pickle.load(f)
-            similarities_df = pd.DataFrame.from_dict(similarities, orient='index')
-            similarities_df['id'] = similarities_df.index
-            similarities_df['has_semantically_different_answers'] = similarities_df[
-                'has_semantically_different_answers'].astype('int')
-            similarities_df['rougeL_among_generations'] = similarities_df['syntactic_similarities'].apply(
-                lambda x: x['rougeL'])
+        path = f'{config.output_dir}/{run_name}/{model_name}_generations_similarities.pkl'
+        samples = get_samples_for_temp(path, ANALYSIS_TEMP)
 
-            return similarities_df
+        similarities_df = pd.DataFrame(samples)
+
+        similarities_df['id'] = similarities_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
+
+        #with open(f'{config.output_dir}/{run_name}/{model_name}_generations_similarities.pkl', 'rb') as f:
+        #    similarities = pickle.load(f)
+        #    similarities_df = pd.DataFrame.from_dict(similarities, orient='index')
+        #    similarities_df['id'] = similarities_df.index
+        similarities_df['has_semantically_different_answers'] = similarities_df[
+            'has_semantically_different_answers'].astype('int')
+        similarities_df['rougeL_among_generations'] = similarities_df['syntactic_similarities'].apply(
+            lambda x: x['rougeL'])
+
+        return similarities_df
 
     def get_generations_df():
         """Get the generations df from the pickle file"""
-        with open(f'{config.output_dir}/{run_name}/{model_name}_generations.pkl', 'rb') as infile:
-            generations = pickle.load(infile)
-            generations_df = pd.DataFrame(generations)
-            generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
-            generations_df['id'] = generations_df['id'].astype('object')
-            if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
-                generations_df['semantic_variability_reference_answers'] = generations_df[
-                    'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
+        path = f'{config.output_dir}/{run_name}/{model_name}_generations.pkl'
+        samples = get_samples_for_temp(path, ANALYSIS_TEMP)
 
-            if not generations_df['rougeL_reference_answers'].isnull().values.any():
-                generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
-                    lambda x: x[0].item())
-            generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
-                lambda x: len(str(x).split(' ')))
-            generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
-            generations_df['variance_of_length_of_generations'] = generations_df['generated_texts'].apply(
-                lambda x: np.var([len(str(y).split(' ')) for y in x]))
-            generations_df['correct'] = (generations_df['rougeL_to_target'] > 0.3).astype('int')
+        generations_df = pd.DataFrame(samples)
+        #with open(f'{config.output_dir}/{run_name}/{model_name}_generations.pkl', 'rb') as infile:
+        #    generations = pickle.load(infile)
+        #    generations_df = pd.DataFrame(generations)
+        # generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
+        generations_df['id'] = generations_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
+        generations_df['id'] = generations_df['id'].astype('object')
+        if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
+            generations_df['semantic_variability_reference_answers'] = generations_df[
+                'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
 
-            return generations_df
+        if not generations_df['rougeL_reference_answers'].isnull().values.any():
+            generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
+                lambda x: x[0].item())
+        generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
+            lambda x: len(str(x).split(' ')))
+        generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
+        generations_df['variance_of_length_of_generations'] = generations_df['generated_texts'].apply(
+            lambda x: np.var([len(str(y).split(' ')) for y in x]))
+        generations_df['correct'] = (generations_df['rougeL_to_target'] > 0.3).astype('int')
+
+        return generations_df
 
     def get_likelihoods_df():
         """Get the likelihoods df from the pickle file"""
 
         with open(f'{config.output_dir}/{run_name}/aggregated_likelihoods_{model_name}_generations.pkl', 'rb') as f:
             likelihoods = pickle.load(f)
-            print(likelihoods.keys())
+            print("Loaded likelihood keys:", likelihoods.keys())
 
             subset_keys = ['average_predictive_entropy_on_subset_' + str(i) for i in range(1, num_generations + 1)]
             subset_keys += ['predictive_entropy_on_subset_' + str(i) for i in range(1, num_generations + 1)]
@@ -81,7 +114,8 @@ for run_id in run_ids_to_analyze:
             keys_to_use = ('ids', 'predictive_entropy', 'mutual_information', 'average_predictive_entropy',\
                             'average_pointwise_mutual_information', 'average_neg_log_likelihood_of_most_likely_gen',\
                             'average_neg_log_likelihood_of_second_most_likely_gen', 'neg_log_likelihood_of_most_likely_gen',\
-                            'predictive_entropy_over_concepts', 'number_of_semantic_sets', 'unnormalised_entropy_over_concepts')
+                            'predictive_entropy_over_concepts', 'number_of_semantic_sets', 'unnormalised_entropy_over_concepts',\
+                            'credal_epistemic_uncertainty', 'credal_lower_entropy', 'credal_upper_entropy')
 
             likelihoods_small = dict((k, likelihoods[k]) for k in keys_to_use + tuple(subset_keys))
             for key in likelihoods_small:

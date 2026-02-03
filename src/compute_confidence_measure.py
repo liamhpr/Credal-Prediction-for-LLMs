@@ -478,7 +478,7 @@ credal_results_map = {
 }
 
 # WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
-# I pick T=0.5 if available, otherwise the first one.
+# I pick T=0.5 (because Lorenz Kuhn states that 0.5 is optimal) if available, otherwise the first one.
 target_temp = 0.5
 if target_temp not in all_temperatures_likelihoods:
     target_temp = list(all_temperatures_likelihoods.keys())[0]
