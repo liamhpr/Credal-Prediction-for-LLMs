@@ -48,7 +48,19 @@ for run_id in run_ids_to_analyze:
 
     def get_similarities_df():
         """Get the similarities df from the pickle file"""
-        path = f'{config.output_dir}/{run_name}/{model_name}_generations_similarities.pkl'
+        with open(f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations_similarities.pkl', 'rb') as f:
+            similarities = pickle.load(f)
+            similarities_df = pd.DataFrame.from_dict(similarities, orient='index')
+            similarities_df['id'] = similarities_df.index
+            similarities_df['has_semantically_different_answers'] = similarities_df[
+                'has_semantically_different_answers'].astype('int')
+            similarities_df['rougeL_among_generations'] = similarities_df['syntactic_similarities'].apply(
+                lambda x: x['rougeL'])
+
+            return similarities_df
+
+        """
+        path = f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations_similarities.pkl'
         samples = get_samples_for_temp(path, ANALYSIS_TEMP)
 
         similarities_df = pd.DataFrame(samples)
@@ -65,34 +77,36 @@ for run_id in run_ids_to_analyze:
             lambda x: x['rougeL'])
 
         return similarities_df
+        """
 
     def get_generations_df():
         """Get the generations df from the pickle file"""
-        path = f'{config.output_dir}/{run_name}/{model_name}_generations.pkl'
-        samples = get_samples_for_temp(path, ANALYSIS_TEMP)
+        #path = f'{config.output_dir}/{run_name}/{model_name}_generations.pkl'
+        #samples = get_samples_for_temp(path, ANALYSIS_TEMP)
 
-        generations_df = pd.DataFrame(samples)
-        #with open(f'{config.output_dir}/{run_name}/{model_name}_generations.pkl', 'rb') as infile:
-        #    generations = pickle.load(infile)
-        #    generations_df = pd.DataFrame(generations)
-        # generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
-        generations_df['id'] = generations_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
-        generations_df['id'] = generations_df['id'].astype('object')
-        if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
-            generations_df['semantic_variability_reference_answers'] = generations_df[
-                'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
+        #generations_df = pd.DataFrame(samples)
+        with open(f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations.pkl', 'rb') as infile:
+            generations = pickle.load(infile)
+            generations_df = pd.DataFrame(generations)
 
-        if not generations_df['rougeL_reference_answers'].isnull().values.any():
-            generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
-                lambda x: x[0].item())
-        generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
-            lambda x: len(str(x).split(' ')))
-        generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
-        generations_df['variance_of_length_of_generations'] = generations_df['generated_texts'].apply(
-            lambda x: np.var([len(str(y).split(' ')) for y in x]))
-        generations_df['correct'] = (generations_df['rougeL_to_target'] > 0.3).astype('int')
+            generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
+            generations_df['id'] = generations_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
+            generations_df['id'] = generations_df['id'].astype('object')
+            if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
+                generations_df['semantic_variability_reference_answers'] = generations_df[
+                    'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
 
-        return generations_df
+            if not generations_df['rougeL_reference_answers'].isnull().values.any():
+                generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
+                    lambda x: x[0].item())
+            generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
+                lambda x: len(str(x).split(' ')))
+            generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
+            generations_df['variance_of_length_of_generations'] = generations_df['generated_texts'].apply(
+                lambda x: np.var([len(str(y).split(' ')) for y in x]))
+            generations_df['correct'] = (generations_df['rougeL_to_target'] > 0.3).astype('int')
+
+            return generations_df
 
     def get_likelihoods_df():
         """Get the likelihoods df from the pickle file"""
