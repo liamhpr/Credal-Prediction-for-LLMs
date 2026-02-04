@@ -349,8 +349,10 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             # We use 'average_neg_log_likelihoods' -> NegLogLikelihood per token
             # To get Total Log Prob: -1 * avg_nll * length (or just use neg_log_likelihoods if available)
             
+            # WARNING:
             # Using 'neg_log_likelihoods' (Total NLL) is mathematically safer for P(seq)
             # Input is POSITIVE NLL. We need NEGATIVE for log-prob.
+            # I could also try using the average-neg-log-likelihoods
             nll = sample['neg_log_likelihoods']
             if isinstance(nll, torch.Tensor): nll = nll.cpu().numpy()
 
