@@ -2,6 +2,9 @@ data_dir = './data/'
 hf_datasets_cache = './hf_dir/hf_datasets_cache/'
 hf_cache_dir = './hf_dir/hf_cache_dir/'
 output_dir = './output/'
+
+# WARNING:
+# I pick T=0.5 (because Lorenz Kuhn states that 0.5 is optimal) if available, otherwise the first one.
 ANALYSIS_TEMP = 0.5
 TEMPERATURES = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0]
 

@@ -13,6 +13,7 @@ import logging
 import scipy.optimize
 from tqdm import tqdm 
 from joblib import Parallel, delayed
+from config import ANALYSIS_TEMP
 
 utils.setup_logger()
 logging.info('Starting compute_confidence_measure.py...')
@@ -455,8 +456,6 @@ def get_number_of_unique_elements_per_row(tensor):
     assert len(tensor.shape) == 2
     return torch.count_nonzero(torch.sum(torch.nn.functional.one_hot(tensor), dim=1), dim=1)
 
-#list_of_results = []
-
 """
 MAIN EXECUTION
 """
@@ -481,18 +480,14 @@ credal_results_map = {
     for i, id_ in enumerate(credal_ids)
 }
 
+list_of_results = []
+
 # WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
-# I pick T=0.5 (because Lorenz Kuhn states that 0.5 is optimal) if available, otherwise the first one.
-target_temp = 0.5
-if target_temp not in all_temperatures_likelihoods:
-    target_temp = list(all_temperatures_likelihoods.keys())[0]
-    logging.warning(f"Temperature 0.5 not found. Using T={target_temp} for standard metrics.")
-
-logging.info(f"Computing standard metrics on Temperature {target_temp}")
-samples_for_standard_metrics = all_temperatures_likelihoods[target_temp]
-
+with open(f'{config.output_dir}sequences/{run_name}/{args.generation_model}_ANALYSIS_TEMP_generations_{args.evaluation_model}_likelihoods.pkl',
+          'rb') as infile:
+    sequences = pickle.load(infile)
+    list_of_results.append((args.evaluation_model, sequences))
 # Format data for the old 'get_overall_log_likelihoods' function
-list_of_results = [(args.evaluation_model, samples_for_standard_metrics)]
 overall_results = get_overall_log_likelihoods(list_of_results)
 
 """
