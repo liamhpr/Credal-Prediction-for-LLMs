@@ -52,7 +52,7 @@ python get_likelihoods.py \
                    --generation_model $model \
                    --run_id $run_id;
 
-echo'Starting get_likelihoods_ANALYSIS_TEMP.py';
+echo 'Starting get_likelihoods_ANALYSIS_TEMP.py';
 python get_likelihoods_ANALYSIS_TEMP.py \
 		   --evaluation_model $model \ 
 		   --generation_model $model \
