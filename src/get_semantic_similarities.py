@@ -225,12 +225,19 @@ with open(output_file, 'wb') as outfile:
 logging.info(f"Finished. Saved processed data to {output_file}")
 
 
-
-
-
-
-
 """
+===============================================================================
+Run the old file again to cluster the generated sequences for the ANALYSIS_TEMP
+===============================================================================
+"""
+
+with open(f'{config.output_dir}/{run_name}/{args.generation_model}_ANALYSIS_TEMP_generations.pkl', 'rb') as infile:
+    sequences = pickle.load(infile)
+
+result_dict = {}
+
+deberta_predictions = []
+
 for sample in tqdm(sequences):
     question = sample['question']
     if 'cleaned_generated_texts' in sample:
@@ -323,6 +330,5 @@ with open('{}deberta_predictions_{}.csv'.format(path_prefix, args.run_id), 'w', 
 print(result_dict)
 
     
-with open(f'{path_prefix}{args.generation_model}_generations_similarities.pkl', 'wb') as outfile:
+with open(f'{path_prefix}{args.generation_model}_ANALYSIS_TEMP_generations_similarities.pkl', 'wb') as outfile:
     pickle.dump(result_dict, outfile)
-"""

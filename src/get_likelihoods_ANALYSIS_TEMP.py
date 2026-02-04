@@ -155,8 +155,12 @@ def get_neg_loglikelihoods(model, sequences):
             result_dict['generations'] = generations
             result_dict['average_neg_log_likelihoods'] = average_neg_log_likelihoods
             result_dict['neg_log_likelihoods'] = neg_log_likelihoods
+
+            # FIX: In original code, this was overwritten by most_likely_generation_embedding
+            # And also the next line was wrong (most_likely_sequence_embedding)
             result_dict['sequence_embeddings'] = sequence_embeddings
             result_dict['most_likely_sequence_embedding'] = most_likely_generation_embedding
+
             result_dict['average_unconditioned_neg_log_likelihoods'] = average_unconditioned_neg_log_likelihoods
             result_dict['neg_unconditioned_log_likelihoods'] = neg_unconditioned_log_likelihoods
             result_dict['pointwise_mutual_information'] = pointwise_mutual_information

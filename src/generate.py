@@ -465,7 +465,6 @@ valid_temperatures = get_model_likelihood(model, tokenizer, train_dataset)
 all_temperature_sequences = {}
 logging.info(f'Starting generation for valid temperatures: {valid_temperatures}')
 
-
 for temp in valid_temperatures:
     print(f"\n--- Generating {args.num_generations_per_prompt} samples per prompt at Temperature {temp} ---")
     logging.info('Generating %s generations', args.num_generations_per_prompt)
@@ -482,10 +481,10 @@ with open(output_file, 'wb') as outfile:
 logging.info(f"Saved generations for {len(valid_temperatures)} temperatures to {output_file}")
 
 logging.info(f"Generating sequences for ANALYSIS_TEMP={ANALYSIS_TEMP}")
-sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
+analysis_temp_sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
 
 output_file = f'{config.output_dir}/sequences/{run_name}/{args.model}_ANALYSIS_TEMP_generations.pkl' 
 with open(output_file, 'wb') as outfile_AT:
-    pickle.dump(sequences, outfile_AT)
+    pickle.dump(analysis_temp_sequences, outfile_AT)
 
 logging.info(f"Saved generations for ANALYSIS_TEMP={ANALYSIS_TEMP} to {output_file}")
