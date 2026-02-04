@@ -194,9 +194,13 @@ def solve_credal_entropy(bounds):
     lower_bounds = bounds[:, 0]
     upper_bounds = bounds[:, 1]
 
-    # 1. Sanity Check: Is the set empty?
     # sum(lower) must be <= 1 and sum(upper) must be >= 1
-    assert (np.sum(lower_bounds) > 1.0 + 1e-6 or np.sum(upper_bounds) < 1.0 - 1e-6)
+    # VALID Condition: sum(lower) <= 1 AND sum(upper) >= 1
+    # We add epsilon (1e-6) to handle floating point noise.
+    # assert that sum of lower bounds is NOT significantly greater than 1
+    assert np.sum(lower_bounds) <= 1.0 + 1e-6, f"Invalid Set: Sum of lower bounds is {np.sum(lower_bounds)}"
+    # assert that sum of upper bounds is NOT significantly less than 1
+    assert np.sum(upper_bounds) >= 1.0 - 1e-6, f"Invalid Set: Sum of upper bounds is {np.sum(upper_bounds)}"
 
     x0 = (lower_bounds + upper_bounds)/ 2.0
     x0 = x0 / np.sum(x0)
@@ -563,7 +567,7 @@ for idx, id_ in enumerate(overall_results['ids']):
         lower_ent_tensor[idx] = res['lower_entropy']
         upper_ent_tensor[idx] = res['upper_entropy']
 
-# WARNING: Add to the dictionary
+# NOTE: Add to the dictionary
 overall_results['credal_epistemic_uncertainty'] = credal_eu_tensor
 overall_results['credal_lower_entropy'] = lower_ent_tensor
 overall_results['credal_upper_entropy'] = upper_ent_tensor
