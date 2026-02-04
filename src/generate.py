@@ -483,7 +483,7 @@ logging.info(f"Saved generations for {len(valid_temperatures)} temperatures to {
 logging.info(f"Generating sequences for ANALYSIS_TEMP={ANALYSIS_TEMP}")
 analysis_temp_sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
 
-output_file = f'{config.output_dir}sequences/{run_name}/{args.model}_ANALYSIS_TEMP_generations.pkl' 
+output_file = f'{path_prefix}{args.model}_ANALYSIS_TEMP_generations.pkl' 
 with open(output_file, 'wb') as outfile_AT:
     pickle.dump(analysis_temp_sequences, outfile_AT)
 
