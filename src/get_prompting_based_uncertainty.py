@@ -19,9 +19,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import config
 sns.color_palette("pastel")
 import wandb
+from config import ANALYSIS_TEMP
 #from config import device_map
 
-ANALYSIS_TEMP = 0.5
 
 utils.setup_logger()
 logging.info('Starting get_prompting_based_uncertainty.py...')
@@ -79,20 +79,9 @@ if model_name == 'opt-30b':
 
 run_name = wandb.run.name
 
-pkl_path = f'{config.output_dir}sequences/{run_name}/{model_name}_all_generations.pkl'
+pkl_path = f'{config.output_dir}sequences/{run_name}/{model_name}_ANALYSIS_TEMP_generations.pkl'
 with open(pkl_path, 'rb') as f:
-    data = pickle.load(f)
-
-    if isinstance(data, dict) and isinstance(list(data.keys())[0], float):
-        if ANALYSIS_TEMP in data:
-            sequences_for_few_shot_prompt = data[ANALYSIS_TEMP]
-        else: 
-            # Fallback :Use the first available key
-            fallback = list(data.keys())[0]
-            print(f"Warning: Temp {ANALYSIS_TEMP } not found in {pkl_path}. Using {fallback}.")
-            sequences_for_few_shot_prompt = data[fallback]
-    else:
-        sequences_for_few_shot_prompt = data
+    sequences_for_few_shot_prompt = pickle.load(f)
 
 
 

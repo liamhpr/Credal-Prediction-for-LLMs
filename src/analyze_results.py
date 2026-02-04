@@ -10,12 +10,7 @@ import sklearn
 import sklearn.metrics
 import torch
 import wandb
-
-# --- CONFIGURATION ---
-# Pick the temperature you want to use for the AUROC analysis (Accuracy vs Uncertainty)
-# This should match the 'target_temp' you used in compute_confidence_measure.py
-ANALYSIS_TEMP = 0.5 
-# ---------------------
+from config import ANALYSIS_TEMP
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-n', '--run_ids', nargs='+', default=[])

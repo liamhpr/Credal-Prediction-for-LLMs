@@ -16,6 +16,7 @@ import wandb
 import random
 import utils.utils as utils
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from config import ANALYSIS_TEMP
 
 utils.setup_logger()
 logging.info('Starting generate.py...')
@@ -119,7 +120,7 @@ else:
 
 
 
-temperatures = np.arange(args.min_temperature, args.max_temperature, args.t_step_size).tolist()
+temperatures = config.TEMPERATURES
 
 def get_model_likelihood(model, tokenizer, dataset):
     """
@@ -472,7 +473,6 @@ for temp in valid_temperatures:
 
     all_temperature_sequences[temp] = sequences_at_temp
 
-
 pathlib.Path(f'{config.output_dir}sequences/' + run_name).mkdir(parents=True, exist_ok=True)
 
 output_file = f'{path_prefix}{args.model}_all_generations.pkl'
@@ -480,3 +480,12 @@ with open(output_file, 'wb') as outfile:
     pickle.dump(all_temperature_sequences, outfile)
 
 logging.info(f"Saved generations for {len(valid_temperatures)} temperatures to {output_file}")
+
+logging.info(f"Generating sequences for ANALYSIS_TEMP={ANALYSIS_TEMP}")
+sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
+
+output_file = f'{config.output_dir}/sequences/{run_name}/{args.model}_ANALYSIS_TEMP_generations.pkl' 
+with open(output_file, 'wb') as outfile_AT:
+    pickle.dump(sequences, outfile_AT)
+
+logging.info(f"Saved generations for ANALYSIS_TEMP={ANALYSIS_TEMP} to {output_file}")

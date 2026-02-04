@@ -36,6 +36,11 @@ python clean_generated_string.py \
                    --generation_model $model \
                    --run_id $run_id;
 
+echo 'Starting clean_generated_string_ANALYSIS_TEMP.py';
+python clean_generated_string_ANALYSIS_TEMP.py \
+		   --generation_model $model \
+		   --run_id $run_id;
+
 echo 'Starting get_semantic_similarities.py';
 python get_semantic_similarities.py \
                    --generation_model $model \
@@ -46,6 +51,12 @@ python get_likelihoods.py \
                    --evaluation_model $model \
                    --generation_model $model \
                    --run_id $run_id;
+
+echo'Starting get_likelihoods_ANALYSIS_TEMP.py';
+python get_likelihoods_ANALYSIS_TEMP.py \
+		   --evaluation_model $model \ 
+		   --generation_model $model \
+		   --run_id $run_id;
 
 echo 'Starting get_prompting_based_uncertainty.py';
 python get_prompting_based_uncertainty.py \
