@@ -275,28 +275,6 @@ def solve_credal_entropy(bounds):
     return best_le, ue
 
 
-
-def batched_entropy_diff(list_of_bounds, batch_size=128, n_jobs=-1):
-    """
-    Computes (Upper Entropy - Lower Entropy) for a batch of Credal intervals.
-    Expects intervals of shape (N_samples, N_classes, 2).
-    """
-    # Use Joblib to parallelize the expensive scipy optimization
-    # This replaces the batch loop with parallel execution
-    results = Parallel(n_jobs=n_jobs)(
-        delayed(solve_credal_entropy)(bounds)
-        for bounds in tqdm(list_of_bounds, desc='Optimizing Credal Entropy')
-    )
-
-    results = np.array(results) # Shape (N, 2)
-
-    # results[:, 0] is Lower Entropy
-    # results[:, 1] is Upper Entropy
-    diffs = results[:, 1] - results[:, 0]
-
-    return diffs
-
-
 def get_credal_entropy_over_concepts(all_temperatures_likelihoods): 
     """
     Transforms the temperature dictionary into a list of Credal Intervals per question.
@@ -356,21 +334,67 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             nll = sample['neg_log_likelihoods']
             if isinstance(nll, torch.Tensor): nll = nll.cpu().numpy()
 
+            # Convert to log-likelihood (negative value)
+            # log_prob_seq = log( P(seq | context) )
             log_probs_seq = -1.0 * nll
 
+# ==================SOFTMAX NORMALIZATION================
             # 2. Normalize sequences to get P(seq | temp)
             # Softmax: exp(x) / sum(exp(x))
-            max_log = np.max(log_probs_seq)
-            exp_probs = np.exp(log_probs_seq - max_log)
-            sum_exp = np.sum(exp_probs)
-            norm_probs_seq = exp_probs / sum_exp
+            #max_log = np.max(log_probs_seq)
+            #exp_probs = np.exp(log_probs_seq - max_log)
+            #sum_exp = np.sum(exp_probs)
+            #norm_probs_seq = exp_probs / sum_exp
+# =======================================================
 
             # 3. Sum probabilities by Cluster ID
             ids = sample['semantic_set_ids']
             if isinstance(ids, torch.Tensor): ids = ids.cpu().numpy()
 
-            for seq_idx, cluster_id in enumerate(ids):
-                cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
+            # 2. Compute Unnormalized Log-Probability for each Cluster
+            # We use LogSumExp to sum probabilities in log-space:
+            # log( P(Cluster_k) ) = log( sum_{seq in k} exp(log_prob_seq) )
+            cluster_log_probs = np.full(num_clusters, -np.inf) # initialize with log(0)
+
+            unique_cluster_ids = np.unique(ids)
+            for cluster_id in unique_cluster_ids:
+                # Get log_probs for all sequences belonging to this cluster
+                seq_indices = np.where(ids == cluster_id)[0]
+                cluster_seq_log_probs = log_probs_seq[seq_indices]
+
+                # Sum them up (LogSumExp)
+                # max_val trick for numerical stability: log(sum(exp(x))) = m + log(sum(exp(x-m)))
+                max_val = np.max(cluster_seq_log_probs)
+                cluster_log_mass = max_val + np.log(np.sum(np.exp(cluster_seq_log_probs - max_val)))
+
+                cluster_log_probs[cluster_id] = cluster_log_mass
+
+            # 3. Normlaize across all clusters to get P(Cluster | Temp)
+            # P(C_k) = exp( log(P(C_k)) ) / sum_j( exp( log(P(C_j)) ) )
+
+            # Filter out -inf (empty clusters) for normalization calculation
+            valid_indices = cluster_log_probs > -np.inf
+            if not np.any(valid_indices):
+                # No valid log probs (shouldn't happen if nll is finite)
+                continue
+
+            valid_log_probs = cluster_log_probs[valid_indices]
+
+            # Global normalization constant (LogSumExp over all clusters)
+            max_val_global = np.max(valid_log_probs)
+            log_sum_exp_global = max_val_global + np.log(np.sum(np.exp(valid_log_probs - max_val_global)))
+
+            # Compute final normalized probabilities in linear space
+            # exp( log_prob - log_norm )
+            normalized_probs = np.exp(cluster_log_probs - log_sum_exp_global)
+
+            cluster_probs_matrix[i, :] = normalized_probs
+
+            # THIS BELONGS TO SOFTMAX
+            #for seq_idx, cluster_id in enumerate(ids):
+            #    cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
+
+
 
         # Compute Bounds
         # Lower Bound: min prob across rows
