@@ -408,6 +408,7 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
         credal_bounds_list.append(bounds)
         q_ids_list.append(q_id)
 
+    print(credal_bounds_list)
     # Solve Optimization (Parallel)
     logging.info("Optimizing Credal Entropy...")
     results = Parallel(n_jobs=-1)(delayed(solve_credal_entropy)(b) for b in tqdm(credal_bounds_list))
