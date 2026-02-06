@@ -129,7 +129,7 @@ def get_model_likelihood(model, tokenizer, dataset):
     """
     model.eval()
     results = []
-    #alpha = args.alpha
+    alpha = args.alpha
     
     # Initialize the loss function. 
     # ignore_index=-100 handles the masked prompt tokens automatically.
@@ -211,14 +211,77 @@ def get_model_likelihood(model, tokenizer, dataset):
 
         results.append(sample_result)
 
+    """
+    The next part computes the Global Relative Likelihood over the entire dataset.
+    
+    Mathematical Logic:
+    Likelihood(Dataset | T) = Product(Likelihood(sample_i | T))
+    LogLikelihood(Dataset | T) = Sum(LogLikelihood(sample_i | T))
+    Total_NLL(T) = Sum(NLL_sample_i(T))
+    """
 
+    if not results:
+        return [], {}
+
+    temps = list(results[0]['temperatures'].keys())
+
+    # 2. Aggregate NLLs across the entire dataset
+    # We initialize a counter for each temperature
+    dataset_nll = {t: [] for t in temps}
+
+    number_of_questions = len(results)
+    print(f"Aggregating likelihoods over {number_of_questions} samples...")
+    
+    for sample in results:
+        for t in temps:
+            # We add the avg_NLL of this specific answer to the global total
+            dataset_nll[t].append(sample['temperatures'][t]['nll_avg'])
+
+    mean_avg_nlls = {}
+    for t, nlls in dataset_nll.items():
+        mean_nll = np.mean(nlls)
+        mean_avg_nlls[t] = mean_nll
+
+
+    # 3. Find the Global Best Temperature (Minimum Total NLL)
+    min_total_nll = min(mean_avg_nlls.values())
+    best_temp = min(mean_avg_nlls, key=mean_avg_nlls.__getitem__)
+
+    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
+
+    # 4. Compute Relative Likelihoods
+    global_relative_likelihoods = {}
+    valid_temperatures = []
+    
+    for t in temps:
+        current_nll = mean_avg_nlls[t]
+        
+        # Calculate likelihood ratio in log space
+        # since I am in NLL space: exp((-logL_max) - (-logL_current)) = exp(log(L_current/L_max)) = L_current/L_max
+        diff = min_total_nll - current_nll
+        
+        # Clip to prevent underflow if difference is massive
+        if diff < -700: 
+            rel_lik = 0.0
+        else:
+            rel_lik = np.exp(diff)
+            
+        global_relative_likelihoods[t] = rel_lik
+        
+        if rel_lik >= alpha:
+            valid_temperatures.append(t)
+
+    print("valid temperatures:", valid_temperatures, "rel_likelihoods:", global_relative_likelihoods)
+    return valid_temperatures, global_relative_likelihoods
+
+
+#def get_confidence_intervall():
     all_nlls = {t: [] for t in temperatures}
 
     for sample in results: 
         for t in temperatures:
             # Use 'nll_avg' (per token)
             all_nlls[t].append(sample['temperatures'][t]['nll_avg'])
-
     # Calculate Mean and Standard Error for each T
     stats = {}
     for t, nlls in all_nlls.items():
@@ -248,7 +311,6 @@ def get_model_likelihood(model, tokenizer, dataset):
     return valid_temperatures
 
 
-# NOTE: Unused (keep it in case I will need it at some point)
 #def get_rel_likelihood():
     """
     Computes the Global Relative Likelihood over the entire dataset.
@@ -258,51 +320,52 @@ def get_model_likelihood(model, tokenizer, dataset):
     LogLikelihood(Dataset | T) = Sum(LogLikelihood(sample_i | T))
     Total_NLL(T) = Sum(NLL_sample_i(T))
     """
-#    if not results:
-#        return [], {}
 
-#    temps = list(results[0]['temperatures'].keys())
+    if not results:
+        return [], {}
+
+    temps = list(results[0]['temperatures'].keys())
 
     # 2. Aggregate NLLs across the entire dataset
     # We initialize a counter for each temperature
-#    dataset_nll = {t: 0.0 for t in temps}
+    dataset_nll = {t: 0.0 for t in temps}
 
-#    print(f"Aggregating likelihoods over {len(results)} samples...")
+    print(f"Aggregating likelihoods over {len(results)} samples...")
     
-#    for sample in results:
-#        for t in temps:
+    for sample in results:
+        for t in temps:
             # We add the NLL sum of this specific answer to the global total
-#            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
+            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
 
     # 3. Find the Global Best Temperature (Minimum Total NLL)
-#    min_total_nll = min(dataset_nll.values())
-#    best_temp = min(dataset_nll, key=dataset_nll.get)
+    min_total_nll = min(dataset_nll.values())
+    best_temp = min(dataset_nll, key=dataset_nll.get)
 
-#    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
+    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
 
     # 4. Compute Relative Likelihoods
-#    global_relative_likelihoods = {}
-#    valid_temperatures = []
+    global_relative_likelihoods = {}
+    valid_temperatures = []
     
-#    for t in temps:
-#        current_nll = dataset_nll[t]
+    for t in temps:
+        current_nll = dataset_nll[t]
         
         # Calculate likelihood ratio in log space
         # R(t) = exp( Best_NLL - Current_NLL )
         # Note: Since these are sums over the whole dataset, 
         # the difference might be large, leading to very small probabilities.
-#        diff = min_total_nll - current_nll
+        diff = min_total_nll - current_nll
         
-#        # Clip to prevent underflow if difference is massive
-#        if diff < -700: 
-#            rel_lik = 0.0
-#        else:
-#            rel_lik = np.exp(diff)
+        # Clip to prevent underflow if difference is massive
+        if diff < -700: 
+            rel_lik = 0.0
+        else:
+            rel_lik = np.exp(diff)
             
-#        global_relative_likelihoods[t] = rel_lik
+        global_relative_likelihoods[t] = rel_lik
         
-#        if rel_lik >= alpha:
-#            valid_temperatures.append(t)
+        if rel_lik >= alpha:
+            valid_temperatures.append(t)
 # NOTE: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NOT USED^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -459,7 +522,7 @@ def get_generations(model, dataloader, number_of_generations, temperature):
     return sequences
 
 # Get the list of valid temperatures using 95% confidence interval logic
-valid_temperatures = get_model_likelihood(model, tokenizer, train_dataset)
+valid_temperatures, global_relative_likelihoods = get_model_likelihood(model, tokenizer, train_dataset)
 
 # Dictionary to store results separated by temperature 
 all_temperature_sequences = {}
