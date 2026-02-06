@@ -2,6 +2,7 @@
 import argparse
 import json
 import pickle
+import os
 
 import config
 import numpy as np
@@ -30,6 +31,8 @@ for run_id in run_ids_to_analyze:
     run_name = wandb.run.name
     model_name = wandb.config.model
     print(f"Analyzing Run: {run_name} | Model: {model_name}")
+    path_prefix = f'{config.output_dir}sequences/{run_name}/'
+
 
     def get_samples_for_temp(pkl_path, temp):
         with open(pkl_path, 'rb') as f:
@@ -46,9 +49,47 @@ for run_id in run_ids_to_analyze:
         return data
 
 
+    #def get_similarities_df_credal():
+                # 1. Load the dictionary containing ALL temperatures
+        # Note: Ensure this matches the filename saved in generate.py
+        dict_path = f'{path_prefix}{model_name}_all_generations.pkl'
+        with open(dict_path, 'rb') as infile:
+            all_generations_dict = pickle.load(infile)
+
+        # 2. Determine the Best Temperature
+        # Option A: If you saved it to a file in generate.py
+        opt_temp_path = f'{path_prefix}optimal_temperature.pkl'
+        if os.path.exists(opt_temp_path):
+            with open(opt_temp_path, 'rb') as f:
+                best_temp = pickle.load(f)
+                print(f"Loaded optimal temperature: {best_temp}")
+        else:
+            # Option B: Hardcode it or pick a default (e.g., 0.5 or 0.1)
+            # If the dict keys are floats, pick the one you want.
+            # For now, let's fallback to the first key if file missing
+            best_temp = list(all_generations_dict.keys())[0]
+            print(f"Optimal temp file not found. Using fallback: {best_temp}")
+
+        # 3. Extract the specific samples for that temperature
+        if best_temp in all_generations_dict:
+            samples = all_generations_dict[best_temp]
+        else:
+            raise ValueError(f"Temperature {best_temp} not found in {dict_path}")
+
+        similarities_df = pd.DataFrame.from_dict(samples, orient='index')
+        similarities_df['id'] = similarities_df.index
+        similarities_df['has_semantically_different_answers'] = similarities_df[
+            'has_semantically_different_answers'].astype('int')
+        similarities_df['rougeL_among_generations'] = similarities_df['syntactic_similarities'].apply(
+            lambda x: x['rougeL'])
+
+        return similarities_df
+
+
+
     def get_similarities_df():
         """Get the similarities df from the pickle file"""
-        with open(f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations_similarities.pkl', 'rb') as f:
+        with open(f'{path_prefix}{model_name}_ANALYSIS_TEMP_generations_similarities.pkl', 'rb') as f:
             similarities = pickle.load(f)
             similarities_df = pd.DataFrame.from_dict(similarities, orient='index')
             similarities_df['id'] = similarities_df.index
@@ -59,25 +100,6 @@ for run_id in run_ids_to_analyze:
 
             return similarities_df
 
-        """
-        path = f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations_similarities.pkl'
-        samples = get_samples_for_temp(path, ANALYSIS_TEMP)
-
-        similarities_df = pd.DataFrame(samples)
-
-        similarities_df['id'] = similarities_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
-
-        #with open(f'{config.output_dir}/{run_name}/{model_name}_generations_similarities.pkl', 'rb') as f:
-        #    similarities = pickle.load(f)
-        #    similarities_df = pd.DataFrame.from_dict(similarities, orient='index')
-        #    similarities_df['id'] = similarities_df.index
-        similarities_df['has_semantically_different_answers'] = similarities_df[
-            'has_semantically_different_answers'].astype('int')
-        similarities_df['rougeL_among_generations'] = similarities_df['syntactic_similarities'].apply(
-            lambda x: x['rougeL'])
-
-        return similarities_df
-        """
 
     def get_generations_df():
         """Get the generations df from the pickle file"""
@@ -85,7 +107,7 @@ for run_id in run_ids_to_analyze:
         #samples = get_samples_for_temp(path, ANALYSIS_TEMP)
 
         #generations_df = pd.DataFrame(samples)
-        with open(f'{config.output_dir}/{run_name}/{model_name}_ANALYSIS_TEMP_generations.pkl', 'rb') as infile:
+        with open(f'{path_prefix}{model_name}_ANALYSIS_TEMP_generations.pkl', 'rb') as infile:
             generations = pickle.load(infile)
             generations_df = pd.DataFrame(generations)
 
@@ -108,10 +130,62 @@ for run_id in run_ids_to_analyze:
 
             return generations_df
 
+
+    def get_generations_df_credal():
+        """Get the generations df for the best temperature from the dictionary pickle"""
+        
+        # 1. Load the dictionary containing ALL temperatures
+        # Note: Ensure this matches the filename saved in generate.py
+        dict_path = f'{path_prefix}{model_name}_all_generations.pkl'
+        with open(dict_path, 'rb') as infile:
+            all_generations_dict = pickle.load(infile)
+
+        # 2. Determine the Best Temperature
+        # Option A: If you saved it to a file in generate.py
+        opt_temp_path = f'{path_prefix}optimal_temperature.pkl'
+        if os.path.exists(opt_temp_path):
+            with open(opt_temp_path, 'rb') as f:
+                best_temp = pickle.load(f)
+                print(f"Loaded optimal temperature: {best_temp}")
+        else:
+            # Option B: Hardcode it or pick a default (e.g., 0.5 or 0.1)
+            # If the dict keys are floats, pick the one you want.
+            # For now, let's fallback to the first key if file missing
+            best_temp = list(all_generations_dict.keys())[0]
+            print(f"Optimal temp file not found. Using fallback: {best_temp}")
+
+        # 3. Extract the specific samples for that temperature
+        if best_temp in all_generations_dict:
+            samples = all_generations_dict[best_temp]
+        else:
+            raise ValueError(f"Temperature {best_temp} not found in {dict_path}")
+
+        generations_df = pd.DataFrame(samples)
+
+        generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
+        generations_df['id'] = generations_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
+        generations_df['id'] = generations_df['id'].astype('object')
+        if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
+            generations_df['semantic_variability_reference_answers'] = generations_df[
+                'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
+
+        if not generations_df['rougeL_reference_answers'].isnull().values.any():
+            generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
+                lambda x: x[0].item())
+        generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
+            lambda x: len(str(x).split(' ')))
+        generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
+        generations_df['variance_of_length_of_generations'] = generations_df['generated_texts'].apply(
+            lambda x: np.var([len(str(y).split(' ')) for y in x]))
+        generations_df['correct'] = (generations_df['rougeL_to_target'] > 0.3).astype('int')
+
+        return generations_df
+
+
     def get_likelihoods_df():
         """Get the likelihoods df from the pickle file"""
 
-        with open(f'{config.output_dir}/{run_name}/aggregated_likelihoods_{model_name}_generations.pkl', 'rb') as f:
+        with open(f'{path_prefix}aggregated_likelihoods_{model_name}_generations.pkl', 'rb') as f:
             likelihoods = pickle.load(f)
             print("Loaded likelihood keys:", likelihoods.keys())
 
@@ -143,9 +217,11 @@ for run_id in run_ids_to_analyze:
 
     similarities_df = get_similarities_df()
     generations_df = get_generations_df()
+    generations_df_credal = get_generations_df_credal()
     num_generations = len(generations_df['generated_texts'][0])
     likelihoods_df, sequence_embeddings = get_likelihoods_df()
     result_df = generations_df.merge(similarities_df, on='id').merge(likelihoods_df, on='id')
+    result_df_credal = generations_df_credal.merge(likelihoods_df, on='id')
 
     n_samples_before_filtering = len(result_df)
     result_df['len_most_likely_generation_length'] = result_df['most_likely_generation'].apply(lambda x: len(x.split()))
@@ -167,8 +243,8 @@ for run_id in run_ids_to_analyze:
     result_dict['entropy_over_concepts_auroc'] = entropy_over_concepts_auroc
 
     # WARNING: IMPLEMENT THE CREDAL ENTROPY OVER CONCEPTS 
-    credal_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
-                                                                   result_df['credal_epistemic_uncertainty'])
+    credal_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(1 - result_df_credal['correct'],
+                                                                   result_df_credal['credal_epistemic_uncertainty'])
     result_dict['credal_entropy_over_concepts_auroc'] = credal_entropy_over_concepts_auroc
     # WARNING:                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

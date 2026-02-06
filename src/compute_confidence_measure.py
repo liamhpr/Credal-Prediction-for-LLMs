@@ -57,6 +57,8 @@ wandb.init(
 
 run_name = wandb.run.name
 
+path_prefix = f'{config.output_dir}sequences/{run_name}/'
+
 llh_shift = torch.tensor(5.0)
 
 
@@ -488,7 +490,7 @@ def get_number_of_unique_elements_per_row(tensor):
 MAIN EXECUTION
 """
 
-input_path = f'{config.output_dir}sequences/{run_name}/{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl'
+input_path = f'{path_prefix}{args.generation_model}_generations_{args.evaluation_model}_likelihoods.pkl'
 logging.info(f"Loading data from {input_path}")
 
 with open(input_path, 'rb') as infile:
@@ -511,7 +513,7 @@ credal_results_map = {
 list_of_results = []
 
 # WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
-with open(f'{config.output_dir}sequences/{run_name}/{args.generation_model}_ANALYSIS_TEMP_generations_{args.evaluation_model}_likelihoods.pkl',
+with open(f'{path_prefix}{args.generation_model}_ANALYSIS_TEMP_generations_{args.evaluation_model}_likelihoods.pkl',
           'rb') as infile:
     sequences = pickle.load(infile)
     list_of_results.append((args.evaluation_model, sequences))
@@ -598,7 +600,7 @@ overall_results['credal_upper_entropy'] = upper_ent_tensor
 END
 """
 
-with open(f'{config.output_dir}sequences/{run_name}/aggregated_likelihoods_{args.generation_model}_generations.pkl',
+with open(f'{path_prefix}aggregated_likelihoods_{args.generation_model}_generations.pkl',
           'wb') as outfile:
     pickle.dump(overall_results, outfile)
 
