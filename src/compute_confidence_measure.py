@@ -11,6 +11,7 @@ import wandb
 import utils.utils as utils 
 import logging
 import scipy.optimize
+from scipy.special import softmax
 from tqdm import tqdm 
 from joblib import Parallel, delayed
 from config import ANALYSIS_TEMP
@@ -367,7 +368,10 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
                 # Sum them up (LogSumExp)
                 # max_val trick for numerical stability: log(sum(exp(x))) = m + log(sum(exp(x-m)))
                 max_val = np.max(cluster_seq_log_probs)
-                cluster_log_mass = max_val + np.log(np.sum(np.exp(cluster_seq_log_probs - max_val)))
+                if max_val == -np.inf:
+                    cluster_log_mass = -np.inf
+                else:
+                    cluster_log_mass = max_val + np.log(np.sum(np.exp(cluster_seq_log_probs - max_val)))
 
                 cluster_log_probs[cluster_id] = cluster_log_mass
 
@@ -375,21 +379,12 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             # P(C_k) = exp( log(P(C_k)) ) / sum_j( exp( log(P(C_j)) ) )
 
             # Filter out -inf (empty clusters) for normalization calculation
-            valid_indices = cluster_log_probs > -np.inf
-            if not np.any(valid_indices):
-                # No valid log probs (shouldn't happen if nll is finite)
-                continue
+            if np.all(cluster_log_probs == -np.inf):
+                normalized_probs = np.zeros(num_clusters) # NOTE: Should not happen!!! (Sanity check)
+            else:
+                normalized_probs = softmax(cluster_log_probs)
 
-            valid_log_probs = cluster_log_probs[valid_indices]
-
-            # Global normalization constant (LogSumExp over all clusters)
-            max_val_global = np.max(valid_log_probs)
-            log_sum_exp_global = max_val_global + np.log(np.sum(np.exp(valid_log_probs - max_val_global)))
-
-            # Compute final normalized probabilities in linear space
-            # exp( log_prob - log_norm )
-            normalized_probs = np.exp(cluster_log_probs - log_sum_exp_global)
-
+            # Store in matrix
             cluster_probs_matrix[i, :] = normalized_probs
 
             # THIS BELONGS TO SOFTMAX
