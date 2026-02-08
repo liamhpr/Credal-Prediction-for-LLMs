@@ -601,7 +601,7 @@ with open(f'{path_prefix}aggregated_likelihoods_{args.generation_model}_generati
 
 if args.verbose:
     print("\n--- Summary ---")
-    print(f"Standard Metrics (T={target_temp}) computed for {num_samples} samples.")
+    print(f"Standard Metrics (T={ANALYSIS_TEMP}) computed for {num_samples} samples.")
     print('Margin measure', margin_measures)
     print('Number of semantic sets', number_of_semantic_sets)
     print('predicitve entropy shape: ', predictive_entropy.shape)
