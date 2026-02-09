@@ -26,6 +26,7 @@ echo 'Starting generate.py';
 python generate.py --num_generations_per_prompt 5 \
                    --model $model \
                    --fraction_of_data_to_use 0.02 \
+		   --likelihood_split 0.6 \
                    --run_id $run_id \
                    --temperature 0.5 \
                    --num_beams 1 \

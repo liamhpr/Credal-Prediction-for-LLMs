@@ -39,6 +39,7 @@ parser.add_argument('--dataset', type=str, default='coqa')
 #parser.add_argument('--min_temperature', type=float, default=0.1)
 #parser.add_argument('--max_temperature', type=float, default=10.1)
 parser.add_argument('--alpha', type=float, default=0.8)
+parser.add_argument('--likelihood_split', type=float, default=0.6)
 #parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
@@ -97,10 +98,10 @@ if args.dataset == 'coqa':
     
     # Create a proper Train/Test split
     # If you want a fixed test set size (e.g., 10%)
-    split_dataset = full_dataset.train_test_split(test_size=0.8, seed=seed_value)
+    split = full_dataset.train_test_split(test_size=(1- args.fraction_of_data_to_use), seed=seed_value)
     
-    train_dataset = split_dataset['train']
-    test_dataset = split_dataset['test']
+    train_split = split['train']
+    test_split = split['test']
     
     # Create mapping for ID reference
     id_to_question_mapping = dict(zip(full_dataset['id'], full_dataset['question']))
@@ -114,9 +115,11 @@ elif args.dataset == 'trivia_qa':
     #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
 if args.fraction_of_data_to_use < 1.0:
-    train_dataset = test_dataset.train_test_split(test_size=(1 - args.fraction_of_data_to_use), seed=seed_value)['train']
+    new_split = test_split.train_test_split(test_size=(1 -args.likelihood_split), seed=seed_value)
+    train_dataset = new_split['train']
+    test_dataset = new_split['test']
 else:
-    train_dataset = test_dataset
+    train_dataset = test_split
 
 
 
@@ -380,7 +383,7 @@ def encode_and_format_dataset(dataset):
     return dataset
 
 if args.dataset == 'coqa':
-    questions = encode_and_format_dataset(train_dataset)
+    questions = encode_and_format_dataset(test_dataset)
 elif args.dataset == 'trivia_qa':
     pass
     #questions = train_dataset
