@@ -525,7 +525,7 @@ def get_generations(model, dataloader, number_of_generations, temperature):
 valid_temperatures, global_relative_likelihoods, best_temp = get_model_likelihood(model, tokenizer, train_dataset)
 
 
-pathlib.Path(f'{path_prefix}).mkdir(parents=True, exist_ok=True)
+pathlib.Path(f'{path_prefix}').mkdir(parents=True, exist_ok=True)
 
 opt_temp_file = f'{path_prefix}optimal_temperature.pkl'
 with open(opt_temp_file, 'wb') as outfile:
