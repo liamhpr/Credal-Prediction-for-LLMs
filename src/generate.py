@@ -524,6 +524,9 @@ def get_generations(model, dataloader, number_of_generations, temperature):
 # Get the list of valid temperatures using 95% confidence interval logic
 valid_temperatures, global_relative_likelihoods, best_temp = get_model_likelihood(model, tokenizer, train_dataset)
 
+
+pathlib.Path(f'{path_prefix}).mkdir(parents=True, exist_ok=True)
+
 opt_temp_file = f'{path_prefix}optimal_temperature.pkl'
 with open(opt_temp_file, 'wb') as outfile:
     pickle.dump(best_temp, outfile)
@@ -540,8 +543,6 @@ for temp in valid_temperatures:
     sequences_at_temp = get_generations(model, dataloader, args.num_generations_per_prompt, temperature=temp)
 
     all_temperature_sequences[temp] = sequences_at_temp
-
-pathlib.Path(f'{config.output_dir}sequences/' + run_name).mkdir(parents=True, exist_ok=True)
 
 output_file = f'{path_prefix}{args.model}_all_generations.pkl'
 with open(output_file, 'wb') as outfile:
