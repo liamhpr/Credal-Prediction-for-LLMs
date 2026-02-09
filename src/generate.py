@@ -38,7 +38,7 @@ parser.add_argument('--dataset', type=str, default='coqa')
 #parser.add_argument('--t_step_size', type=float, default=0.5)
 #parser.add_argument('--min_temperature', type=float, default=0.1)
 #parser.add_argument('--max_temperature', type=float, default=10.1)
-#parser.add_argument('--alpha', type=float, default=0.8)
+parser.add_argument('--alpha', type=float, default=0.8)
 #parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 

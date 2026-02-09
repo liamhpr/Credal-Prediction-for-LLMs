@@ -29,6 +29,7 @@ python generate.py --num_generations_per_prompt 5 \
                    --run_id $run_id \
                    --temperature 0.5 \
                    --num_beams 1 \
+		   --alpha 0.8 \
                    --top_p 1.0;
 
 echo 'Starting clean_generated_string.py';
