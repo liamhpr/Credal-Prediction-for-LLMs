@@ -390,13 +390,14 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             # THIS BELONGS TO SOFTMAX
             #for seq_idx, cluster_id in enumerate(ids):
             #    cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
+            print(f'temp: {temp} | sample: {sample} | {normalized_probs}')
 
 
 
         # Compute Bounds
         # Lower Bound: min prob across rows
         # Upper bound: max prob across rows
-        print(cluster_probs_matrix)
+        print(f'cluster_probs_matrix: {cluster_probs_matrix}')
         lower_bounds = np.min(cluster_probs_matrix, axis=0)
         upper_bounds = np.max(cluster_probs_matrix, axis=0)
 
