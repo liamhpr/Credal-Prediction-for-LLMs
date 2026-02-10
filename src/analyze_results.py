@@ -126,7 +126,10 @@ for run_id in run_ids_to_analyze:
                 # Layer 3: Extract value from Tensor
                 if hasattr(x, 'item'):
                     return x.item()
-                
+
+                print(f"Processed {len(generations_df)} questions.")
+                print(generations_df[['id', 'rougeL_reference_answers']].head())    
+
                 return x
             # ----------------------------------
 
