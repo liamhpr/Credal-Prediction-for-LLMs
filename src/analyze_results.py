@@ -184,16 +184,34 @@ for run_id in run_ids_to_analyze:
 
         generations_df = pd.DataFrame(samples)
 
+        # --- ROBUST EXTRACTION FUNCTION ---
+        def safe_extract(x):
+            # Layer 1: Peel outer list
+            if isinstance(x, (list, tuple, np.ndarray)):
+                if len(x) == 0: return None
+                x = x[0]
+            
+            # Layer 2: Peel inner list
+            if isinstance(x, (list, tuple, np.ndarray)):
+                if len(x) == 0: return None
+                x = x[0]
+
+            # Layer 3: Extract value from Tensor
+            if hasattr(x, 'item'):
+                return x.item()
+            
+            return x
+        # ----------------------------------
+
         generations_df['id'] = generations_df['id'].apply(lambda x: x[0])
         generations_df['id'] = generations_df['id'].apply(lambda x: x[0] if isinstance(x, list) else x)
         generations_df['id'] = generations_df['id'].astype('object')
         if not generations_df['semantic_variability_reference_answers'].isnull().values.any():
             generations_df['semantic_variability_reference_answers'] = generations_df[
-                'semantic_variability_reference_answers'].apply(lambda x: x[0].item())
+                'semantic_variability_reference_answers'].apply(safe_extract)
 
         if not generations_df['rougeL_reference_answers'].isnull().values.any():
-            generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(
-                lambda x: x[0].item())
+            generations_df['rougeL_reference_answers'] = generations_df['rougeL_reference_answers'].apply(safe_extract)
         generations_df['length_of_most_likely_generation'] = generations_df['most_likely_generation'].apply(
             lambda x: len(str(x).split(' ')))
         generations_df['length_of_answer'] = generations_df['answer'].apply(lambda x: len(str(x).split(' ')))
