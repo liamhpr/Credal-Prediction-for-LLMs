@@ -127,9 +127,6 @@ for run_id in run_ids_to_analyze:
                 if hasattr(x, 'item'):
                     return x.item()
 
-                print(f"Processed {len(generations_df)} questions.")
-                print(generations_df[['id', 'rougeL_reference_answers']].head())    
-
                 return x
             # ----------------------------------
 
