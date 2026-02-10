@@ -233,7 +233,8 @@ for run_id in run_ids_to_analyze:
 
             keys_to_use = ('ids', 'predictive_entropy', 'mutual_information', 'average_predictive_entropy',\
                             'average_pointwise_mutual_information', 'average_neg_log_likelihood_of_most_likely_gen',\
-                            'average_neg_log_likelihood_of_second_most_likely_gen', 'neg_log_likelihood_of_most_likely_gen',\
+                            #'average_neg_log_likelihood_of_second_most_likely_gen', 
+                            'neg_log_likelihood_of_most_likely_gen',\
                             'predictive_entropy_over_concepts', 'number_of_semantic_sets', 'unnormalised_entropy_over_concepts',\
                             'credal_epistemic_uncertainty', 'credal_lower_entropy', 'credal_upper_entropy')
 
@@ -319,8 +320,8 @@ for run_id in run_ids_to_analyze:
     result_dict['rougeL_based_accuracy'] = result_df['correct'].mean()
 
     result_dict['margin_measure_auroc'] = sklearn.metrics.roc_auc_score(
-        1 - result_df['correct'], result_df['average_neg_log_likelihood_of_most_likely_gen'] +
-        result_df['average_neg_log_likelihood_of_second_most_likely_gen'])
+        1 - result_df['correct'], result_df['average_neg_log_likelihood_of_most_likely_gen'])
+        #+ result_df['average_neg_log_likelihood_of_second_most_likely_gen'])
 
     if args.verbose:
         print('Number of samples:', len(result_df))
