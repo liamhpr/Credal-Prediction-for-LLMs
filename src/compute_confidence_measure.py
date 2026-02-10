@@ -196,6 +196,9 @@ def upper_entropy(probs_list: list, base: float = 2, n_jobs: int = -1) -> np.nda
         # Get the matrix for this specific question
         probs_matrix = probs_list[i]
 
+        if probs_matrix.shape[1] < 2:
+            return 0.0
+
         # Determine bounds from samples
         # lower_bound[k] = min probability observed for cluster k
         # upper_bound[k] = max probability observed for cluster k
@@ -235,6 +238,9 @@ def lower_entropy(probs_list: list, base: float=2, n_jobs: int=-1) -> np.ndarray
     def compute_lower_entropy(i: int) -> float:
         # Get the matrix for this specific question (Samples x Clusters)
         probs_matrix = probs_list[i]
+
+        if probs_matrix.shape[1] < 2:
+            return 0.0
 
         lower_bounds = np.min(probs_matrix, axis=0)
         upper_bounds = np.max(probs_matrix, axis=0)
@@ -381,14 +387,13 @@ def get_credal_data_matrices(all_temperatures_likelihoods):
             # THIS BELONGS TO SOFTMAX
             #for seq_idx, cluster_id in enumerate(ids):
             #    cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
-            print(f'temp: {temp} | sample: {sample} | {normalized_probs}')
 
         probability_matrices_list.append(cluster_probs_matrix)
         q_ids_list.append(q_id)
 
 
 
-    print("probability_matrices_list:", probability_matrices_list)
+    print("\n\n\nprobability_matrices_list:\n", probability_matrices_list)
     return q_ids_list, probability_matrices_list
 
 
