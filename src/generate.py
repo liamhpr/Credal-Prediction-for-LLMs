@@ -115,7 +115,7 @@ elif args.dataset == 'trivia_qa':
     #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
 
 if args.fraction_of_data_to_use < 1.0:
-    new_split = test_split.train_test_split(test_size=(1 -args.likelihood_split), seed=seed_value)
+    new_split = train_split.train_test_split(test_size=(1 -args.likelihood_split), seed=seed_value)
     train_dataset = new_split['train']
     test_dataset = new_split['test']
 else:
@@ -250,7 +250,7 @@ def get_model_likelihood(model, tokenizer, dataset):
     min_total_nll = min(mean_avg_nlls.values())
     best_temp = min(mean_avg_nlls, key=mean_avg_nlls.__getitem__)
 
-    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
+    print(f"Global Best Temperature: {best_temp} (AVERAGE NLL: {min_total_nll:.2f})")
 
     # 4. Compute Relative Likelihoods
     global_relative_likelihoods = {}
