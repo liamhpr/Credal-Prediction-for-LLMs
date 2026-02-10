@@ -16,6 +16,9 @@ from tqdm import tqdm
 from joblib import Parallel, delayed
 from config import ANALYSIS_TEMP
 
+MINIMIZE_EPS = 1e-3
+
+
 utils.setup_logger()
 logging.info('Starting compute_confidence_measure.py...')
 
@@ -177,108 +180,101 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
 # >>>>>>>>>>>>>>>>>>>>>                         Credal Entropy                             <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>                                                                    <<<<<<<<<<<<<<<<<<<<<
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-def entropy(p):
-    """
-    Helper: Shannon Entropy in nats (base e). Handles 0 log 0
-    Add a tiny epsilon to avoid log(0), or use specialized func
-    """
+def entropy(p, base: float=2):
+    """Shannon Entropy in nats (default) or base."""
+    # Clip to avoid log(0)
     p = np.clip(p, 1e-12, 1.0)
-    return -np.sum(p*np.log(p))
+    if base == 2:
+        return -np.sum(p * np.log2(p))
+    return -np.sum(p * np.log(p))
 
-def neg_entropy(p):
-    """Helper: Negative Entropy (for minimization to achieve MaxEnt)"""
-    return -entropy(p)
 
-def solve_credal_entropy(bounds):
-    """
-    Computes Lower and Upper Shannon Entropy for a single credal set defined by bounds.
-    Bounds: (K, 2) array where col 0 is Lower, col 1 is Upper 
-    """
-    K = bounds.shape[0]
-    lower_bounds = bounds[:, 0]
-    upper_bounds = bounds[:, 1]
+def upper_entropy(probs_list: list, base: float = 2, n_jobs: int = -1) -> np.ndarray:
+    """Compute the upper entropy of a credal set (Interval Method)."""
 
-    # sum(lower) must be <= 1 and sum(upper) must be >= 1
-    # VALID Condition: sum(lower) <= 1 AND sum(upper) >= 1
-    # We add epsilon (1e-6) to handle floating point noise.
-    # assert that sum of lower bounds is NOT significantly greater than 1
-    assert np.sum(lower_bounds) <= 1.0 + 1e-6, f"Invalid Set: Sum of lower bounds is {np.sum(lower_bounds)}"
-    # assert that sum of upper bounds is NOT significantly less than 1
-    assert np.sum(upper_bounds) >= 1.0 - 1e-6, f"Invalid Set: Sum of upper bounds is {np.sum(upper_bounds)}"
+    def compute_upper_entropy(i: int) -> float:
+        # Get the matrix for this specific question
+        probs_matrix = probs_list[i]
 
-    x0 = (lower_bounds + upper_bounds)/ 2.0
-    x0 = x0 / np.sum(x0)
+        # Determine bounds from samples
+        # lower_bound[k] = min probability observed for cluster k
+        # upper_bound[k] = max probability observed for cluster k
+        lower_bounds = np.min(probs_matrix, axis=0)
+        upper_bounds = np.max(probs_matrix, axis=0)
 
-    # Constraints: sum(p) = 1
-    constraints = [{'type': 'eq', 'fun': lambda x: np.sum(x) - 1.0}]
+        # Initial guess
+        x0 = probs_matrix.mean(axis=0)
 
-    #Box bounds for optimization
-    scipy_bounds = [(l, u) for l, u in bounds]
+        constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
 
-    # --- A. Compute UPPER Entropy (Maximize H -> Minimize -H) ---
-    # This is a Convex Optimization Problem (easy/reliable for SLSQP)
-    res_max = scipy.optimize.minimize(
-        neg_entropy, 
-        x0,
-        method='SLSQP',
-        bounds=scipy_bounds,
-        constraints=constraints
-    )
+        def fun(x: np.ndarray) -> float:
+            return -entropy(x, base=base)
 
-    ue = -res_max.fun if res_max.success else entropy(x0)
+        bounds = list(zip(lower_bounds, upper_bounds))
 
-    # --- B. Compute LOWER Entropy (Minimize H) ---
-    # Minimizing a concave function (entropy) is mathematically hard (non-convex).
-    # The minimum always lies at a vertex of the polytope.
-    # Heuristic for 2022 stack: Try to concentrate mass on one class (k) 
-    # as much as possible to minimize uncertainty.
-    best_le = np.inf
+        res = scipy.optimize.minimize(fun=fun, x0=x0, bounds=bounds, constraints=constraints)
+        return float(-res.fun)
 
-    # Strategy: For each class, try to maximize its prob (make it "certain")
-    # This approximates finding the vertex with lowest entropy.
-    for k in range(K):
-        # Construct a "spiky" guess centered on class k
-        # Set k to its max, others to min, then normalize
-        p_guess = lower_bounds.copy()
-
-        # How much slack do we have to distribute?
-        current_sum = np.sum(p_guess)
-        slack = 1.0 - current_sum
-
-        # Add as much slack as possible to class k
-        can_add = upper_bounds[k] - p_guess[k]
-        add_amount = min(slack, can_add)
-        p_guess[k] += add_amount
-
-        # If there is still slack, distribute it to others (greedy)
-        # (This part is simple distribution to ensure sum=1 for the solver start)
-        slack = 1.0 - np.sum(p_guess)
-        if slack > 1e-9:
-            # Distribute remaining slack to whoever has room
-            for j in range(K):
-                can_add = upper_bounds[j] - p_guess[j]
-                amt = min(slack, can_add)
-                p_guess[j] += amt
-                slack -= amt
-                if slack < 1e-9: break
-
-        # Run optimization starting from this "spiky" guess
-        res_min = scipy.optimize.minimize(
-            entropy, # Minimize H directly
-            p_guess, 
-            method='SLSQP',
-            bounds=scipy_bounds,
-            constraints=constraints
+    if n_jobs:
+        ue = Parallel(n_jobs=n_jobs)(
+            delayed(compute_upper_entropy)(i) for i in tqdm(range(len(probs_list)), desc='Upper Entropy')
         )
+        ue = np.array(ue)
 
-        le_candidate = res_min.fun if res_min.success else entropy(p_guess)
-        if le_candidate < best_le:
-            best_le = le_candidate
+    else:
+        ue = np.empty(len(probs_list))
+        for i in tqdm(range(len(probs_list)), desc='Upper Entropy'):
+            ue[i] = compute_upper_entropy(i)
 
-    return best_le, ue
+    return ue
 
 
-def get_credal_entropy_over_concepts(all_temperatures_likelihoods): 
+def lower_entropy(probs_list: list, base: float=2, n_jobs: int=-1) -> np.ndarray:
+    """Compute the lower entropy of a credal set (Interval Method)."""
+
+    def compute_lower_entropy(i: int) -> float:
+        # Get the matrix for this specific question (Samples x Clusters)
+        probs_matrix = probs_list[i]
+
+        lower_bounds = np.min(probs_matrix, axis=0)
+        upper_bounds = np.max(probs_matrix, axis=0)
+
+        # Initial guess
+        x0 = probs_matrix.mean(axis=0)
+        n_classes = x0.shape[0]
+
+        # If the initial solution is uniform, slightly preturb it, becuase minimize will fail otherwise
+        # (Minimizing entropy is concave, solvers get stuck on perfectly flat saddles)
+        if np.all(np.isclose(x0, 1 / n_classes)):
+            x0[0] += MINIMIZE_EPS
+            x0[1] -= MINIMIZE_EPS
+
+        constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
+
+        # Objective: Minimize Entropy
+        def fun(x: np.ndarray) -> float:
+            return entropy(x, base=base)
+
+        bounds = list(zip(lower_bounds, upper_bounds))
+
+        res = scipy.optimize.minimize(fun=fun, x0=x0, bounds=bounds, constraints=constraints)
+        return float(res.fun)
+
+    if n_jobs:
+        le = Parallel(n_jobs=n_jobs)(
+                delayed(compute_lower_entropy)(i) for i in tqdm(range(len(probs_list)), desc='Lower Entropy')
+        )
+        le = np.array(le)
+    else:
+        le = np.empty(len(probs_list))
+        for i in tqdm(range(len(probs_list)), desc='Lower Entropy'):
+            le[i] = compute_lower_entropy(i)
+
+    return le
+
+
+
+def get_credal_data_matrices(all_temperatures_likelihoods): 
     """
     Transforms the temperature dictionary into a list of Credal Intervals per question.
     """
@@ -298,7 +294,7 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             grouped_data[q_id][temp] = sample
 
     # 2. Compute Probabilities & Bounds per Question
-    credal_bounds_list = [] # List numpy arrays (K, 2)
+    probability_matrices_list = [] # List numpy arrays (K, 2)
     q_ids_list = []
 
     logging.info(f"Processing {len(grouped_data)} unique questions to compute bounds...")
@@ -337,22 +333,17 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             nll = sample['neg_log_likelihoods']
             if isinstance(nll, torch.Tensor): nll = nll.cpu().numpy()
 
-            # Convert to log-likelihood (negative value)
-            # log_prob_seq = log( P(seq | context) )
-            log_probs_seq = -1.0 * nll
-
-# ==================SOFTMAX NORMALIZATION================
-            # 2. Normalize sequences to get P(seq | temp)
-            # Softmax: exp(x) / sum(exp(x))
-            #max_log = np.max(log_probs_seq)
-            #exp_probs = np.exp(log_probs_seq - max_log)
-            #sum_exp = np.sum(exp_probs)
-            #norm_probs_seq = exp_probs / sum_exp
-# =======================================================
-
             # 3. Sum probabilities by Cluster ID
             ids = sample['semantic_set_ids']
             if isinstance(ids, torch.Tensor): ids = ids.cpu().numpy()
+
+            # Sanity Check for NaNs
+            if np.isnan(nll).any() or np.isinf(nll).any():
+                 nll = np.nan_to_num(nll, nan=1e9, posinf=1e9, neginf=1e9)
+
+            # Convert to log-likelihood (negative value)
+            # log_prob_seq = log( P(seq | context) )
+            log_probs_seq = -1.0 * nll
 
             # 2. Compute Unnormalized Log-Probability for each Cluster
             # We use LogSumExp to sum probabilities in log-space:
@@ -392,26 +383,13 @@ def get_credal_entropy_over_concepts(all_temperatures_likelihoods):
             #    cluster_probs_matrix[i, cluster_id] += norm_probs_seq[seq_idx]
             print(f'temp: {temp} | sample: {sample} | {normalized_probs}')
 
-
-
-        # Compute Bounds
-        # Lower Bound: min prob across rows
-        # Upper bound: max prob across rows
-        print(f'cluster_probs_matrix: {cluster_probs_matrix}')
-        lower_bounds = np.min(cluster_probs_matrix, axis=0)
-        upper_bounds = np.max(cluster_probs_matrix, axis=0)
-
-        # Stack: (K, 2)
-        bounds = np.stack([lower_bounds, upper_bounds], axis=1)
-        credal_bounds_list.append(bounds)
+        probability_matrices_list.append(cluster_probs_matrix)
         q_ids_list.append(q_id)
 
-    print(credal_bounds_list)
-    # Solve Optimization (Parallel)
-    logging.info("Optimizing Credal Entropy...")
-    results = Parallel(n_jobs=-1)(delayed(solve_credal_entropy)(b) for b in tqdm(credal_bounds_list))
-    results = np.array(results) # [LowerEnt, UpperEnt]
-    return q_ids_list, results, credal_bounds_list
+
+
+    print("probability_matrices_list:", probability_matrices_list)
+    return q_ids_list, probability_matrices_list
 
 
     """
@@ -493,14 +471,23 @@ with open(input_path, 'rb') as infile:
     all_temperatures_likelihoods = pickle.load(infile)
 
 # RUN CREDAL LOGIC (Uses ALL temperatures)
-credal_ids, credal_entropy_results, credal_bounds = get_credal_entropy_over_concepts(all_temperatures_likelihoods)
-epistemic_uncertainty = credal_entropy_results[:, 1] - credal_entropy_results[:, 0]
+# 1. Prepare Data
+credal_ids, prob_matrices = get_credal_data_matrices(all_temperatures_likelihoods)
 
+# 2. Run New Entropy Functions (Parallelized via joblib inside function)
+# Note: Using base=e (nats) to match standard Pytorch entropy, 
+# or base=2 (bits) if you prefer. Your new functions default to 2.
+lower_entropies = lower_entropy(prob_matrices, base=np.e) 
+upper_entropies = upper_entropy(prob_matrices, base=np.e)
+
+epistemic_uncertainty = upper_entropies - lower_entropies
+
+# Map credal results to ID for easy lookup
 # Map credal results to ID for easy lookup
 credal_results_map = {
     id_: {
-        'lower_entropy': credal_entropy_results[i, 0],
-        'upper_entropy': credal_entropy_results[i, 1],
+        'lower_entropy': lower_entropies[i],
+        'upper_entropy': upper_entropies[i],
         'epistemic_uncertainty': epistemic_uncertainty[i]
     }
     for i, id_ in enumerate(credal_ids)
