@@ -268,10 +268,18 @@ for run_id in run_ids_to_analyze:
     result_dict = {}
     result_dict['accuracy'] = result_df['correct'].mean()
 
+    # WARNING: IMPLEMENT THE CREDAL ENTROPY OVER CONCEPTS 
+    credal_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(1 - result_df_credal['correct'],
+                                                                   result_df_credal['credal_epistemic_uncertainty'])
+    result_dict['credal_entropy_over_concepts_auroc'] = credal_entropy_over_concepts_auroc
+    # WARNING:                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    print("credal_entropy_over_concepts_auroc:", credal_entropy_over_concepts_auroc)
+
     # Compute the auroc for the length normalized predictive entropy
-    ln_predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
-                                                                result_df['average_predictive_entropy'])
-    result_dict['ln_predictive_entropy_auroc'] = ln_predictive_entropy_auroc
+    #FIX: decomment again
+    #ln_predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
+    #                                                            result_df['average_predictive_entropy'])
+    #result_dict['ln_predictive_entropy_auroc'] = ln_predictive_entropy_auroc
 
     predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'], result_df['predictive_entropy'])
     result_dict['predictive_entropy_auroc'] = predictive_entropy_auroc
@@ -280,11 +288,6 @@ for run_id in run_ids_to_analyze:
                                                                 result_df['predictive_entropy_over_concepts'])
     result_dict['entropy_over_concepts_auroc'] = entropy_over_concepts_auroc
 
-    # WARNING: IMPLEMENT THE CREDAL ENTROPY OVER CONCEPTS 
-    credal_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(1 - result_df_credal['correct'],
-                                                                   result_df_credal['credal_epistemic_uncertainty'])
-    result_dict['credal_entropy_over_concepts_auroc'] = credal_entropy_over_concepts_auroc
-    # WARNING:                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     if 'unnormalised_entropy_over_concepts' in result_df.columns:
         unnormalised_entropy_over_concepts_auroc = sklearn.metrics.roc_auc_score(
