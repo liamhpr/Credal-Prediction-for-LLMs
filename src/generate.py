@@ -123,7 +123,7 @@ else:
 
 
 
-temperatures = config.TEMPERATURES
+temperatures = np.linspace(0.5, 2.2, 100).tolist()
 
 def get_model_likelihood(model, tokenizer, dataset):
     """
