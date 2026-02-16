@@ -264,6 +264,38 @@ for run_id in run_ids_to_analyze:
     n_samples_before_filtering = len(result_df)
     result_df['len_most_likely_generation_length'] = result_df['most_likely_generation'].apply(lambda x: len(x.split()))
 
+    # =============== DATA CLEANING BLOCK ==================
+    # 1. Identify columns needed for AUROC
+    cols_to_check = [
+        'correct',
+        'average_predictive_entropy',
+        'predictive_entropy',
+        'predictive_entropy_over_concepts',
+        'neg_log_likelihood_of_most_likely_gen',
+        'number_of_semantic_sets',
+        'rougeL_among_generations',
+        'average_neg_log_likelihood_of_most_likely_gen'
+    ]
+    if 'unnormalised_entropy_over_concepts' in result_df.columns: 
+        cols_to_check.append('unnormalised_entropy_over_concepts')
+
+
+    credal_cols_to_check = ['correct', 'credal_epistemic_uncertainty']
+
+    valid_standard = result_df.dropna(subset=cols_to_check)
+    valid_credal = result_df_credal.dropna(subset=credal_cols_to_check)
+
+    common_vaid_ids = set(valid_standard['id']).intersection(set(valid_credal['id']))
+
+    result_df = result_df[result_df['id'].isin(common_vaid_ids)].copy()
+    result_df_credal = result_df_credal[result_df_credal['id'].isin(common_vaid_ids)].copy()
+
+    if args.verbose:
+        print(f'Removed {n_samples_before_filtering - len(result_df)} mismatched/NaN rows.')
+        print(f'Remaining identical samples for comparison: {len(result_df)}')
+
+    # ============ END OF DATA CLEANING BLOCK ==============
+
     # Begin analysis
     result_dict = {}
     result_dict['accuracy'] = result_df['correct'].mean()
@@ -276,10 +308,9 @@ for run_id in run_ids_to_analyze:
     print("credal_entropy_over_concepts_auroc:", credal_entropy_over_concepts_auroc)
 
     # Compute the auroc for the length normalized predictive entropy
-    #FIX: decomment again
-    #ln_predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
-    #                                                            result_df['average_predictive_entropy'])
-    #result_dict['ln_predictive_entropy_auroc'] = ln_predictive_entropy_auroc
+    ln_predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'],
+                                                                result_df['average_predictive_entropy'])
+    result_dict['ln_predictive_entropy_auroc'] = ln_predictive_entropy_auroc
 
     predictive_entropy_auroc = sklearn.metrics.roc_auc_score(1 - result_df['correct'], result_df['predictive_entropy'])
     result_dict['predictive_entropy_auroc'] = predictive_entropy_auroc

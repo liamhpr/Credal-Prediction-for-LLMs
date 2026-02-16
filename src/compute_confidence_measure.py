@@ -344,6 +344,7 @@ def get_credal_data_matrices(all_temperatures_likelihoods):
             if isinstance(ids, torch.Tensor): ids = ids.cpu().numpy()
 
             # Sanity Check for NaNs
+            logging.warning("NaN in:", nll)
             if np.isnan(nll).any() or np.isinf(nll).any():
                  nll = np.nan_to_num(nll, nan=1e9, posinf=1e9, neginf=1e9)
 
