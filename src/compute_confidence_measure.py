@@ -501,6 +501,61 @@ credal_results_map = {
 
 list_of_results = []
 
+# ---------------------------------------------------------
+# COMPREHENSIVE BASELINE EVALUATION
+# ---------------------------------------------------------
+# We want to see how baselines perform at ALL temps, not just one.
+
+baseline_results_per_temp = {}
+
+# Get list of all available temperatures from your data
+# Assuming all_temperatures_likelihoods keys are temperatures (float or str)
+available_temps = list(all_temperatures_likelihoods.keys())
+
+for temp in available_temps:
+    logging.info(f"Processing Baselines for Temperature: {temp}")
+    
+    # Extract the samples for this specific temperature
+    # Note: You need to ensure the order of IDs matches your overall results
+    # It is safer to re-construct the list_of_results logic for each temp
+    
+    current_temp_samples = all_temperatures_likelihoods[temp]
+    
+    # Sort or align by ID if necessary, assuming they are aligned here
+    list_of_results_temp = [(args.evaluation_model, current_temp_samples)]
+    
+    # Get standard metrics
+    overall_res_temp = get_overall_log_likelihoods(list_of_results_temp)
+    
+    # Compute Semantic Entropy (Predictive Entropy over Concepts)
+    # This is your main baseline comparison
+    sem_entropy = get_predictive_entropy_over_concepts(
+        -overall_res_temp['average_neg_log_likelihoods'],
+        overall_res_temp['semantic_set_ids']
+    )
+    
+    # Compute Standard Predictive Entropy
+    pred_entropy = get_predictive_entropy(
+        -overall_res_temp['neg_log_likelihoods']
+    )
+
+    # Store specifically mapped by ID
+    temp_res_map = {}
+    for i, _id in enumerate(overall_res_temp['ids']):
+        # Handle ID list vs int issue
+        val_id = _id[0] if isinstance(_id, list) else _id
+        
+        temp_res_map[val_id] = {
+            'semantic_entropy': sem_entropy[i],
+            'predictive_entropy': pred_entropy[i]
+        }
+    
+    baseline_results_per_temp[temp] = temp_res_map
+
+# ---------------------------------------------------------
+# MERGE INTO OVERALL RESULTS
+# ---------------------------------------------------------
+
 # WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
 with open(f'{path_prefix}{args.generation_model}_ANALYSIS_TEMP_generations_{args.evaluation_model}_likelihoods.pkl',
           'rb') as infile:
@@ -585,6 +640,8 @@ for idx, id_ in enumerate(overall_results['ids']):
 overall_results['credal_epistemic_uncertainty'] = credal_eu_tensor
 overall_results['credal_lower_entropy'] = lower_ent_tensor
 overall_results['credal_upper_entropy'] = upper_ent_tensor
+
+overall_results['baselines_all_temps'] = baseline_results_per_temp # Save all for plotting later
 """
 END
 """
