@@ -538,6 +538,15 @@ for temp in available_temps:
     pred_entropy = get_predictive_entropy(
         -overall_res_temp['neg_log_likelihoods']
     )
+    margin_measures = get_margin_probability_uncertainty_measure(
+        -overall_res_temp['average_neg_log_likelihoods']
+    )
+    unnormalised_margin_measures = get_margin_probability_uncertainty_measure(
+        -overall_res_temp['neg_log_likelihoods']
+    )
+    mutual_information = get_mutual_information(
+        -overall_res_temp['neg_log_likelihoods']
+    )
 
     # Store specifically mapped by ID
     temp_res_map = {}
@@ -547,7 +556,10 @@ for temp in available_temps:
         
         temp_res_map[val_id] = {
             'semantic_entropy': sem_entropy[i],
-            'predictive_entropy': pred_entropy[i]
+            'predictive_entropy': pred_entropy[i],
+            'margin_measures': margin_measures[i],
+            'unnormalised_margin_measures': unnormalised_margin_measures[i],
+            'mutual_information': mutual_information[i],
         }
     
     baseline_results_per_temp[temp] = temp_res_map
