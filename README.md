@@ -63,3 +63,8 @@ Clone the repository and install the dependencies (thesis-env.yml). We recommend
 git clone [https://github.com/liamhpr/Credal-Prediction-for-LLMs.git](https://github.com/liamhpr/Credal-Prediction-for-LLMs.git)
 cd Credal-Prediction-for-LLMs
 ```
+
+## Hardware Requirements
+To run the pipeline we used one 80GB A100.
+It took three to four days to generate all sequences and another 2-6 days to comptue the clusters depending on how
+many temperatures are in the $\alpha$-cut.
