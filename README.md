@@ -8,8 +8,8 @@ Standard LLMs output a single probability distribution over the vocabulary for t
 **aleatoric uncertainty** (inherent ambiguity in language) with **epistemic uncertainty** 
 (the model's actual lack of knowledge). 
 
-This repository implements **Credal Prediction for LLMs**, a framework that outputs a set of probability distributions 
-(Credal Set) rather than a single distribution over multiple different temperature values.
+This repository implements **Credal Semantic Entropy**, a framework that outputs a set of probability distributions 
+(Credal Set) over meanings using multiple different temperature values rather than a single distribution.
 
 # Running the Full Pipeline
 
