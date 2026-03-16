@@ -52,7 +52,7 @@ logging.info('Starting wandb')
 
 wandb.init(
     # Set the wandb entity where your project will be logged (generally your team name).
-    entity="liam-heppner-ludwig-maximilian-university-of-munich",
+    entity="",
     # Set the wandb project where this run will be logged.
     project="credal-prediction-for-large-language-models",
     id=args.run_id,
@@ -60,15 +60,8 @@ wandb.init(
     resume='allow'
 )
 
-#wandb.init(project='TODO:', id=args.run_id, config=args, resume='allow')
-
 run_name = wandb.run.name
 
-
-#if args.use_test_split: 
-#   path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
-#else:
-#   path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
 path_prefix = f'{config.output_dir}sequences/{run_name}/'
 
 model_path = config.get_model_path(args.model)
@@ -286,101 +279,6 @@ def get_model_likelihood(model, tokenizer, dataset):
 
     print("valid temperatures:", valid_temperatures, "rel_likelihoods:", global_relative_likelihoods)
     return valid_temperatures, global_relative_likelihoods, best_temp
-
-
-#def get_confidence_intervall():
-    all_nlls = {t: [] for t in temperatures}
-
-    for sample in results: 
-        for t in temperatures:
-            # Use 'nll_avg' (per token)
-            all_nlls[t].append(sample['temperatures'][t]['nll_avg'])
-    # Calculate Mean and Standard Error for each T
-    stats = {}
-    for t, nlls in all_nlls.items():
-        mean_nll = np.mean(nlls)
-        # Standard Error = std_dev / sqrt(n_samples)
-        sem = np.std(nlls) / np.sqrt(len(nlls))
-        stats[t] = {'mean': mean_nll, 'sem': sem}
-
-    # find the best temperature (Lowest Mean NLL)
-    best_t = min(stats, key=lambda x: stats[x]['mean'])
-    best_mean = stats[best_t]['mean']
-    best_sem = stats[best_t]['sem']
-    print("Standard error of best mean:", best_sem)
-
-    # Define "Valid": Within 1 Standard Error of the best 
-    # (You can also use 1.96 * SEM for a 95% confidence interval)
-    upper_bound = best_mean + 1.96 * best_sem
-
-    valid_temperatures = []
-    for t, s in stats.items():
-        print('temperature:', t, 'mean:', s['mean'])
-        if s['mean'] <= upper_bound:
-            valid_temperatures.append(t)
-
-    print(f"Best T: {best_t} (Mean NLL: {best_mean:.4f})")
-    print(f"Valid Range [within 1.96 * 1 SEM (95% confidence intervall)]: {upper_bound}")
-    print("valid temperatures:", valid_temperatures)
-    return valid_temperatures
-
-
-#def get_rel_likelihood():
-    """
-    Computes the Global Relative Likelihood over the entire dataset.
-    
-    Mathematical Logic:
-    Likelihood(Dataset | T) = Product(Likelihood(sample_i | T))
-    LogLikelihood(Dataset | T) = Sum(LogLikelihood(sample_i | T))
-    Total_NLL(T) = Sum(NLL_sample_i(T))
-    """
-
-    if not results:
-        return [], {}
-
-    temps = list(results[0]['temperatures'].keys())
-
-    # 2. Aggregate NLLs across the entire dataset
-    # We initialize a counter for each temperature
-    dataset_nll = {t: 0.0 for t in temps}
-
-    print(f"Aggregating likelihoods over {len(results)} samples...")
-    
-    for sample in results:
-        for t in temps:
-            # We add the NLL sum of this specific answer to the global total
-            dataset_nll[t] += sample['temperatures'][t]['nll_sum']
-
-    # 3. Find the Global Best Temperature (Minimum Total NLL)
-    min_total_nll = min(dataset_nll.values())
-    best_temp = min(dataset_nll, key=dataset_nll.get)
-
-    print(f"Global Best Temperature: {best_temp} (Total NLL: {min_total_nll:.2f})")
-
-    # 4. Compute Relative Likelihoods
-    global_relative_likelihoods = {}
-    valid_temperatures = []
-    
-    for t in temps:
-        current_nll = dataset_nll[t]
-        
-        # Calculate likelihood ratio in log space
-        # R(t) = exp( Best_NLL - Current_NLL )
-        # Note: Since these are sums over the whole dataset, 
-        # the difference might be large, leading to very small probabilities.
-        diff = min_total_nll - current_nll
-        
-        # Clip to prevent underflow if difference is massive
-        if diff < -700: 
-            rel_lik = 0.0
-        else:
-            rel_lik = np.exp(diff)
-            
-        global_relative_likelihoods[t] = rel_lik
-        
-        if rel_lik >= alpha:
-            valid_temperatures.append(t)
-# NOTE: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NOT USED^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 def encode(examples):

@@ -46,12 +46,12 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 model_path = config.get_model_path(args.generation_model)
 generation_tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False, cache_dir=config.data_dir)
 
-tokenizer = AutoTokenizer.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-large-mnli")
-model = AutoModelForSequenceClassification.from_pretrained("/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-large-mnli").cuda()
+tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-large-mnli")
+model = AutoModelForSequenceClassification.from_pretrained("microsoft/deberta-large-mnli").cuda()
 
 wandb.init(
     # Set the wandb entity where your project will be logged (generally your team name).
-    entity="liam-heppner-ludwig-maximilian-university-of-munich",
+    entity="",
     # Set the wandb project where this run will be logged.
     project="credal-prediction-for-large-language-models",
     id=args.run_id,
@@ -59,14 +59,8 @@ wandb.init(
     resume='allow'
 )
 
-#wandb.init(project='credal-prediction-for-large-language-models', id=args.run_id, config=args, resume='allow')
-
 run_name = wandb.run.name
 
-#if args.use_test_split: 
-#    path_prefix = f'{config.output_dir}sequences/{run_name}/test_split/'
-#else:
-#    path_prefix = f'{config.output_dir}sequences/{run_name}/train_split/'
 path_prefix = f'{config.output_dir}sequences/{run_name}/'
 
 input_file = f'{path_prefix}{args.generation_model}_all_generations.pkl'

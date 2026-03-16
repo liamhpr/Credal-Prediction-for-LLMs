@@ -50,14 +50,13 @@ os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
 wandb.init(
     # Set the wandb entity where your project will be logged (generally your team name).
-    entity="liam-heppner-ludwig-maximilian-university-of-munich",
+    entity="",
     # Set the wandb project where this run will be logged.
     project="credal-prediction-for-large-language-models",
     id=args.run_id,
     config=args,
     resume='allow'
 )
-#wandb.init(project='nlg_uncertainty', id=args.run_id, config=args, resume='allow')
 
 run_name = wandb.run.name
 

@@ -54,14 +54,13 @@ args = parser.parse_args()
 
 wandb.init(
     # Set the wandb entity where your project will be logged (generally your team name).
-    entity="liam-heppner-ludwig-maximilian-university-of-munich",
+    entity="",
     # Set the wandb project where this run will be logged.
     project="credal-prediction-for-large-language-models",
     id=args.run_id_for_few_shot_prompt,
     config=args,
     resume='allow'
 )
-#wandb.init(project='credal-prediction-for-large-language-models', id=args.run_id_for_few_shot_prompt, config=args, resume='allow')
 model_name = wandb.config.model
 
 model_path = config.get_model_path(args.generation_model)
@@ -70,13 +69,6 @@ generation_tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False,
 model = AutoModelForCausalLM.from_pretrained(model_path,
                                              torch_dtype=torch.float16,
                                              cache_dir=config.data_dir).cuda()
-
-"""
-if model_name == 'opt-30b':
-    accelerate.dispatch_model(model, device_map=device_map)
-    print(model.hf_device_map)
-    device = torch.device('cuda:1')
-"""
 
 run_name = wandb.run.name
 
