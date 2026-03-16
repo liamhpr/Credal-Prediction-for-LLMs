@@ -22,7 +22,7 @@ sbatch run_pipeline.sh
 # Setup and Configuration
 Before running the pipeline, you will need to set up your data and environment:
 
-Data Preprocessing: The parse_coqa.py script handles downloading the dataset from Hugging Face, 
+Data Preprocessing: The ```parse_coqa.py``` script handles downloading the dataset from Hugging Face, 
 tokenizing the text, and saving the processed files locally. You only need to run these scripts once.
 
 Directory Configuration: Open config.py to map out your preferred file paths for saving both intermediate checkpoints 
