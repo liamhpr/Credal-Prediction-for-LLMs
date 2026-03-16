@@ -8,16 +8,17 @@ import logging
 import utils.utils as utils
 
 #import accelerate
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
+#import seaborn as sns
 import sklearn
+import sklearn.metrics
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import config
-sns.color_palette("pastel")
+#sns.color_palette("pastel")
 import wandb
 from config import ANALYSIS_TEMP
 #from config import device_map
@@ -79,9 +80,19 @@ if model_name == 'opt-30b':
 
 run_name = wandb.run.name
 
-pkl_path = f'{config.output_dir}sequences/{run_name}/{model_name}_ANALYSIS_TEMP_generations.pkl'
+path_prefix = f'{config.output_dir}sequences/{run_name}/'
+
+opt_temp_path = f'{path_prefix}{model_name}_optimal_temperature.pkl'
+if os.path.exists(opt_temp_path):
+    with open(opt_temp_path, 'rb') as f:
+        best_temp = pickle.load(f)
+
+#pkl_path = f'{config.output_dir}sequences/{run_name}/{model_name}_ANALYSIS_TEMP_generations.pkl'
+pkl_path = f'{config.output_dir}sequences/{run_name}/{model_name}_all_generations.pkl'
 with open(pkl_path, 'rb') as f:
-    sequences_for_few_shot_prompt = pickle.load(f)
+    #sequences_for_few_shot_prompt = pickle.load(f)
+    all_generations = pickle.load(f)
+    sequences_for_few_shot_prompt = all_generations[best_temp]
 
 
 

@@ -1,490 +1,0 @@
-Using run_id: 5hub0ahp
-Using model: opt-350m
-Starting generate.py
-2026-01-10 19:48:11 INFO     Starting generate.py...
-2026-01-10 19:48:11 INFO     Starting wandb
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run 5hub0ahp
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260110_194812-5hub0ahp
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run sparkling-silence-55
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5hub0ahp
-2026-01-10 19:50:42 WARNING  Parameter 'indices'=range(0, 798) of the transform datasets.arrow_dataset.Dataset.select couldn't be hashed properly, a random hash was used instead. Make sure your transforms and parameters are serializable with pickle or dill for the dataset fingerprinting and caching to work. If you reuse this transform, the caching mechanism will consider it to be different from the previous calls and recompute everything. This warning is only showed once. Subsequent hashing failures won't be showed.
-2026-01-10 19:50:42 WARNING  Loading cached split indices for dataset at data/sets/coqa_dataset/cache-2da93b61c7b767dd.arrow and data/sets/coqa_dataset/cache-ae2345b0221a2fac.arrow
-2026-01-10 19:50:42 WARNING  Loading cached processed dataset at data/sets/coqa_dataset/cache-ccd965c3191e6167.arrow
-  0%|          | 0/1596 [00:00<?, ?ex/s]  1%|          | 15/1596 [00:00<00:10, 148.16ex/s]  3%|▎         | 47/1596 [00:00<00:06, 246.33ex/s]  5%|▌         | 81/1596 [00:00<00:05, 286.62ex/s]  8%|▊         | 120/1596 [00:00<00:04, 326.01ex/s] 10%|█         | 160/1596 [00:00<00:04, 349.90ex/s] 12%|█▏        | 195/1596 [00:00<00:04, 338.81ex/s] 15%|█▍        | 236/1596 [00:00<00:03, 361.36ex/s] 17%|█▋        | 279/1596 [00:00<00:03, 380.43ex/s] 20%|██        | 321/1596 [00:00<00:03, 390.39ex/s] 23%|██▎       | 365/1596 [00:01<00:03, 403.82ex/s] 25%|██▌       | 406/1596 [00:01<00:02, 403.46ex/s] 28%|██▊       | 447/1596 [00:01<00:02, 399.67ex/s] 31%|███       | 487/1596 [00:01<00:02, 394.19ex/s] 33%|███▎      | 529/1596 [00:01<00:02, 401.47ex/s] 36%|███▌      | 570/1596 [00:01<00:02, 402.56ex/s] 38%|███▊      | 611/1596 [00:01<00:02, 392.39ex/s] 41%|████      | 654/1596 [00:01<00:02, 401.12ex/s] 44%|████▎     | 697/1596 [00:01<00:02, 409.09ex/s] 46%|████▋     | 741/1596 [00:01<00:02, 415.76ex/s] 49%|████▉     | 785/1596 [00:02<00:01, 421.41ex/s] 52%|█████▏    | 830/1596 [00:02<00:01, 428.95ex/s] 55%|█████▍    | 873/1596 [00:02<00:01, 421.11ex/s] 57%|█████▋    | 916/1596 [00:02<00:01, 418.61ex/s] 60%|██████    | 958/1596 [00:02<00:01, 418.53ex/s] 63%|██████▎   | 1000/1596 [00:02<00:02, 209.39ex/s] 65%|██████▍   | 1035/1596 [00:03<00:02, 233.01ex/s] 67%|██████▋   | 1077/1596 [00:03<00:01, 269.32ex/s] 70%|███████   | 1120/1596 [00:03<00:01, 303.26ex/s] 73%|███████▎  | 1161/1596 [00:03<00:01, 326.90ex/s] 75%|███████▌  | 1204/1596 [00:03<00:01, 352.93ex/s] 78%|███████▊  | 1246/1596 [00:03<00:00, 369.43ex/s] 81%|████████  | 1288/1596 [00:03<00:00, 382.71ex/s] 84%|████████▎ | 1335/1596 [00:03<00:00, 404.80ex/s] 87%|████████▋ | 1382/1596 [00:03<00:00, 421.26ex/s] 89%|████████▉ | 1426/1596 [00:03<00:00, 413.59ex/s] 92%|█████████▏| 1469/1596 [00:04<00:00, 414.34ex/s] 95%|█████████▍| 1515/1596 [00:04<00:00, 426.21ex/s] 98%|█████████▊| 1559/1596 [00:04<00:00, 429.99ex/s]100%|██████████| 1596/1596 [00:04<00:00, 369.70ex/s]
-2026-01-10 19:50:53 INFO     Generating 5 generations
-  0%|          | 0/1596 [00:00<?, ?it/s]2026-01-10 19:51:01 INFO     Using default tokenizer.
-2026-01-10 19:51:01 INFO     Using default tokenizer.
-2026-01-10 19:51:01 INFO     Using default tokenizer.
-2026-01-10 19:51:01 INFO     Using default tokenizer.
-  0%|          | 1/1596 [00:08<3:45:48,  8.49s/it]2026-01-10 19:51:02 INFO     Using default tokenizer.
-2026-01-10 19:51:02 INFO     Using default tokenizer.
-2026-01-10 19:51:02 INFO     Using default tokenizer.
-2026-01-10 19:51:02 INFO     Using default tokenizer.
-  0%|          | 2/1596 [00:09<1:47:40,  4.05s/it]2026-01-10 19:51:04 INFO     Using default tokenizer.
-2026-01-10 19:51:04 INFO     Using default tokenizer.
-2026-01-10 19:51:04 INFO     Using default tokenizer.
-2026-01-10 19:51:05 INFO     Using default tokenizer.
-  0%|          | 3/1596 [00:11<1:24:42,  3.19s/it]2026-01-10 19:51:05 INFO     Using default tokenizer.
-2026-01-10 19:51:05 INFO     Using default tokenizer.
-2026-01-10 19:51:06 INFO     Using default tokenizer.
-2026-01-10 19:51:06 INFO     Using default tokenizer.
-  0%|          | 4/1596 [00:12<1:02:49,  2.37s/it]2026-01-10 19:51:06 INFO     Using default tokenizer.
-2026-01-10 19:51:06 INFO     Using default tokenizer.
-2026-01-10 19:51:07 INFO     Using default tokenizer.
-2026-01-10 19:51:07 INFO     Using default tokenizer.
-  0%|          | 5/1596 [00:13<48:43,  1.84s/it]  2026-01-10 19:51:09 INFO     Using default tokenizer.
-2026-01-10 19:51:09 INFO     Using default tokenizer.
-2026-01-10 19:51:10 INFO     Using default tokenizer.
-2026-01-10 19:51:10 INFO     Using default tokenizer.
-  0%|          | 6/1596 [00:16<59:42,  2.25s/it]2026-01-10 19:51:10 INFO     Using default tokenizer.
-2026-01-10 19:51:10 INFO     Using default tokenizer.
-2026-01-10 19:51:10 INFO     Using default tokenizer.
-2026-01-10 19:51:10 INFO     Using default tokenizer.
-  0%|          | 7/1596 [00:17<45:44,  1.73s/it]2026-01-10 19:51:11 INFO     Using default tokenizer.
-2026-01-10 19:51:11 INFO     Using default tokenizer.
-2026-01-10 19:51:11 INFO     Using default tokenizer.
-2026-01-10 19:51:11 INFO     Using default tokenizer.
-  1%|          | 8/1596 [00:17<36:36,  1.38s/it]2026-01-10 19:51:11 INFO     Using default tokenizer.
-2026-01-10 19:51:12 INFO     Using default tokenizer.
-2026-01-10 19:51:12 INFO     Using default tokenizer.
-2026-01-10 19:51:12 INFO     Using default tokenizer.
-  1%|          | 9/1596 [00:18<32:00,  1.21s/it]2026-01-10 19:51:12 INFO     Using default tokenizer.
-2026-01-10 19:51:12 INFO     Using default tokenizer.
-2026-01-10 19:51:13 INFO     Using default tokenizer.
-2026-01-10 19:51:13 INFO     Using default tokenizer.
-  1%|          | 10/1596 [00:19<29:24,  1.11s/it]2026-01-10 19:51:13 INFO     Using default tokenizer.
-2026-01-10 19:51:13 INFO     Using default tokenizer.
-2026-01-10 19:51:13 INFO     Using default tokenizer.
-2026-01-10 19:51:13 INFO     Using default tokenizer.
-  1%|          | 11/1596 [00:20<25:24,  1.04it/s]2026-01-10 19:51:14 INFO     Using default tokenizer.
-2026-01-10 19:51:14 INFO     Using default tokenizer.
-2026-01-10 19:51:14 INFO     Using default tokenizer.
-2026-01-10 19:51:14 INFO     Using default tokenizer.
-  1%|          | 12/1596 [00:21<23:56,  1.10it/s]2026-01-10 19:51:15 INFO     Using default tokenizer.
-2026-01-10 19:51:15 INFO     Using default tokenizer.
-2026-01-10 19:51:15 INFO     Using default tokenizer.
-2026-01-10 19:51:15 INFO     Using default tokenizer.
-  1%|          | 13/1596 [00:21<22:42,  1.16it/s]2026-01-10 19:51:19 INFO     Using default tokenizer.
-2026-01-10 19:51:19 INFO     Using default tokenizer.
-2026-01-10 19:51:19 INFO     Using default tokenizer.
-2026-01-10 19:51:19 INFO     Using default tokenizer.
-  1%|          | 14/1596 [00:25<48:37,  1.84s/it]2026-01-10 19:51:19 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-  1%|          | 15/1596 [00:26<39:45,  1.51s/it]2026-01-10 19:51:20 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-2026-01-10 19:51:20 INFO     Using default tokenizer.
-  1%|          | 16/1596 [00:27<32:56,  1.25s/it]2026-01-10 19:51:21 INFO     Using default tokenizer.
-2026-01-10 19:51:21 INFO     Using default tokenizer.
-2026-01-10 19:51:21 INFO     Using default tokenizer.
-2026-01-10 19:51:21 INFO     Using default tokenizer.
-  1%|          | 17/1596 [00:27<28:04,  1.07s/it]2026-01-10 19:51:21 INFO     Using default tokenizer.
-2026-01-10 19:51:21 INFO     Using default tokenizer.
-2026-01-10 19:51:22 INFO     Using default tokenizer.
-2026-01-10 19:51:22 INFO     Using default tokenizer.
-  1%|          | 18/1596 [00:28<25:17,  1.04it/s]2026-01-10 19:51:22 INFO     Using default tokenizer.
-2026-01-10 19:51:22 INFO     Using default tokenizer.
-2026-01-10 19:51:22 INFO     Using default tokenizer.
-2026-01-10 19:51:22 INFO     Using default tokenizer.
-  1%|          | 19/1596 [00:29<23:09,  1.13it/s]2026-01-10 19:51:23 INFO     Using default tokenizer.
-2026-01-10 19:51:23 INFO     Using default tokenizer.
-2026-01-10 19:51:23 INFO     Using default tokenizer.
-2026-01-10 19:51:23 INFO     Using default tokenizer.
-  1%|▏         | 20/1596 [00:30<22:17,  1.18it/s]2026-01-10 19:51:23 INFO     Using default tokenizer.
-2026-01-10 19:51:24 INFO     Using default tokenizer.
-2026-01-10 19:51:24 INFO     Using default tokenizer.
-2026-01-10 19:51:24 INFO     Using default tokenizer.
-  1%|▏         | 21/1596 [00:30<20:28,  1.28it/s]2026-01-10 19:51:24 INFO     Using default tokenizer.
-2026-01-10 19:51:25 INFO     Using default tokenizer.
-2026-01-10 19:51:25 INFO     Using default tokenizer.
-2026-01-10 19:51:25 INFO     Using default tokenizer.
-  1%|▏         | 22/1596 [00:31<22:14,  1.18it/s]2026-01-10 19:51:25 INFO     Using default tokenizer.
-2026-01-10 19:51:25 INFO     Using default tokenizer.
-2026-01-10 19:51:25 INFO     Using default tokenizer.
-2026-01-10 19:51:26 INFO     Using default tokenizer.
-  1%|▏         | 23/1596 [00:32<21:15,  1.23it/s]2026-01-10 19:51:35 INFO     Using default tokenizer.
-2026-01-10 19:51:35 INFO     Using default tokenizer.
-2026-01-10 19:51:35 INFO     Using default tokenizer.
-2026-01-10 19:51:35 INFO     Using default tokenizer.
-  2%|▏         | 24/1596 [00:42<1:32:20,  3.52s/it]2026-01-10 19:51:36 INFO     Using default tokenizer.
-2026-01-10 19:51:36 INFO     Using default tokenizer.
-2026-01-10 19:51:36 INFO     Using default tokenizer.
-2026-01-10 19:51:36 INFO     Using default tokenizer.
-  2%|▏         | 25/1596 [00:43<1:11:42,  2.74s/it]2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:37 INFO     Using default tokenizer.
-  2%|▏         | 26/1596 [00:43<55:05,  2.11s/it]  2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:37 INFO     Using default tokenizer.
-2026-01-10 19:51:38 INFO     Using default tokenizer.
-  2%|▏         | 27/1596 [00:44<43:54,  1.68s/it]2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-  2%|▏         | 28/1596 [00:47<56:26,  2.16s/it]2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-2026-01-10 19:51:41 INFO     Using default tokenizer.
-  2%|▏         | 29/1596 [00:48<43:55,  1.68s/it]2026-01-10 19:51:42 INFO     Using default tokenizer.
-2026-01-10 19:51:43 INFO     Using default tokenizer.
-2026-01-10 19:51:43 INFO     Using default tokenizer.
-2026-01-10 19:51:43 INFO     Using default tokenizer.
-  2%|▏         | 30/1596 [00:49<40:44,  1.56s/it]2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:44 INFO     Using default tokenizer.
-  2%|▏         | 31/1596 [00:50<38:22,  1.47s/it]2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:44 INFO     Using default tokenizer.
-2026-01-10 19:51:45 INFO     Using default tokenizer.
-  2%|▏         | 32/1596 [00:51<31:28,  1.21s/it]2026-01-10 19:51:45 INFO     Using default tokenizer.
-2026-01-10 19:51:45 INFO     Using default tokenizer.
-2026-01-10 19:51:45 INFO     Using default tokenizer.
-2026-01-10 19:51:45 INFO     Using default tokenizer.
-  2%|▏         | 33/1596 [00:52<27:48,  1.07s/it]2026-01-10 19:51:46 INFO     Using default tokenizer.
-2026-01-10 19:51:46 INFO     Using default tokenizer.
-2026-01-10 19:51:46 INFO     Using default tokenizer.
-2026-01-10 19:51:46 INFO     Using default tokenizer.
-  2%|▏         | 34/1596 [00:52<24:43,  1.05it/s]2026-01-10 19:51:46 INFO     Using default tokenizer.
-2026-01-10 19:51:47 INFO     Using default tokenizer.
-2026-01-10 19:51:47 INFO     Using default tokenizer.
-2026-01-10 19:51:47 INFO     Using default tokenizer.
-  2%|▏         | 35/1596 [00:53<23:29,  1.11it/s]2026-01-10 19:51:47 INFO     Using default tokenizer.
-2026-01-10 19:51:47 INFO     Using default tokenizer.
-2026-01-10 19:51:47 INFO     Using default tokenizer.
-2026-01-10 19:51:48 INFO     Using default tokenizer.
-  2%|▏         | 36/1596 [00:54<22:39,  1.15it/s]2026-01-10 19:51:48 INFO     Using default tokenizer.
-2026-01-10 19:51:48 INFO     Using default tokenizer.
-2026-01-10 19:51:48 INFO     Using default tokenizer.
-2026-01-10 19:51:48 INFO     Using default tokenizer.
-  2%|▏         | 37/1596 [00:55<20:44,  1.25it/s]2026-01-10 19:51:51 INFO     Using default tokenizer.
-2026-01-10 19:51:51 INFO     Using default tokenizer.
-2026-01-10 19:51:51 INFO     Using default tokenizer.
-2026-01-10 19:51:51 INFO     Using default tokenizer.
-  2%|▏         | 38/1596 [00:58<37:11,  1.43s/it]2026-01-10 19:51:54 INFO     Using default tokenizer.
-2026-01-10 19:51:54 INFO     Using default tokenizer.
-2026-01-10 19:51:54 INFO     Using default tokenizer.
-2026-01-10 19:51:54 INFO     Using default tokenizer.
-  2%|▏         | 39/1596 [01:01<48:49,  1.88s/it]2026-01-10 19:51:54 INFO     Using default tokenizer.
-2026-01-10 19:51:54 INFO     Using default tokenizer.
-2026-01-10 19:51:55 INFO     Using default tokenizer.
-2026-01-10 19:51:55 INFO     Using default tokenizer.
-  3%|▎         | 40/1596 [01:01<39:06,  1.51s/it]2026-01-10 19:51:55 INFO     Using default tokenizer.
-2026-01-10 19:51:55 INFO     Using default tokenizer.
-2026-01-10 19:51:55 INFO     Using default tokenizer.
-2026-01-10 19:51:55 INFO     Using default tokenizer.
-  3%|▎         | 41/1596 [01:02<33:29,  1.29s/it]2026-01-10 19:51:56 INFO     Using default tokenizer.
-2026-01-10 19:51:56 INFO     Using default tokenizer.
-2026-01-10 19:51:56 INFO     Using default tokenizer.
-2026-01-10 19:51:56 INFO     Using default tokenizer.
-  3%|▎         | 42/1596 [01:03<29:26,  1.14s/it]2026-01-10 19:51:57 INFO     Using default tokenizer.
-2026-01-10 19:51:57 INFO     Using default tokenizer.
-2026-01-10 19:51:57 INFO     Using default tokenizer.
-2026-01-10 19:51:57 INFO     Using default tokenizer.
-  3%|▎         | 43/1596 [01:03<26:05,  1.01s/it]2026-01-10 19:51:57 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-  3%|▎         | 44/1596 [01:04<24:30,  1.06it/s]2026-01-10 19:51:58 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-2026-01-10 19:51:58 INFO     Using default tokenizer.
-  3%|▎         | 45/1596 [01:05<22:39,  1.14it/s]2026-01-10 19:51:59 INFO     Using default tokenizer.
-2026-01-10 19:51:59 INFO     Using default tokenizer.
-2026-01-10 19:51:59 INFO     Using default tokenizer.
-2026-01-10 19:51:59 INFO     Using default tokenizer.
-  3%|▎         | 46/1596 [01:06<21:06,  1.22it/s]2026-01-10 19:52:04 INFO     Using default tokenizer.
-2026-01-10 19:52:04 INFO     Using default tokenizer.
-2026-01-10 19:52:04 INFO     Using default tokenizer.
-2026-01-10 19:52:04 INFO     Using default tokenizer.
-  3%|▎         | 47/1596 [01:11<55:53,  2.17s/it]2026-01-10 19:52:05 INFO     Using default tokenizer.
-2026-01-10 19:52:05 INFO     Using default tokenizer.
-2026-01-10 19:52:05 INFO     Using default tokenizer.
-2026-01-10 19:52:05 INFO     Using default tokenizer.
-  3%|▎         | 48/1596 [01:12<45:31,  1.76s/it]2026-01-10 19:52:06 INFO     Using default tokenizer.
-2026-01-10 19:52:06 INFO     Using default tokenizer.
-2026-01-10 19:52:06 INFO     Using default tokenizer.
-2026-01-10 19:52:06 INFO     Using default tokenizer.
-  3%|▎         | 49/1596 [01:12<36:38,  1.42s/it]2026-01-10 19:52:07 INFO     Using default tokenizer.
-2026-01-10 19:52:07 INFO     Using default tokenizer.
-2026-01-10 19:52:07 INFO     Using default tokenizer.
-2026-01-10 19:52:07 INFO     Using default tokenizer.
-  3%|▎         | 50/1596 [01:13<34:05,  1.32s/it]2026-01-10 19:52:07 INFO     Using default tokenizer.
-2026-01-10 19:52:07 INFO     Using default tokenizer.
-2026-01-10 19:52:08 INFO     Using default tokenizer.
-2026-01-10 19:52:08 INFO     Using default tokenizer.
-  3%|▎         | 51/1596 [01:14<28:35,  1.11s/it]2026-01-10 19:52:08 INFO     Using default tokenizer.
-2026-01-10 19:52:08 INFO     Using default tokenizer.
-2026-01-10 19:52:08 INFO     Using default tokenizer.
-2026-01-10 19:52:08 INFO     Using default tokenizer.
-  3%|▎         | 52/1596 [01:15<24:41,  1.04it/s]2026-01-10 19:52:08 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-  3%|▎         | 53/1596 [01:15<21:55,  1.17it/s]2026-01-10 19:52:09 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-2026-01-10 19:52:09 INFO     Using default tokenizer.
-  3%|▎         | 54/1596 [01:16<20:09,  1.28it/s]2026-01-10 19:52:13 INFO     Using default tokenizer.
-2026-01-10 19:52:13 INFO     Using default tokenizer.
-2026-01-10 19:52:13 INFO     Using default tokenizer.
-2026-01-10 19:52:13 INFO     Using default tokenizer.
-  3%|▎         | 55/1596 [01:20<41:41,  1.62s/it]2026-01-10 19:52:14 INFO     Using default tokenizer.
-2026-01-10 19:52:14 INFO     Using default tokenizer.
-2026-01-10 19:52:14 INFO     Using default tokenizer.
-2026-01-10 19:52:14 INFO     Using default tokenizer.
-  4%|▎         | 56/1596 [01:21<36:47,  1.43s/it]2026-01-10 19:52:14 INFO     Using default tokenizer.
-2026-01-10 19:52:15 INFO     Using default tokenizer.
-2026-01-10 19:52:15 INFO     Using default tokenizer.
-2026-01-10 19:52:15 INFO     Using default tokenizer.
-  4%|▎         | 57/1596 [01:21<31:12,  1.22s/it]2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:16 INFO     Using default tokenizer.
-  4%|▎         | 58/1596 [01:22<30:37,  1.19s/it]2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:16 INFO     Using default tokenizer.
-2026-01-10 19:52:17 INFO     Using default tokenizer.
-  4%|▎         | 59/1596 [01:23<26:43,  1.04s/it]2026-01-10 19:52:17 INFO     Using default tokenizer.
-2026-01-10 19:52:17 INFO     Using default tokenizer.
-2026-01-10 19:52:17 INFO     Using default tokenizer.
-2026-01-10 19:52:17 INFO     Using default tokenizer.
-  4%|▍         | 60/1596 [01:24<25:17,  1.01it/s]2026-01-10 19:52:18 INFO     Using default tokenizer.
-2026-01-10 19:52:18 INFO     Using default tokenizer.
-2026-01-10 19:52:18 INFO     Using default tokenizer.
-2026-01-10 19:52:18 INFO     Using default tokenizer.
-  4%|▍         | 61/1596 [01:25<23:47,  1.08it/s]2026-01-10 19:52:19 INFO     Using default tokenizer.
-2026-01-10 19:52:19 INFO     Using default tokenizer.
-2026-01-10 19:52:19 INFO     Using default tokenizer.
-2026-01-10 19:52:19 INFO     Using default tokenizer.
-  4%|▍         | 62/1596 [01:26<24:48,  1.03it/s]2026-01-10 19:52:20 INFO     Using default tokenizer.
-2026-01-10 19:52:20 INFO     Using default tokenizer.
-2026-01-10 19:52:20 INFO     Using default tokenizer.
-2026-01-10 19:52:20 INFO     Using default tokenizer.
-  4%|▍         | 63/1596 [01:27<25:51,  1.01s/it]2026-01-10 19:52:21 INFO     Using default tokenizer.
-2026-01-10 19:52:21 INFO     Using default tokenizer.
-2026-01-10 19:52:21 INFO     Using default tokenizer.
-2026-01-10 19:52:21 INFO     Using default tokenizer.
-  4%|▍         | 64/1596 [01:28<24:14,  1.05it/s]2026-01-10 19:52:22 INFO     Using default tokenizer.
-2026-01-10 19:52:22 INFO     Using default tokenizer.
-2026-01-10 19:52:22 INFO     Using default tokenizer.
-2026-01-10 19:52:22 INFO     Using default tokenizer.
-  4%|▍         | 65/1596 [01:29<26:42,  1.05s/it]2026-01-10 19:52:23 INFO     Using default tokenizer.
-2026-01-10 19:52:23 INFO     Using default tokenizer.
-2026-01-10 19:52:23 INFO     Using default tokenizer.
-2026-01-10 19:52:23 INFO     Using default tokenizer.
-  4%|▍         | 66/1596 [01:30<24:56,  1.02it/s]2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:24 INFO     Using default tokenizer.
-  4%|▍         | 67/1596 [01:30<22:16,  1.14it/s]2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:24 INFO     Using default tokenizer.
-2026-01-10 19:52:25 INFO     Using default tokenizer.
-  4%|▍         | 68/1596 [01:31<20:27,  1.24it/s]2026-01-10 19:52:25 INFO     Using default tokenizer.
-2026-01-10 19:52:25 INFO     Using default tokenizer.
-2026-01-10 19:52:25 INFO     Using default tokenizer.
-2026-01-10 19:52:25 INFO     Using default tokenizer.
-  4%|▍         | 69/1596 [01:32<19:09,  1.33it/s]2026-01-10 19:52:26 INFO     Using default tokenizer.
-2026-01-10 19:52:26 INFO     Using default tokenizer.
-2026-01-10 19:52:26 INFO     Using default tokenizer.
-2026-01-10 19:52:26 INFO     Using default tokenizer.
-  4%|▍         | 70/1596 [01:32<19:09,  1.33it/s]2026-01-10 19:52:26 INFO     Using default tokenizer.
-2026-01-10 19:52:26 INFO     Using default tokenizer.
-2026-01-10 19:52:27 INFO     Using default tokenizer.
-2026-01-10 19:52:27 INFO     Using default tokenizer.
-  4%|▍         | 71/1596 [01:33<18:50,  1.35it/s]2026-01-10 19:52:27 INFO     Using default tokenizer.
-2026-01-10 19:52:27 INFO     Using default tokenizer.
-2026-01-10 19:52:27 INFO     Using default tokenizer.
-2026-01-10 19:52:27 INFO     Using default tokenizer.
-  5%|▍         | 72/1596 [01:34<18:03,  1.41it/s]2026-01-10 19:52:28 INFO     Using default tokenizer.
-2026-01-10 19:52:28 INFO     Using default tokenizer.
-2026-01-10 19:52:28 INFO     Using default tokenizer.
-2026-01-10 19:52:28 INFO     Using default tokenizer.
-  5%|▍         | 73/1596 [01:35<18:18,  1.39it/s]2026-01-10 19:52:28 INFO     Using default tokenizer.
-2026-01-10 19:52:29 INFO     Using default tokenizer.
-2026-01-10 19:52:29 INFO     Using default tokenizer.
-2026-01-10 19:52:29 INFO     Using default tokenizer.
-  5%|▍         | 74/1596 [01:35<19:27,  1.30it/s]2026-01-10 19:52:29 INFO     Using default tokenizer.
-2026-01-10 19:52:29 INFO     Using default tokenizer.
-2026-01-10 19:52:30 INFO     Using default tokenizer.
-2026-01-10 19:52:30 INFO     Using default tokenizer.
-  5%|▍         | 75/1596 [01:36<20:14,  1.25it/s]2026-01-10 19:52:30 INFO     Using default tokenizer.
-2026-01-10 19:52:31 INFO     Using default tokenizer.
-2026-01-10 19:52:31 INFO     Using default tokenizer.
-2026-01-10 19:52:31 INFO     Using default tokenizer.
-  5%|▍         | 76/1596 [01:37<22:20,  1.13it/s]2026-01-10 19:52:31 INFO     Using default tokenizer.
-2026-01-10 19:52:31 INFO     Using default tokenizer.
-2026-01-10 19:52:32 INFO     Using default tokenizer.
-2026-01-10 19:52:32 INFO     Using default tokenizer.
-  5%|▍         | 77/1596 [01:38<22:26,  1.13it/s]2026-01-10 19:52:32 INFO     Using default tokenizer.
-2026-01-10 19:52:32 INFO     Using default tokenizer.
-2026-01-10 19:52:32 INFO     Using default tokenizer.
-2026-01-10 19:52:33 INFO     Using default tokenizer.
-  5%|▍         | 78/1596 [01:39<22:35,  1.12it/s]2026-01-10 19:52:33 INFO     Using default tokenizer.
-2026-01-10 19:52:33 INFO     Using default tokenizer.
-2026-01-10 19:52:34 INFO     Using default tokenizer.
-2026-01-10 19:52:34 INFO     Using default tokenizer.
-  5%|▍         | 79/1596 [01:40<23:49,  1.06it/s]2026-01-10 19:52:34 INFO     Using default tokenizer.
-2026-01-10 19:52:34 INFO     Using default tokenizer.
-2026-01-10 19:52:35 INFO     Using default tokenizer.
-2026-01-10 19:52:35 INFO     Using default tokenizer.
-  5%|▌         | 80/1596 [01:41<24:53,  1.01it/s]2026-01-10 19:52:35 INFO     Using default tokenizer.
-2026-01-10 19:52:35 INFO     Using default tokenizer.
-2026-01-10 19:52:35 INFO     Using default tokenizer.
-2026-01-10 19:52:36 INFO     Using default tokenizer.
-  5%|▌         | 81/1596 [01:42<23:47,  1.06it/s]2026-01-10 19:52:37 INFO     Using default tokenizer.
-2026-01-10 19:52:37 INFO     Using default tokenizer.
-2026-01-10 19:52:37 INFO     Using default tokenizer.
-2026-01-10 19:52:37 INFO     Using default tokenizer.
-  5%|▌         | 82/1596 [01:44<27:36,  1.09s/it]2026-01-10 19:52:41 INFO     Using default tokenizer.
-2026-01-10 19:52:41 INFO     Using default tokenizer.
-2026-01-10 19:52:41 INFO     Using default tokenizer.
-2026-01-10 19:52:41 INFO     Using default tokenizer.
-  5%|▌         | 83/1596 [01:48<51:59,  2.06s/it]2026-01-10 19:52:42 INFO     Using default tokenizer.
-2026-01-10 19:52:42 INFO     Using default tokenizer.
-2026-01-10 19:52:42 INFO     Using default tokenizer.
-2026-01-10 19:52:42 INFO     Using default tokenizer.
-  5%|▌         | 84/1596 [01:49<41:54,  1.66s/it]2026-01-10 19:52:43 INFO     Using default tokenizer.
-2026-01-10 19:52:43 INFO     Using default tokenizer.
-2026-01-10 19:52:43 INFO     Using default tokenizer.
-2026-01-10 19:52:43 INFO     Using default tokenizer.
-  5%|▌         | 85/1596 [01:49<35:09,  1.40s/it]2026-01-10 19:52:43 INFO     Using default tokenizer.
-2026-01-10 19:52:43 INFO     Using default tokenizer.
-2026-01-10 19:52:44 INFO     Using default tokenizer.
-2026-01-10 19:52:44 INFO     Using default tokenizer.
-  5%|▌         | 86/1596 [01:50<30:26,  1.21s/it]2026-01-10 19:52:44 INFO     Using default tokenizer.
-2026-01-10 19:52:44 INFO     Using default tokenizer.
-2026-01-10 19:52:45 INFO     Using default tokenizer.
-2026-01-10 19:52:45 INFO     Using default tokenizer.
-  5%|▌         | 87/1596 [01:51<28:04,  1.12s/it]2026-01-10 19:52:45 INFO     Using default tokenizer.
-2026-01-10 19:52:45 INFO     Using default tokenizer.
-2026-01-10 19:52:45 INFO     Using default tokenizer.
-2026-01-10 19:52:45 INFO     Using default tokenizer.
-  6%|▌         | 88/1596 [01:52<25:32,  1.02s/it]2026-01-10 19:52:46 INFO     Using default tokenizer.
-2026-01-10 19:52:46 INFO     Using default tokenizer.
-2026-01-10 19:52:46 INFO     Using default tokenizer.
-2026-01-10 19:52:46 INFO     Using default tokenizer.
-  6%|▌         | 89/1596 [01:53<23:23,  1.07it/s]2026-01-10 19:52:47 INFO     Using default tokenizer.
-2026-01-10 19:52:47 INFO     Using default tokenizer.
-2026-01-10 19:52:47 INFO     Using default tokenizer.
-2026-01-10 19:52:47 INFO     Using default tokenizer.
-  6%|▌         | 90/1596 [01:53<22:23,  1.12it/s]2026-01-10 19:52:56 INFO     Using default tokenizer.
-2026-01-10 19:52:56 INFO     Using default tokenizer.
-2026-01-10 19:52:56 INFO     Using default tokenizer.
-2026-01-10 19:52:57 INFO     Using default tokenizer.
-  6%|▌         | 91/1596 [02:03<1:28:28,  3.53s/it]2026-01-10 19:52:57 INFO     Using default tokenizer.
-2026-01-10 19:52:57 INFO     Using default tokenizer.
-2026-01-10 19:52:57 INFO     Using default tokenizer.
-2026-01-10 19:52:57 INFO     Using default tokenizer.
-  6%|▌         | 92/1596 [02:04<1:06:13,  2.64s/it]2026-01-10 19:52:58 INFO     Using default tokenizer.
-2026-01-10 19:52:58 INFO     Using default tokenizer.
-2026-01-10 19:52:58 INFO     Using default tokenizer.
-2026-01-10 19:52:58 INFO     Using default tokenizer.
-  6%|▌         | 93/1596 [02:05<52:36,  2.10s/it]  2026-01-10 19:52:58 INFO     Using default tokenizer.
-2026-01-10 19:52:59 INFO     Using default tokenizer.
-2026-01-10 19:52:59 INFO     Using default tokenizer.
-2026-01-10 19:52:59 INFO     Using default tokenizer.
-  6%|▌         | 94/1596 [02:05<42:36,  1.70s/it]2026-01-10 19:53:00 INFO     Using default tokenizer.
-2026-01-10 19:53:00 INFO     Using default tokenizer.
-2026-01-10 19:53:00 INFO     Using default tokenizer.
-2026-01-10 19:53:00 INFO     Using default tokenizer.
-  6%|▌         | 95/1596 [02:07<41:15,  1.65s/it]2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-  6%|▌         | 96/1596 [02:10<55:40,  2.23s/it]2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-2026-01-10 19:53:04 INFO     Using default tokenizer.
-  6%|▌         | 97/1596 [02:11<43:33,  1.74s/it]2026-01-10 19:53:05 INFO     Using default tokenizer.
-2026-01-10 19:53:05 INFO     Using default tokenizer.
-2026-01-10 19:53:05 INFO     Using default tokenizer.
-2026-01-10 19:53:05 INFO     Using default tokenizer.
-  6%|▌         | 98/1596 [02:12<34:41,  1.39s/it]2026-01-10 19:53:05 INFO     Using default tokenizer.
-2026-01-10 19:53:05 INFO     Using default tokenizer.
-2026-01-10 19:53:06 INFO     Using default tokenizer.
-2026-01-10 19:53:06 INFO     Using default tokenizer.
-  6%|▌         | 99/1596 [02:12<28:49,  1.16s/it]2026-01-10 19:53:06 INFO     Using default tokenizer.
-2026-01-10 19:53:06 INFO     Using default tokenizer.
-2026-01-10 19:53:06 INFO     Using default tokenizer.
-2026-01-10 19:53:06 INFO     Using default tokenizer.
-  6%|▋         | 100/1596 [02:13<24:39,  1.01it/s]2026-01-10 19:53:07 INFO     Using default tokenizer.
-2026-01-10 19:53:07 INFO     Using default tokenizer.
-2026-01-10 19:53:07 INFO     Using default tokenizer.
-2026-01-10 19:53:07 INFO     Using default tokenizer.
-  6%|▋         | 101/1596 [02:14<25:34,  1.03s/it]2026-01-10 19:53:08 INFO     Using default tokenizer.
-2026-01-10 19:53:08 INFO     Using default tokenizer.
-2026-01-10 19:53:08 INFO     Using default tokenizer.
-2026-01-10 19:53:08 INFO     Using default tokenizer.
-  6%|▋         | 102/1596 [02:15<25:01,  1.01s/it]2026-01-10 19:53:09 INFO     Using default tokenizer.
-2026-01-10 19:53:09 INFO     Using default tokenizer.
-2026-01-10 19:53:09 INFO     Using default tokenizer.
-2026-01-10 19:53:09 INFO     Using default tokenizer.
-  6%|▋         | 103/1596 [02:16<23:15,  1.07it/s]2026-01-10 19:53:09 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-  7%|▋         | 104/1596 [02:16<21:03,  1.18it/s]2026-01-10 19:53:10 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-2026-01-10 19:53:10 INFO     Using default tokenizer.
-  7%|▋         | 105/1596 [02:17<19:56,  1.25it/s]2026-01-10 19:53:11 INFO     Using default tokenizer.
-2026-01-10 19:53:11 INFO     Using default tokenizer.
-2026-01-10 19:53:11 INFO     Using default tokenizer.
-2026-01-10 19:53:11 INFO     Using default tokenizer.
-  7%|▋         | 106/1596 [02:18<20:28,  1.21it/s]2026-01-10 19:53:13 INFO     Using default tokenizer.
-2026-01-10 19:53:13 INFO     Using default tokenizer.
-2026-01-10 19:53:13 INFO     Using default tokenizer.
-2026-01-10 19:53:13 INFO     Using default tokenizer.
-  7%|▋         | 107/1596 [02:20<29:20,  1.18s/it]2026-01-10 19:53:14 INFO     Using default tokenizer.
-2026-01-10 19:53:14 INFO     Using default tokenizer.
-2026-01-10 19:53:14 INFO     Using default tokenizer.
-2026-01-10 19:53:14 INFO     Using default tokenizer.
-  7%|▋         | 108/1596 [02:21<27:40,  1.12s/it]2026-01-10 19:53:15 INFO     Using default tokenizer.
-2026-01-10 19:53:15 INFO     Using default tokenizer.
-2026-01-10 19:53:15 INFO     Using default tokenizer.
-2026-01-10 19:53:15 INFO     Using default tokenizer.
-  7%|▋         | 109/1596 [02:22<25:20,  1.02s/it]2026-01-10 19:53:16 INFO     Using default tokenizer.
-2026-01-10 19:53:16 INFO     Using default tokenizer.
-2026-01-10 19:53:16 INFO     Using default tokenizer.
-2026-01-10 19:53:16 INFO     Using default tokenizer.
-  7%|▋         | 110/1596 [02:23<24:33,  1.01it/s]2026-01-10 19:53:28 INFO     Using default tokenizer.
-2026-01-10 19:53:28 INFO     Using default tokenizer.
-2026-01-10 19:53:28 INFO     Using default tokenizer.
-2026-01-10 19:53:28 INFO     Using default tokenizer.
-  7%|▋         | 111/1596 [02:35<1:46:10,  4.29s/it]2026-01-10 19:53:28 INFO     Using default tokenizer.
-2026-01-10 19:53:28 INFO     Using default tokenizer.
-2026-01-10 19:53:29 INFO     Using default tokenizer.
-2026-01-10 19:53:29 INFO     Using default tokenizer.
-  7%|▋         | 112/1596 [02:35<1:19:10,  3.20s/it]2026-01-10 19:53:29 INFO     Using default tokenizer.
-2026-01-10 19:53:29 INFO     Using default tokenizer.
-2026-01-10 19:53:29 INFO     Using default tokenizer.
-2026-01-10 19:53:29 INFO     Using default tokenizer.
-  7%|▋         | 113/1596 [02:36<1:01:00,  2.47s/it]2026-01-10 19:53:30 INFO     Using default tokenizer.
-2026-01-10 19:53:30 INFO     Using default tokenizer.
-2026-01-10 19:53:30 INFO     Using default tokenizer.
-2026-01-10 19:53:30 INFO     Using default tokenizer.
-  7%|▋         | 114/1596 [02:37<47:54,  1.94s/it]  2026-01-10 19:53:31 INFO     Using default tokenizer.
-2026-01-10 19:53:31 INFO     Using default tokenizer.
-2026-01-10 19:53:31 INFO     Using default tokenizer.
-2026-01-10 19:53:31 INFO     Using default tokenizer.
-  7%|▋         | 115/1596 [02:37<39:40,  1.61s/it]2026-01-10 19:53:32 INFO     Using default tokenizer.
-2026-01-10 19:53:32 INFO     Using default tokenizer.
-2026-01-10 19:53:32 INFO     Using default tokenizer.
-2026-01-10 19:53:32 INFO     Using default tokenizer.
-  7%|▋         | 116/1596 [02:39<35:48,  1.45s/it]2026-01-10 19:53:32 INFO     Using default tokenizer.
-srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
-srun: got SIGCONT
-slurmstepd: error: *** STEP 64632.0 ON hpdar06c01s01 CANCELLED AT 2026-01-10T19:53:32 ***
-2026-01-10 19:53:32 INFO     Using default tokenizer.
-slurmstepd: error: *** JOB 64632 ON hpdar06c01s01 CANCELLED AT 2026-01-10T19:53:32 ***
-srun: forcing job termination
-srun: error: hpdar06c01s01: task 0: Terminated

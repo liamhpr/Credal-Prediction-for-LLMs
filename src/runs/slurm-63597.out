@@ -1,1188 +1,0 @@
-Using run_id: 5quy0nhe
-Using model: opt-350m
-Starting generate.py
-2026-01-08 21:15:35 INFO     Starting generate.py...
-2026-01-08 21:15:35 INFO     Starting wandb
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run 5quy0nhe
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260108_211535-5quy0nhe
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run eager-grass-40
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe
-2026-01-08 21:17:48 WARNING  Loading cached split indices for dataset at data/sets/coqa_dataset/cache-c8db36216095fb44.arrow and data/sets/coqa_dataset/cache-f8c3168ff32fa376.arrow
-2026-01-08 21:17:48 WARNING  Parameter 'function'=<function encode at 0x14fbf7a7acb0> of the transform datasets.arrow_dataset.Dataset._map_single couldn't be hashed properly, a random hash was used instead. Make sure your transforms and parameters are serializable with pickle or dill for the dataset fingerprinting and caching to work. If you reuse this transform, the caching mechanism will consider it to be different from the previous calls and recompute everything. This warning is only showed once. Subsequent hashing failures won't be showed.
-  0%|          | 0/159 [00:00<?, ?ex/s] 10%|█         | 16/159 [00:00<00:00, 149.49ex/s] 25%|██▍       | 39/159 [00:00<00:00, 194.50ex/s] 41%|████      | 65/159 [00:00<00:00, 220.66ex/s] 55%|█████▌    | 88/159 [00:00<00:00, 220.94ex/s] 72%|███████▏  | 114/159 [00:00<00:00, 232.37ex/s] 87%|████████▋ | 138/159 [00:00<00:00, 234.45ex/s]100%|██████████| 159/159 [00:00<00:00, 231.76ex/s]
-2026-01-08 21:17:51 INFO     Generating 5 generations
-  0%|          | 0/159 [00:00<?, ?it/s]2026-01-08 21:17:53 INFO     Using default tokenizer.
-2026-01-08 21:17:53 INFO     Using default tokenizer.
-2026-01-08 21:17:53 INFO     Using default tokenizer.
-2026-01-08 21:17:53 INFO     Using default tokenizer.
-  1%|          | 1/159 [00:02<05:40,  2.16s/it]2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:54 INFO     Using default tokenizer.
-  1%|▏         | 2/159 [00:02<03:15,  1.24s/it]2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:54 INFO     Using default tokenizer.
-2026-01-08 21:17:55 INFO     Using default tokenizer.
-  2%|▏         | 3/159 [00:03<02:38,  1.02s/it]2026-01-08 21:17:55 INFO     Using default tokenizer.
-2026-01-08 21:17:55 INFO     Using default tokenizer.
-2026-01-08 21:17:55 INFO     Using default tokenizer.
-2026-01-08 21:17:55 INFO     Using default tokenizer.
-  3%|▎         | 4/159 [00:04<02:11,  1.17it/s]2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-  3%|▎         | 5/159 [00:04<02:05,  1.23it/s]2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-2026-01-08 21:17:56 INFO     Using default tokenizer.
-  4%|▍         | 6/159 [00:05<01:52,  1.36it/s]2026-01-08 21:17:59 INFO     Using default tokenizer.
-2026-01-08 21:17:59 INFO     Using default tokenizer.
-2026-01-08 21:17:59 INFO     Using default tokenizer.
-2026-01-08 21:17:59 INFO     Using default tokenizer.
-  4%|▍         | 7/159 [00:08<03:37,  1.43s/it]2026-01-08 21:18:00 INFO     Using default tokenizer.
-2026-01-08 21:18:00 INFO     Using default tokenizer.
-2026-01-08 21:18:00 INFO     Using default tokenizer.
-2026-01-08 21:18:00 INFO     Using default tokenizer.
-  5%|▌         | 8/159 [00:08<02:59,  1.19s/it]2026-01-08 21:18:00 INFO     Using default tokenizer.
-2026-01-08 21:18:00 INFO     Using default tokenizer.
-2026-01-08 21:18:01 INFO     Using default tokenizer.
-2026-01-08 21:18:01 INFO     Using default tokenizer.
-  6%|▌         | 9/159 [00:09<02:32,  1.02s/it]2026-01-08 21:18:01 INFO     Using default tokenizer.
-2026-01-08 21:18:01 INFO     Using default tokenizer.
-2026-01-08 21:18:01 INFO     Using default tokenizer.
-2026-01-08 21:18:01 INFO     Using default tokenizer.
-  6%|▋         | 10/159 [00:10<02:16,  1.09it/s]2026-01-08 21:18:02 INFO     Using default tokenizer.
-2026-01-08 21:18:02 INFO     Using default tokenizer.
-2026-01-08 21:18:02 INFO     Using default tokenizer.
-2026-01-08 21:18:02 INFO     Using default tokenizer.
-  7%|▋         | 11/159 [00:10<02:05,  1.18it/s]2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:03 INFO     Using default tokenizer.
-  8%|▊         | 12/159 [00:11<02:08,  1.14it/s]2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:03 INFO     Using default tokenizer.
-2026-01-08 21:18:04 INFO     Using default tokenizer.
-  8%|▊         | 13/159 [00:12<01:54,  1.27it/s]2026-01-08 21:18:04 INFO     Using default tokenizer.
-2026-01-08 21:18:04 INFO     Using default tokenizer.
-2026-01-08 21:18:04 INFO     Using default tokenizer.
-2026-01-08 21:18:04 INFO     Using default tokenizer.
-  9%|▉         | 14/159 [00:13<01:47,  1.35it/s]2026-01-08 21:18:05 INFO     Using default tokenizer.
-2026-01-08 21:18:05 INFO     Using default tokenizer.
-2026-01-08 21:18:05 INFO     Using default tokenizer.
-2026-01-08 21:18:05 INFO     Using default tokenizer.
-  9%|▉         | 15/159 [00:14<02:04,  1.16it/s]2026-01-08 21:18:06 INFO     Using default tokenizer.
-2026-01-08 21:18:06 INFO     Using default tokenizer.
-2026-01-08 21:18:06 INFO     Using default tokenizer.
-2026-01-08 21:18:07 INFO     Using default tokenizer.
- 10%|█         | 16/159 [00:15<02:23,  1.00s/it]2026-01-08 21:18:08 INFO     Using default tokenizer.
-2026-01-08 21:18:08 INFO     Using default tokenizer.
-2026-01-08 21:18:08 INFO     Using default tokenizer.
-2026-01-08 21:18:08 INFO     Using default tokenizer.
- 11%|█         | 17/159 [00:17<02:40,  1.13s/it]2026-01-08 21:18:08 INFO     Using default tokenizer.
-2026-01-08 21:18:09 INFO     Using default tokenizer.
-2026-01-08 21:18:09 INFO     Using default tokenizer.
-2026-01-08 21:18:09 INFO     Using default tokenizer.
- 11%|█▏        | 18/159 [00:17<02:27,  1.04s/it]2026-01-08 21:18:09 INFO     Using default tokenizer.
-2026-01-08 21:18:09 INFO     Using default tokenizer.
-2026-01-08 21:18:10 INFO     Using default tokenizer.
-2026-01-08 21:18:10 INFO     Using default tokenizer.
- 12%|█▏        | 19/159 [00:18<02:15,  1.04it/s]2026-01-08 21:18:10 INFO     Using default tokenizer.
-2026-01-08 21:18:10 INFO     Using default tokenizer.
-2026-01-08 21:18:10 INFO     Using default tokenizer.
-2026-01-08 21:18:10 INFO     Using default tokenizer.
- 13%|█▎        | 20/159 [00:19<02:03,  1.12it/s]2026-01-08 21:18:11 INFO     Using default tokenizer.
-2026-01-08 21:18:11 INFO     Using default tokenizer.
-2026-01-08 21:18:11 INFO     Using default tokenizer.
-2026-01-08 21:18:11 INFO     Using default tokenizer.
- 13%|█▎        | 21/159 [00:20<01:54,  1.20it/s]2026-01-08 21:18:11 INFO     Using default tokenizer.
-2026-01-08 21:18:12 INFO     Using default tokenizer.
-2026-01-08 21:18:12 INFO     Using default tokenizer.
-2026-01-08 21:18:12 INFO     Using default tokenizer.
- 14%|█▍        | 22/159 [00:20<01:44,  1.32it/s]2026-01-08 21:18:12 INFO     Using default tokenizer.
-2026-01-08 21:18:12 INFO     Using default tokenizer.
-2026-01-08 21:18:13 INFO     Using default tokenizer.
-2026-01-08 21:18:13 INFO     Using default tokenizer.
- 14%|█▍        | 23/159 [00:21<01:48,  1.26it/s]2026-01-08 21:18:13 INFO     Using default tokenizer.
-2026-01-08 21:18:13 INFO     Using default tokenizer.
-2026-01-08 21:18:13 INFO     Using default tokenizer.
-2026-01-08 21:18:13 INFO     Using default tokenizer.
- 15%|█▌        | 24/159 [00:22<01:40,  1.34it/s]2026-01-08 21:18:14 INFO     Using default tokenizer.
-2026-01-08 21:18:14 INFO     Using default tokenizer.
-2026-01-08 21:18:14 INFO     Using default tokenizer.
-2026-01-08 21:18:14 INFO     Using default tokenizer.
- 16%|█▌        | 25/159 [00:23<01:45,  1.27it/s]2026-01-08 21:18:15 INFO     Using default tokenizer.
-2026-01-08 21:18:15 INFO     Using default tokenizer.
-2026-01-08 21:18:15 INFO     Using default tokenizer.
-2026-01-08 21:18:15 INFO     Using default tokenizer.
- 16%|█▋        | 26/159 [00:23<01:48,  1.22it/s]2026-01-08 21:18:15 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
- 17%|█▋        | 27/159 [00:24<01:44,  1.26it/s]2026-01-08 21:18:16 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
-2026-01-08 21:18:16 INFO     Using default tokenizer.
- 18%|█▊        | 28/159 [00:25<01:33,  1.40it/s]2026-01-08 21:18:17 INFO     Using default tokenizer.
-2026-01-08 21:18:17 INFO     Using default tokenizer.
-2026-01-08 21:18:17 INFO     Using default tokenizer.
-2026-01-08 21:18:17 INFO     Using default tokenizer.
- 18%|█▊        | 29/159 [00:25<01:28,  1.47it/s]2026-01-08 21:18:17 INFO     Using default tokenizer.
-2026-01-08 21:18:17 INFO     Using default tokenizer.
-2026-01-08 21:18:18 INFO     Using default tokenizer.
-2026-01-08 21:18:18 INFO     Using default tokenizer.
- 19%|█▉        | 30/159 [00:26<01:30,  1.42it/s]2026-01-08 21:18:19 INFO     Using default tokenizer.
-2026-01-08 21:18:19 INFO     Using default tokenizer.
-2026-01-08 21:18:19 INFO     Using default tokenizer.
-2026-01-08 21:18:19 INFO     Using default tokenizer.
- 19%|█▉        | 31/159 [00:28<02:06,  1.01it/s]2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:20 INFO     Using default tokenizer.
- 20%|██        | 32/159 [00:28<01:52,  1.13it/s]2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:20 INFO     Using default tokenizer.
-2026-01-08 21:18:21 INFO     Using default tokenizer.
- 21%|██        | 33/159 [00:29<01:43,  1.22it/s]2026-01-08 21:18:21 INFO     Using default tokenizer.
-2026-01-08 21:18:21 INFO     Using default tokenizer.
-2026-01-08 21:18:21 INFO     Using default tokenizer.
-2026-01-08 21:18:21 INFO     Using default tokenizer.
- 21%|██▏       | 34/159 [00:30<01:34,  1.32it/s]2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
- 22%|██▏       | 35/159 [00:30<01:29,  1.38it/s]2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
-2026-01-08 21:18:22 INFO     Using default tokenizer.
- 23%|██▎       | 36/159 [00:31<01:23,  1.47it/s]2026-01-08 21:18:23 INFO     Using default tokenizer.
-2026-01-08 21:18:23 INFO     Using default tokenizer.
-2026-01-08 21:18:23 INFO     Using default tokenizer.
-2026-01-08 21:18:23 INFO     Using default tokenizer.
- 23%|██▎       | 37/159 [00:32<01:24,  1.45it/s]2026-01-08 21:18:24 INFO     Using default tokenizer.
-2026-01-08 21:18:24 INFO     Using default tokenizer.
-2026-01-08 21:18:24 INFO     Using default tokenizer.
-2026-01-08 21:18:24 INFO     Using default tokenizer.
- 24%|██▍       | 38/159 [00:32<01:28,  1.37it/s]2026-01-08 21:18:24 INFO     Using default tokenizer.
-2026-01-08 21:18:24 INFO     Using default tokenizer.
-2026-01-08 21:18:25 INFO     Using default tokenizer.
-2026-01-08 21:18:25 INFO     Using default tokenizer.
- 25%|██▍       | 39/159 [00:33<01:25,  1.40it/s]2026-01-08 21:18:25 INFO     Using default tokenizer.
-2026-01-08 21:18:25 INFO     Using default tokenizer.
-2026-01-08 21:18:25 INFO     Using default tokenizer.
-2026-01-08 21:18:25 INFO     Using default tokenizer.
- 25%|██▌       | 40/159 [00:34<01:29,  1.33it/s]2026-01-08 21:18:26 INFO     Using default tokenizer.
-2026-01-08 21:18:26 INFO     Using default tokenizer.
-2026-01-08 21:18:26 INFO     Using default tokenizer.
-2026-01-08 21:18:26 INFO     Using default tokenizer.
- 26%|██▌       | 41/159 [00:35<01:24,  1.40it/s]2026-01-08 21:18:26 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
- 26%|██▋       | 42/159 [00:35<01:19,  1.46it/s]2026-01-08 21:18:27 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
-2026-01-08 21:18:27 INFO     Using default tokenizer.
- 27%|██▋       | 43/159 [00:36<01:14,  1.55it/s]2026-01-08 21:18:28 INFO     Using default tokenizer.
-2026-01-08 21:18:28 INFO     Using default tokenizer.
-2026-01-08 21:18:28 INFO     Using default tokenizer.
-2026-01-08 21:18:28 INFO     Using default tokenizer.
- 28%|██▊       | 44/159 [00:37<01:18,  1.46it/s]2026-01-08 21:18:28 INFO     Using default tokenizer.
-2026-01-08 21:18:29 INFO     Using default tokenizer.
-2026-01-08 21:18:29 INFO     Using default tokenizer.
-2026-01-08 21:18:29 INFO     Using default tokenizer.
- 28%|██▊       | 45/159 [00:37<01:24,  1.35it/s]2026-01-08 21:18:30 INFO     Using default tokenizer.
-2026-01-08 21:18:30 INFO     Using default tokenizer.
-2026-01-08 21:18:30 INFO     Using default tokenizer.
-2026-01-08 21:18:30 INFO     Using default tokenizer.
- 29%|██▉       | 46/159 [00:38<01:35,  1.19it/s]2026-01-08 21:18:31 INFO     Using default tokenizer.
-2026-01-08 21:18:31 INFO     Using default tokenizer.
-2026-01-08 21:18:31 INFO     Using default tokenizer.
-2026-01-08 21:18:31 INFO     Using default tokenizer.
- 30%|██▉       | 47/159 [00:40<01:56,  1.04s/it]2026-01-08 21:18:32 INFO     Using default tokenizer.
-2026-01-08 21:18:32 INFO     Using default tokenizer.
-2026-01-08 21:18:32 INFO     Using default tokenizer.
-2026-01-08 21:18:32 INFO     Using default tokenizer.
- 30%|███       | 48/159 [00:41<01:52,  1.02s/it]2026-01-08 21:18:33 INFO     Using default tokenizer.
-2026-01-08 21:18:33 INFO     Using default tokenizer.
-2026-01-08 21:18:34 INFO     Using default tokenizer.
-2026-01-08 21:18:34 INFO     Using default tokenizer.
- 31%|███       | 49/159 [00:42<02:01,  1.11s/it]2026-01-08 21:18:34 INFO     Using default tokenizer.
-2026-01-08 21:18:34 INFO     Using default tokenizer.
-2026-01-08 21:18:34 INFO     Using default tokenizer.
-2026-01-08 21:18:35 INFO     Using default tokenizer.
- 31%|███▏      | 50/159 [00:43<01:52,  1.03s/it]2026-01-08 21:18:35 INFO     Using default tokenizer.
-2026-01-08 21:18:35 INFO     Using default tokenizer.
-2026-01-08 21:18:35 INFO     Using default tokenizer.
-2026-01-08 21:18:35 INFO     Using default tokenizer.
- 32%|███▏      | 51/159 [00:44<01:44,  1.03it/s]2026-01-08 21:18:36 INFO     Using default tokenizer.
-2026-01-08 21:18:36 INFO     Using default tokenizer.
-2026-01-08 21:18:36 INFO     Using default tokenizer.
-2026-01-08 21:18:37 INFO     Using default tokenizer.
- 33%|███▎      | 52/159 [00:45<01:50,  1.03s/it]2026-01-08 21:18:37 INFO     Using default tokenizer.
-2026-01-08 21:18:38 INFO     Using default tokenizer.
-2026-01-08 21:18:38 INFO     Using default tokenizer.
-2026-01-08 21:18:38 INFO     Using default tokenizer.
- 33%|███▎      | 53/159 [00:46<01:57,  1.10s/it]2026-01-08 21:18:46 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
- 34%|███▍      | 54/159 [00:55<05:59,  3.43s/it]2026-01-08 21:18:47 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
-2026-01-08 21:18:47 INFO     Using default tokenizer.
- 35%|███▍      | 55/159 [00:56<04:29,  2.59s/it]2026-01-08 21:18:48 INFO     Using default tokenizer.
-2026-01-08 21:18:48 INFO     Using default tokenizer.
-2026-01-08 21:18:48 INFO     Using default tokenizer.
-2026-01-08 21:18:48 INFO     Using default tokenizer.
- 35%|███▌      | 56/159 [00:57<03:28,  2.02s/it]2026-01-08 21:19:00 INFO     Using default tokenizer.
-2026-01-08 21:19:00 INFO     Using default tokenizer.
-2026-01-08 21:19:00 INFO     Using default tokenizer.
-2026-01-08 21:19:00 INFO     Using default tokenizer.
- 36%|███▌      | 57/159 [01:09<08:39,  5.09s/it]2026-01-08 21:19:01 INFO     Using default tokenizer.
-2026-01-08 21:19:01 INFO     Using default tokenizer.
-2026-01-08 21:19:01 INFO     Using default tokenizer.
-2026-01-08 21:19:01 INFO     Using default tokenizer.
- 36%|███▋      | 58/159 [01:10<06:29,  3.86s/it]2026-01-08 21:19:02 INFO     Using default tokenizer.
-2026-01-08 21:19:02 INFO     Using default tokenizer.
-2026-01-08 21:19:02 INFO     Using default tokenizer.
-2026-01-08 21:19:02 INFO     Using default tokenizer.
- 37%|███▋      | 59/159 [01:10<04:47,  2.87s/it]2026-01-08 21:19:02 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
- 38%|███▊      | 60/159 [01:11<03:43,  2.25s/it]2026-01-08 21:19:03 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
-2026-01-08 21:19:03 INFO     Using default tokenizer.
- 38%|███▊      | 61/159 [01:12<02:57,  1.81s/it]2026-01-08 21:19:04 INFO     Using default tokenizer.
-2026-01-08 21:19:04 INFO     Using default tokenizer.
-2026-01-08 21:19:04 INFO     Using default tokenizer.
-2026-01-08 21:19:04 INFO     Using default tokenizer.
- 39%|███▉      | 62/159 [01:13<02:24,  1.49s/it]2026-01-08 21:19:05 INFO     Using default tokenizer.
-2026-01-08 21:19:05 INFO     Using default tokenizer.
-2026-01-08 21:19:05 INFO     Using default tokenizer.
-2026-01-08 21:19:05 INFO     Using default tokenizer.
- 40%|███▉      | 63/159 [01:13<02:01,  1.26s/it]2026-01-08 21:19:05 INFO     Using default tokenizer.
-2026-01-08 21:19:05 INFO     Using default tokenizer.
-2026-01-08 21:19:06 INFO     Using default tokenizer.
-2026-01-08 21:19:06 INFO     Using default tokenizer.
- 40%|████      | 64/159 [01:14<01:43,  1.09s/it]2026-01-08 21:19:06 INFO     Using default tokenizer.
-2026-01-08 21:19:06 INFO     Using default tokenizer.
-2026-01-08 21:19:07 INFO     Using default tokenizer.
-2026-01-08 21:19:07 INFO     Using default tokenizer.
- 41%|████      | 65/159 [01:15<01:40,  1.07s/it]2026-01-08 21:19:07 INFO     Using default tokenizer.
-2026-01-08 21:19:07 INFO     Using default tokenizer.
-2026-01-08 21:19:07 INFO     Using default tokenizer.
-2026-01-08 21:19:08 INFO     Using default tokenizer.
- 42%|████▏     | 66/159 [01:16<01:33,  1.01s/it]2026-01-08 21:19:08 INFO     Using default tokenizer.
-2026-01-08 21:19:08 INFO     Using default tokenizer.
-2026-01-08 21:19:08 INFO     Using default tokenizer.
-2026-01-08 21:19:08 INFO     Using default tokenizer.
- 42%|████▏     | 67/159 [01:17<01:23,  1.10it/s]2026-01-08 21:19:08 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
- 43%|████▎     | 68/159 [01:17<01:12,  1.25it/s]2026-01-08 21:19:09 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
-2026-01-08 21:19:09 INFO     Using default tokenizer.
- 43%|████▎     | 69/159 [01:18<01:09,  1.30it/s]2026-01-08 21:19:10 INFO     Using default tokenizer.
-2026-01-08 21:19:10 INFO     Using default tokenizer.
-2026-01-08 21:19:10 INFO     Using default tokenizer.
-2026-01-08 21:19:10 INFO     Using default tokenizer.
- 44%|████▍     | 70/159 [01:19<01:07,  1.33it/s]2026-01-08 21:19:11 INFO     Using default tokenizer.
-2026-01-08 21:19:11 INFO     Using default tokenizer.
-2026-01-08 21:19:11 INFO     Using default tokenizer.
-2026-01-08 21:19:11 INFO     Using default tokenizer.
- 45%|████▍     | 71/159 [01:19<01:07,  1.31it/s]2026-01-08 21:19:11 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
- 45%|████▌     | 72/159 [01:20<01:06,  1.32it/s]2026-01-08 21:19:12 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
-2026-01-08 21:19:12 INFO     Using default tokenizer.
- 46%|████▌     | 73/159 [01:21<01:03,  1.35it/s]2026-01-08 21:19:13 INFO     Using default tokenizer.
-2026-01-08 21:19:13 INFO     Using default tokenizer.
-2026-01-08 21:19:13 INFO     Using default tokenizer.
-2026-01-08 21:19:13 INFO     Using default tokenizer.
- 47%|████▋     | 74/159 [01:22<01:01,  1.38it/s]2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:14 INFO     Using default tokenizer.
- 47%|████▋     | 75/159 [01:22<01:03,  1.33it/s]2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:14 INFO     Using default tokenizer.
-2026-01-08 21:19:15 INFO     Using default tokenizer.
- 48%|████▊     | 76/159 [01:23<01:00,  1.37it/s]2026-01-08 21:19:15 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
- 48%|████▊     | 77/159 [01:24<01:09,  1.18it/s]2026-01-08 21:19:16 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
-2026-01-08 21:19:16 INFO     Using default tokenizer.
- 49%|████▉     | 78/159 [01:25<01:07,  1.21it/s]2026-01-08 21:19:17 INFO     Using default tokenizer.
-2026-01-08 21:19:17 INFO     Using default tokenizer.
-2026-01-08 21:19:17 INFO     Using default tokenizer.
-2026-01-08 21:19:17 INFO     Using default tokenizer.
- 50%|████▉     | 79/159 [01:26<01:04,  1.24it/s]2026-01-08 21:19:18 INFO     Using default tokenizer.
-2026-01-08 21:19:18 INFO     Using default tokenizer.
-2026-01-08 21:19:18 INFO     Using default tokenizer.
-2026-01-08 21:19:18 INFO     Using default tokenizer.
- 50%|█████     | 80/159 [01:26<01:01,  1.28it/s]2026-01-08 21:19:18 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
- 51%|█████     | 81/159 [01:27<00:59,  1.30it/s]2026-01-08 21:19:19 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
-2026-01-08 21:19:19 INFO     Using default tokenizer.
- 52%|█████▏    | 82/159 [01:28<00:55,  1.39it/s]2026-01-08 21:19:20 INFO     Using default tokenizer.
-2026-01-08 21:19:20 INFO     Using default tokenizer.
-2026-01-08 21:19:20 INFO     Using default tokenizer.
-2026-01-08 21:19:20 INFO     Using default tokenizer.
- 52%|█████▏    | 83/159 [01:28<00:53,  1.43it/s]2026-01-08 21:19:21 INFO     Using default tokenizer.
-2026-01-08 21:19:21 INFO     Using default tokenizer.
-2026-01-08 21:19:21 INFO     Using default tokenizer.
-2026-01-08 21:19:21 INFO     Using default tokenizer.
- 53%|█████▎    | 84/159 [01:29<00:55,  1.34it/s]2026-01-08 21:19:21 INFO     Using default tokenizer.
-2026-01-08 21:19:21 INFO     Using default tokenizer.
-2026-01-08 21:19:22 INFO     Using default tokenizer.
-2026-01-08 21:19:22 INFO     Using default tokenizer.
- 53%|█████▎    | 85/159 [01:30<00:56,  1.31it/s]2026-01-08 21:19:22 INFO     Using default tokenizer.
-2026-01-08 21:19:22 INFO     Using default tokenizer.
-2026-01-08 21:19:22 INFO     Using default tokenizer.
-2026-01-08 21:19:22 INFO     Using default tokenizer.
- 54%|█████▍    | 86/159 [01:31<00:56,  1.30it/s]2026-01-08 21:19:23 INFO     Using default tokenizer.
-2026-01-08 21:19:23 INFO     Using default tokenizer.
-2026-01-08 21:19:23 INFO     Using default tokenizer.
-2026-01-08 21:19:23 INFO     Using default tokenizer.
- 55%|█████▍    | 87/159 [01:32<00:53,  1.35it/s]2026-01-08 21:19:23 INFO     Using default tokenizer.
-2026-01-08 21:19:23 INFO     Using default tokenizer.
-2026-01-08 21:19:24 INFO     Using default tokenizer.
-2026-01-08 21:19:24 INFO     Using default tokenizer.
- 55%|█████▌    | 88/159 [01:32<00:49,  1.43it/s]2026-01-08 21:19:24 INFO     Using default tokenizer.
-2026-01-08 21:19:24 INFO     Using default tokenizer.
-2026-01-08 21:19:24 INFO     Using default tokenizer.
-2026-01-08 21:19:24 INFO     Using default tokenizer.
- 56%|█████▌    | 89/159 [01:33<00:47,  1.46it/s]2026-01-08 21:19:25 INFO     Using default tokenizer.
-2026-01-08 21:19:25 INFO     Using default tokenizer.
-2026-01-08 21:19:25 INFO     Using default tokenizer.
-2026-01-08 21:19:25 INFO     Using default tokenizer.
- 57%|█████▋    | 90/159 [01:34<00:50,  1.37it/s]2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:26 INFO     Using default tokenizer.
- 57%|█████▋    | 91/159 [01:34<00:50,  1.35it/s]2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:26 INFO     Using default tokenizer.
-2026-01-08 21:19:27 INFO     Using default tokenizer.
- 58%|█████▊    | 92/159 [01:35<00:47,  1.42it/s]2026-01-08 21:19:27 INFO     Using default tokenizer.
-2026-01-08 21:19:27 INFO     Using default tokenizer.
-2026-01-08 21:19:27 INFO     Using default tokenizer.
-2026-01-08 21:19:27 INFO     Using default tokenizer.
- 58%|█████▊    | 93/159 [01:36<00:51,  1.29it/s]2026-01-08 21:19:28 INFO     Using default tokenizer.
-2026-01-08 21:19:28 INFO     Using default tokenizer.
-2026-01-08 21:19:28 INFO     Using default tokenizer.
-2026-01-08 21:19:28 INFO     Using default tokenizer.
- 59%|█████▉    | 94/159 [01:37<00:53,  1.22it/s]2026-01-08 21:19:29 INFO     Using default tokenizer.
-2026-01-08 21:19:29 INFO     Using default tokenizer.
-2026-01-08 21:19:29 INFO     Using default tokenizer.
-2026-01-08 21:19:29 INFO     Using default tokenizer.
- 60%|█████▉    | 95/159 [01:38<00:52,  1.22it/s]2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
- 60%|██████    | 96/159 [01:38<00:47,  1.33it/s]2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
-2026-01-08 21:19:30 INFO     Using default tokenizer.
- 61%|██████    | 97/159 [01:39<00:44,  1.38it/s]2026-01-08 21:19:33 INFO     Using default tokenizer.
-2026-01-08 21:19:33 INFO     Using default tokenizer.
-2026-01-08 21:19:33 INFO     Using default tokenizer.
-2026-01-08 21:19:33 INFO     Using default tokenizer.
- 62%|██████▏   | 98/159 [01:42<01:22,  1.36s/it]2026-01-08 21:19:34 INFO     Using default tokenizer.
-2026-01-08 21:19:34 INFO     Using default tokenizer.
-2026-01-08 21:19:34 INFO     Using default tokenizer.
-2026-01-08 21:19:34 INFO     Using default tokenizer.
- 62%|██████▏   | 99/159 [01:42<01:08,  1.14s/it]2026-01-08 21:19:35 INFO     Using default tokenizer.
-2026-01-08 21:19:35 INFO     Using default tokenizer.
-2026-01-08 21:19:35 INFO     Using default tokenizer.
-2026-01-08 21:19:35 INFO     Using default tokenizer.
- 63%|██████▎   | 100/159 [01:44<01:10,  1.19s/it]2026-01-08 21:19:36 INFO     Using default tokenizer.
-2026-01-08 21:19:36 INFO     Using default tokenizer.
-2026-01-08 21:19:36 INFO     Using default tokenizer.
-2026-01-08 21:19:36 INFO     Using default tokenizer.
- 64%|██████▎   | 101/159 [01:44<00:58,  1.00s/it]2026-01-08 21:19:36 INFO     Using default tokenizer.
-2026-01-08 21:19:37 INFO     Using default tokenizer.
-2026-01-08 21:19:37 INFO     Using default tokenizer.
-2026-01-08 21:19:37 INFO     Using default tokenizer.
- 64%|██████▍   | 102/159 [01:45<00:56,  1.01it/s]2026-01-08 21:19:38 INFO     Using default tokenizer.
-2026-01-08 21:19:38 INFO     Using default tokenizer.
-2026-01-08 21:19:38 INFO     Using default tokenizer.
-2026-01-08 21:19:38 INFO     Using default tokenizer.
- 65%|██████▍   | 103/159 [01:46<00:59,  1.06s/it]2026-01-08 21:19:38 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
- 65%|██████▌   | 104/159 [01:47<00:52,  1.04it/s]2026-01-08 21:19:39 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
-2026-01-08 21:19:39 INFO     Using default tokenizer.
- 66%|██████▌   | 105/159 [01:48<00:47,  1.13it/s]2026-01-08 21:19:40 INFO     Using default tokenizer.
-2026-01-08 21:19:40 INFO     Using default tokenizer.
-2026-01-08 21:19:40 INFO     Using default tokenizer.
-2026-01-08 21:19:40 INFO     Using default tokenizer.
- 67%|██████▋   | 106/159 [01:49<00:42,  1.25it/s]2026-01-08 21:19:40 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
- 67%|██████▋   | 107/159 [01:49<00:39,  1.31it/s]2026-01-08 21:19:41 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
-2026-01-08 21:19:41 INFO     Using default tokenizer.
- 68%|██████▊   | 108/159 [01:50<00:38,  1.34it/s]2026-01-08 21:19:54 INFO     Using default tokenizer.
-2026-01-08 21:19:54 INFO     Using default tokenizer.
-2026-01-08 21:19:54 INFO     Using default tokenizer.
-2026-01-08 21:19:55 INFO     Using default tokenizer.
- 69%|██████▊   | 109/159 [02:03<03:42,  4.46s/it]2026-01-08 21:19:55 INFO     Using default tokenizer.
-2026-01-08 21:19:55 INFO     Using default tokenizer.
-2026-01-08 21:19:55 INFO     Using default tokenizer.
-2026-01-08 21:19:55 INFO     Using default tokenizer.
- 69%|██████▉   | 110/159 [02:04<02:41,  3.30s/it]2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
- 70%|██████▉   | 111/159 [02:04<02:00,  2.51s/it]2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
-2026-01-08 21:19:56 INFO     Using default tokenizer.
- 70%|███████   | 112/159 [02:05<01:30,  1.93s/it]2026-01-08 21:19:59 INFO     Using default tokenizer.
-2026-01-08 21:19:59 INFO     Using default tokenizer.
-2026-01-08 21:19:59 INFO     Using default tokenizer.
-2026-01-08 21:20:00 INFO     Using default tokenizer.
- 71%|███████   | 113/159 [02:08<01:45,  2.30s/it]2026-01-08 21:20:00 INFO     Using default tokenizer.
-2026-01-08 21:20:00 INFO     Using default tokenizer.
-2026-01-08 21:20:00 INFO     Using default tokenizer.
-2026-01-08 21:20:00 INFO     Using default tokenizer.
- 72%|███████▏  | 114/159 [02:09<01:21,  1.81s/it]2026-01-08 21:20:01 INFO     Using default tokenizer.
-2026-01-08 21:20:01 INFO     Using default tokenizer.
-2026-01-08 21:20:01 INFO     Using default tokenizer.
-2026-01-08 21:20:01 INFO     Using default tokenizer.
- 72%|███████▏  | 115/159 [02:09<01:04,  1.47s/it]2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:02 INFO     Using default tokenizer.
- 73%|███████▎  | 116/159 [02:10<00:55,  1.30s/it]2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:02 INFO     Using default tokenizer.
-2026-01-08 21:20:03 INFO     Using default tokenizer.
- 74%|███████▎  | 117/159 [02:11<00:48,  1.15s/it]2026-01-08 21:20:03 INFO     Using default tokenizer.
-2026-01-08 21:20:03 INFO     Using default tokenizer.
-2026-01-08 21:20:03 INFO     Using default tokenizer.
-2026-01-08 21:20:03 INFO     Using default tokenizer.
- 74%|███████▍  | 118/159 [02:12<00:41,  1.01s/it]2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:04 INFO     Using default tokenizer.
- 75%|███████▍  | 119/159 [02:12<00:35,  1.11it/s]2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:04 INFO     Using default tokenizer.
-2026-01-08 21:20:05 INFO     Using default tokenizer.
- 75%|███████▌  | 120/159 [02:13<00:31,  1.24it/s]2026-01-08 21:20:05 INFO     Using default tokenizer.
-2026-01-08 21:20:05 INFO     Using default tokenizer.
-2026-01-08 21:20:05 INFO     Using default tokenizer.
-2026-01-08 21:20:05 INFO     Using default tokenizer.
- 76%|███████▌  | 121/159 [02:14<00:29,  1.27it/s]2026-01-08 21:20:06 INFO     Using default tokenizer.
-2026-01-08 21:20:06 INFO     Using default tokenizer.
-2026-01-08 21:20:06 INFO     Using default tokenizer.
-2026-01-08 21:20:06 INFO     Using default tokenizer.
- 77%|███████▋  | 122/159 [02:14<00:28,  1.29it/s]2026-01-08 21:20:06 INFO     Using default tokenizer.
-2026-01-08 21:20:06 INFO     Using default tokenizer.
-2026-01-08 21:20:07 INFO     Using default tokenizer.
-2026-01-08 21:20:07 INFO     Using default tokenizer.
- 77%|███████▋  | 123/159 [02:15<00:26,  1.38it/s]2026-01-08 21:20:07 INFO     Using default tokenizer.
-2026-01-08 21:20:07 INFO     Using default tokenizer.
-2026-01-08 21:20:07 INFO     Using default tokenizer.
-2026-01-08 21:20:07 INFO     Using default tokenizer.
- 78%|███████▊  | 124/159 [02:16<00:26,  1.32it/s]2026-01-08 21:20:08 INFO     Using default tokenizer.
-2026-01-08 21:20:08 INFO     Using default tokenizer.
-2026-01-08 21:20:08 INFO     Using default tokenizer.
-2026-01-08 21:20:08 INFO     Using default tokenizer.
- 79%|███████▊  | 125/159 [02:17<00:24,  1.38it/s]2026-01-08 21:20:08 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
- 79%|███████▉  | 126/159 [02:17<00:23,  1.38it/s]2026-01-08 21:20:09 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
-2026-01-08 21:20:09 INFO     Using default tokenizer.
- 80%|███████▉  | 127/159 [02:18<00:21,  1.48it/s]2026-01-08 21:20:10 INFO     Using default tokenizer.
-2026-01-08 21:20:10 INFO     Using default tokenizer.
-2026-01-08 21:20:10 INFO     Using default tokenizer.
-2026-01-08 21:20:10 INFO     Using default tokenizer.
- 81%|████████  | 128/159 [02:19<00:21,  1.43it/s]2026-01-08 21:20:10 INFO     Using default tokenizer.
-2026-01-08 21:20:10 INFO     Using default tokenizer.
-2026-01-08 21:20:11 INFO     Using default tokenizer.
-2026-01-08 21:20:11 INFO     Using default tokenizer.
- 81%|████████  | 129/159 [02:19<00:19,  1.51it/s]2026-01-08 21:20:11 INFO     Using default tokenizer.
-2026-01-08 21:20:11 INFO     Using default tokenizer.
-2026-01-08 21:20:11 INFO     Using default tokenizer.
-2026-01-08 21:20:11 INFO     Using default tokenizer.
- 82%|████████▏ | 130/159 [02:20<00:20,  1.42it/s]2026-01-08 21:20:12 INFO     Using default tokenizer.
-2026-01-08 21:20:12 INFO     Using default tokenizer.
-2026-01-08 21:20:12 INFO     Using default tokenizer.
-2026-01-08 21:20:12 INFO     Using default tokenizer.
- 82%|████████▏ | 131/159 [02:21<00:19,  1.41it/s]2026-01-08 21:20:13 INFO     Using default tokenizer.
-2026-01-08 21:20:13 INFO     Using default tokenizer.
-2026-01-08 21:20:13 INFO     Using default tokenizer.
-2026-01-08 21:20:13 INFO     Using default tokenizer.
- 83%|████████▎ | 132/159 [02:22<00:21,  1.23it/s]2026-01-08 21:20:14 INFO     Using default tokenizer.
-2026-01-08 21:20:14 INFO     Using default tokenizer.
-2026-01-08 21:20:14 INFO     Using default tokenizer.
-2026-01-08 21:20:14 INFO     Using default tokenizer.
- 84%|████████▎ | 133/159 [02:23<00:22,  1.17it/s]2026-01-08 21:20:15 INFO     Using default tokenizer.
-2026-01-08 21:20:15 INFO     Using default tokenizer.
-2026-01-08 21:20:15 INFO     Using default tokenizer.
-2026-01-08 21:20:15 INFO     Using default tokenizer.
- 84%|████████▍ | 134/159 [02:24<00:21,  1.17it/s]2026-01-08 21:20:15 INFO     Using default tokenizer.
-2026-01-08 21:20:16 INFO     Using default tokenizer.
-2026-01-08 21:20:16 INFO     Using default tokenizer.
-2026-01-08 21:20:16 INFO     Using default tokenizer.
- 85%|████████▍ | 135/159 [02:24<00:20,  1.16it/s]2026-01-08 21:20:26 INFO     Using default tokenizer.
-2026-01-08 21:20:26 INFO     Using default tokenizer.
-2026-01-08 21:20:26 INFO     Using default tokenizer.
-2026-01-08 21:20:26 INFO     Using default tokenizer.
- 86%|████████▌ | 136/159 [02:35<01:25,  3.74s/it]2026-01-08 21:20:27 INFO     Using default tokenizer.
-2026-01-08 21:20:27 INFO     Using default tokenizer.
-2026-01-08 21:20:27 INFO     Using default tokenizer.
-2026-01-08 21:20:27 INFO     Using default tokenizer.
- 86%|████████▌ | 137/159 [02:36<01:02,  2.82s/it]2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:28 INFO     Using default tokenizer.
- 87%|████████▋ | 138/159 [02:36<00:46,  2.21s/it]2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:28 INFO     Using default tokenizer.
-2026-01-08 21:20:29 INFO     Using default tokenizer.
- 87%|████████▋ | 139/159 [02:37<00:35,  1.76s/it]2026-01-08 21:20:29 INFO     Using default tokenizer.
-2026-01-08 21:20:29 INFO     Using default tokenizer.
-2026-01-08 21:20:29 INFO     Using default tokenizer.
-2026-01-08 21:20:29 INFO     Using default tokenizer.
- 88%|████████▊ | 140/159 [02:38<00:26,  1.39s/it]2026-01-08 21:20:29 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
- 89%|████████▊ | 141/159 [02:38<00:20,  1.17s/it]2026-01-08 21:20:30 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
-2026-01-08 21:20:30 INFO     Using default tokenizer.
- 89%|████████▉ | 142/159 [02:39<00:17,  1.03s/it]2026-01-08 21:20:31 INFO     Using default tokenizer.
-2026-01-08 21:20:31 INFO     Using default tokenizer.
-2026-01-08 21:20:31 INFO     Using default tokenizer.
-2026-01-08 21:20:31 INFO     Using default tokenizer.
- 90%|████████▉ | 143/159 [02:40<00:15,  1.05it/s]2026-01-08 21:20:32 INFO     Using default tokenizer.
-2026-01-08 21:20:32 INFO     Using default tokenizer.
-2026-01-08 21:20:32 INFO     Using default tokenizer.
-2026-01-08 21:20:32 INFO     Using default tokenizer.
- 91%|█████████ | 144/159 [02:41<00:13,  1.08it/s]2026-01-08 21:20:33 INFO     Using default tokenizer.
-2026-01-08 21:20:33 INFO     Using default tokenizer.
-2026-01-08 21:20:33 INFO     Using default tokenizer.
-2026-01-08 21:20:33 INFO     Using default tokenizer.
- 91%|█████████ | 145/159 [02:41<00:12,  1.12it/s]2026-01-08 21:20:33 INFO     Using default tokenizer.
-2026-01-08 21:20:34 INFO     Using default tokenizer.
-2026-01-08 21:20:34 INFO     Using default tokenizer.
-2026-01-08 21:20:34 INFO     Using default tokenizer.
- 92%|█████████▏| 146/159 [02:42<00:11,  1.14it/s]2026-01-08 21:20:34 INFO     Using default tokenizer.
-2026-01-08 21:20:34 INFO     Using default tokenizer.
-2026-01-08 21:20:35 INFO     Using default tokenizer.
-2026-01-08 21:20:35 INFO     Using default tokenizer.
- 92%|█████████▏| 147/159 [02:43<00:10,  1.16it/s]2026-01-08 21:20:35 INFO     Using default tokenizer.
-2026-01-08 21:20:35 INFO     Using default tokenizer.
-2026-01-08 21:20:35 INFO     Using default tokenizer.
-2026-01-08 21:20:36 INFO     Using default tokenizer.
- 93%|█████████▎| 148/159 [02:44<00:09,  1.13it/s]2026-01-08 21:20:42 INFO     Using default tokenizer.
-2026-01-08 21:20:42 INFO     Using default tokenizer.
-2026-01-08 21:20:43 INFO     Using default tokenizer.
-2026-01-08 21:20:43 INFO     Using default tokenizer.
- 94%|█████████▎| 149/159 [02:51<00:27,  2.77s/it]2026-01-08 21:20:43 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
- 94%|█████████▍| 150/159 [02:52<00:20,  2.24s/it]2026-01-08 21:20:44 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
-2026-01-08 21:20:44 INFO     Using default tokenizer.
- 95%|█████████▍| 151/159 [02:53<00:14,  1.80s/it]2026-01-08 21:20:45 INFO     Using default tokenizer.
-2026-01-08 21:20:45 INFO     Using default tokenizer.
-2026-01-08 21:20:45 INFO     Using default tokenizer.
-2026-01-08 21:20:45 INFO     Using default tokenizer.
- 96%|█████████▌| 152/159 [02:54<00:10,  1.44s/it]2026-01-08 21:20:45 INFO     Using default tokenizer.
-2026-01-08 21:20:45 INFO     Using default tokenizer.
-2026-01-08 21:20:46 INFO     Using default tokenizer.
-2026-01-08 21:20:46 INFO     Using default tokenizer.
- 96%|█████████▌| 153/159 [02:54<00:07,  1.19s/it]2026-01-08 21:20:46 INFO     Using default tokenizer.
-2026-01-08 21:20:46 INFO     Using default tokenizer.
-2026-01-08 21:20:46 INFO     Using default tokenizer.
-2026-01-08 21:20:46 INFO     Using default tokenizer.
- 97%|█████████▋| 154/159 [02:55<00:05,  1.02s/it]2026-01-08 21:20:47 INFO     Using default tokenizer.
-2026-01-08 21:20:47 INFO     Using default tokenizer.
-2026-01-08 21:20:47 INFO     Using default tokenizer.
-2026-01-08 21:20:47 INFO     Using default tokenizer.
- 97%|█████████▋| 155/159 [02:56<00:03,  1.04it/s]2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:48 INFO     Using default tokenizer.
- 98%|█████████▊| 156/159 [02:56<00:02,  1.12it/s]2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:48 INFO     Using default tokenizer.
-2026-01-08 21:20:49 INFO     Using default tokenizer.
- 99%|█████████▊| 157/159 [02:57<00:01,  1.19it/s]2026-01-08 21:20:49 INFO     Using default tokenizer.
-2026-01-08 21:20:49 INFO     Using default tokenizer.
-2026-01-08 21:20:49 INFO     Using default tokenizer.
-2026-01-08 21:20:49 INFO     Using default tokenizer.
- 99%|█████████▉| 158/159 [02:58<00:00,  1.31it/s]2026-01-08 21:20:50 INFO     Using default tokenizer.
-2026-01-08 21:20:50 INFO     Using default tokenizer.
-2026-01-08 21:20:50 INFO     Using default tokenizer.
-2026-01-08 21:20:50 INFO     Using default tokenizer.
-100%|██████████| 159/159 [02:58<00:00,  1.25it/s]100%|██████████| 159/159 [02:58<00:00,  1.13s/it]
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33meager-grass-40[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260108_211535-5quy0nhe/logs[0m
-Starting clean_generated_string.py
-2026-01-08 21:20:57 INFO     Starting clean_generated_string.py...
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260108_212058-5quy0nhe
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Resuming run eager-grass-40
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe
-  0%|          | 0/159 [00:00<?, ?it/s]  1%|          | 1/159 [01:49<4:48:43, 109.64s/it] 67%|██████▋   | 107/159 [01:49<00:37,  1.39it/s] 100%|██████████| 159/159 [01:49<00:00,  1.45it/s]
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33meager-grass-40[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260108_212058-5quy0nhe/logs[0m
-Starting get_semantic_similarities.py
-2026-01-08 21:23:05 INFO     Starting get_semantic_similarities.py...
-Some weights of the model checkpoint at /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/hf_dir/deberta-large-mnli were not used when initializing DebertaForSequenceClassification: ['config']
-- This IS expected if you are initializing DebertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing DebertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run 5quy0nhe
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260108_212505-5quy0nhe
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Resuming run eager-grass-40
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe
-[nltk_data] Downloading package wordnet to
-[nltk_data]     /dss/dsshome1/03/ra54sov2/nltk_data...
-[nltk_data]   Package wordnet is already up-to-date!
-[nltk_data] Downloading package punkt to
-[nltk_data]     /dss/dsshome1/03/ra54sov2/nltk_data...
-[nltk_data]   Package punkt is already up-to-date!
-[nltk_data] Downloading package omw-1.4 to
-[nltk_data]     /dss/dsshome1/03/ra54sov2/nltk_data...
-[nltk_data]   Package omw-1.4 is already up-to-date!
-  0%|          | 0/159 [00:00<?, ?it/s]100%|██████████| 159/159 [00:00<00:00, 3388.31it/s]
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-Number of unique answers: 1
-{'3g2ul9a02de618o1l8v9d6pw59j76y_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '38jbbyetqoadv0zxpsg0mixzwcg4ea_17': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3dip6yhapcsee1mz1v6d3ud4yrg8eb_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3b3wtrp3db2mxqttd3hq1pzqlss92f_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3s4aw7t80bir169p6e34zdnj50y4lw_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3zr9aiqjub9e4ak3hlhl1tvv13p40q_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '39asuflu6x74t2n793i5jtuxot0xe4_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '39rp059mehtvsncjl5e6748ef20bmg_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '354p56de9k3bo6myslycebloo147sf_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3leiz60cdjzc31w52aq4o09x5yqz95_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3dpnqgw4llf9il6ijax2au5mfcl46e_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ekvh9qmey4y0g6apjmsnligbdj2d0_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3njm2bjs4w6knv12rl2tzs8r2pscpv_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '32n49tqg3gi9z010tjf1zp7lodlvag_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3txd01zld4hukwwjfsv5q0j2ixa4ul_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3var3r6g1p10qszov999867i2zq8ov_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3a7y0r2p2ooc4i9zn4twg97pucmxj2_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3tu5zicbrd13b4c4am1dxb2ihy18qs_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3l4d84milzsfis9ki0badnjv5gnhj0_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3y54sxro1lle1hb9utwdy8vuyvituv_4': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3l4pim1gqtgi2bim05o71e0p6vfyry_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3efvcay5l39mph8rfwh40aqw343j88_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3z3zlgnnsiuha76yy56h6uu71bh3q1_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '30og32w0subzh8937xvwlr3znpzenv_16': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36zn444ytrytfyb14vl0lv1w5udiot_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33jkghpfycuxtw1govjfyz88vnknme_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3z2r0dq0jhe3smkalexct301crj2ex_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3r08vxyt7cv4vn37cq8db0o9t947wn_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '39asuflu6x74t2n793i5jtuxot0xe4_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3nvc2eb65qzqj9xkpfnbjgx90ma3yk_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3wjeqkoxa82tdol2m5vcs105zcfa1d_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '326o153bmiyqvwiqi3htpmr59gudez_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36ahbnmv1rco11zhi4tnwpjlr0kyd0_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3qxnc7eipivf1gqfygdci16bnn390b_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '32z9zlut1lktj30hyd3flj0h4btoho_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ejjqnku9r5wggsxq5kjfe5mfyrrhe_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3suwzrl0mydran3b8g9fjghdsz46e7_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3x66wabajwiqxickv915cgq5voj3gh_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '34t446b1c0ehzexia0n3kr7junmc06_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3qjoxow4xjrtzqo3vwgw8cezi27mer_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3k9fobbf2hjdnejvoji0ymtjvcenlk_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ekvh9qmey4y0g6apjmsnligcd6d2z_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3rxpczqmqpbunfy585nmonb8x5q1ga_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33fbrbdw6ozzh32l540id6d1c6t8cp_4': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33lk57mylt5u8gs4bgqv5venyoxzs3_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3rrcefrb7mcfoxndf1ealaretbbb4h_17': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36v4q8r5zk0iwte84nbw2t3d1xrmqj_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3nc5l260mom9579b3nffiyo4px4ofh_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3gna64guze4komt2coualrsrf7o5q9_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3z3zlgnnsiuha76yy56h6uu707qq3o_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ve8ayvf8mx6kfmvw6qjlcy49ig8ft_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '30og32w0subzh8937xvwlr3znpzenv_19': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3jv9lgbjwtefj756e7lx0jogp3ygoj_15': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ftop5warfo47s3oks4p7vkek7uj0q_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '39rp059mehtvsncjl5e6748ef20bmg_4': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36ahbnmv1rco11zhi4tnwpjlr0kyd0_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36zn444ytrytfyb14vl0lv1w5udiot_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ymtujh0dsgfkjhufn5vl4x0y5wt4j_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3skro2gz71rzp1uoyw81mf313gy1kr_16': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3vnl7uk1xfjpizejz41ec8urn5hftp_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3zy8ke4isj31mg8hifcnppmqrs1qv5_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3j88r45b2gy8qtcxihygd5t137xpxr_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3a7y0r2p2ooc4i9zn4twg97pucmxj2_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36wlnqg78zaxgzk647qnuw356sfbeh_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3s4aw7t80bir169p6e34zdnj529l4s_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3qjoxow4xjrtzqo3vwgw8cezi0yem6_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3d3vgr7ta0fhm8lybkvhbk4cwtb3rl_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '320duz38g7m1iwe9yutssn7urlfgjg_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '30zx6p7vf8vb3262zf83qjdthuxj27_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3q5zz9zevofeiit6qudaz07rkqq58z_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3bv8hq2zzw1okamzsb7tnxrm7eha6f_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '39zsfo5ca8wknef4izi9w28lzgujus_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3qjoxow4xjrtzqo3vwgw8cezi0yem6_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3io1lgzlk9xa1mtkvdnfr6lrhv2682_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3nvc2eb65qzqj9xkpfnbjgx90ma3yk_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3s3amizx3u5byyycmcbyzyr2n63cdu_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3jpsl1dz5szwrvsrrstap8d82ayant_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33cusnvvnncx50c8oskdbkhinmz88p_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3m23y66po27sk68t9btk8xlstnps60_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3s3amizx3u5byyycmcbyzyr2o67cdz_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3y9n9ss8lybnly2ttj0x6vn8itwd34_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3i7dhkzygn0nxx3ty8jg9sod70l5fa_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '35k3o9huabdntgwm99cjdmuql1wfee_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3bv8hq2zzw1okamzsb7tnxrm7i66a8_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ojsz2atdswai4ongpl4l0bwahk57z_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36nemu28xfdngqaugwa2uilzoskmwm_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ns0a6kxc48ribjdggweghvk99agzy_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3mx2nq3yc9u4xjuey2p2fzokc165xj_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3uwn2hhpuy50rrel8sf1a87enbansw_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3rsdurm96amtt7dhez472716ragey0_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3qjoxow4xjrtzqo3vwgw8cezi27mer_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ywrv122cszv3xjlrvli7cz7kiy8um_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '354p56de9k3bo6myslyceblonyl7sp_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3e47sobeyqws69eyeqc9qv7fgb9civ_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3a9aa95atwmzoasncbfllm2h90e5p7_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3lq8puhqflsjnhpe0iqa1m4vs2rhij_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3tgoyf991xmt1uqyuymn34hwh1euuw_15': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '31q0u3wydpfbumn4f2jsiayfy1871c_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3b3wtrp3db2mxqttd3hq1pzqlss92f_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3c2nj6jbkah7msxned0vjquaqpi2nw_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3w2lolrxlbfni6t5wqngs6le8gskrb_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3q5zz9zevofeiit6qudaz07rlzy85t_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3gdtjdapvubcqpecituwg2id7wk8mj_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ql2ofsm96ikkappb6p1v33w133nc7_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '34hjijklp5wuxbljki5ammllw7l4vi_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ix2egzr7bjs7mnne5n4rrl1tldrjs_15': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3tayzsbpll8425psm9hhik4gdl02sc_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ctoc39k37qip3385rpymau1r757jq_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3zazr5xv01ie1z38eu0vqqa5cmszcs_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '38jbbyetqoadv0zxpsg0mixzwa6e46_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '317hq483i7sbxdbp3gln661refnini_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3lpw2n6lkt2cgf0jtxefvspgho7u57_10': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3vnl7uk1xfjpizejz41ec8urn5hftp_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3fprzhyepy79ff2fk40rchtfi3n3vm_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3x3or7wpzz0sk7wrihthgp3o6mcl81_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ovhno1ve61o6r9meqv6awsnwn0dz3_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3copxfw7xbc26tdqjyjrnblz6rcpkh_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3atpcq38j8aq3uw5yu2l6obf6w8yah_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3vfjci1k4zzigkxm6z21uetl12ogrn_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3nd9uoo81k23a8s9gk9nu56app6lw0_9': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3jjvg1ybebxxkgrdt6xkq2xss4y5b1_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3gu1kf0o4i11dq9wdl6yo829k9tpbc_17': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3r6byfzzp7cwzgn34e2b1bfx1y9xfp_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3lpw2n6lkt2cgf0jtxefvspgho7u57_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3uxuoq9okex7oa04blcltbri2v27ao_19': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '36zn444ytrytfyb14vl0lv1w5ryio8_15': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3tk8ojtym1lgm472i2xypkwgnt8pv1_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3a0ex8zrn8ovm41x482h1zvlof2by0_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3kibxj1wd5uklt1p4y6cybg9wmhok0_13': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3q5zz9zevofeiit6qudaz07rl34584_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33tin5lc04acybm06oolat0v0f99yy_18': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3z4airp3c6d591tvxfnqc9b3zm51x2_4': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3j88r45b2gy8qtcxihygd5t137xpxr_6': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '354p56de9k3bo6myslycebloo147sf_16': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3g5w44veu7iwtgkrgft4t2776cnkgv_17': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3zazr5xv01ie1z38eu0vqqa5csaczz_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3tdxmtx3cbu3qs5x4zz64vf5jpxi67_14': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '35dr22ar5dk1j47akj1902q0x2f3xk_3': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '34hjijklp5wuxbljki5ammllw7l4vi_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3g2ul9a02de618o1l8v9d6pw59j76y_7': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3dy46v3x3pivv0a4sw67ngx0iyn55r_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3l6l49wxw0xdzh64ernxiormjaz459_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3cfjtt4sxtqmusj2n94ya9f1f0f7iu_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '33m4ia01qg1t26scv925i0tg3oexrh_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3c2nj6jbkah7msxned0vjquaphjn21_8': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3l70j4kazgmn5j1e2yf7t31eox1da1_4': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3s96kq6i9m4skf0n8y6oo8r6cxwdti_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3efvcay5l39mph8rfwh40aqw347j8c_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ymtujh0dsgfkjhufn5vl4x0zlct4w_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '37u1utwh9vm3n5r4n1qd21cncf0r8y_0': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '31q0u3wydpfbumn4f2jsiayfy1871c_1': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3uouji6mtdeliyktz3xanbg0bugxuy_19': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ql2ofsm96ikkappb6p1v33w133nc7_12': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '31lvtdxbl7ay2cbnhqzh76ytw9drlm_11': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ymtujh0dsgfkjhufn5vl4x0y7f4th_16': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '38f5oaun5ncmyx8ihrmdaxemegg7h2_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3aapld8ucch9wv5puupeft644hvhtl_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3ryc5t2d73totxql9isoon7d2tvrpm_2': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}, '3copxfw7xbc26tdqjyjrnblz6rcpkh_5': {'syntactic_similarities': {'rouge1': 0.0, 'rouge2': 0.0, 'rougeL': 0.0}, 'has_semantically_different_answers': False, 'semantic_set_ids': [0, 0, 0, 0, 0]}}
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33meager-grass-40[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260108_212505-5quy0nhe/logs[0m
-Starting get_likelihoods.py
-2026-01-08 21:25:17 INFO     Starting get_likelihoods.py...
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run 5quy0nhe
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260108_212721-5quy0nhe
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Resuming run eager-grass-40
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-tensor([nan])
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33meager-grass-40[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/5quy0nhe[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260108_212721-5quy0nhe/logs[0m
-Pipeline finished successfully

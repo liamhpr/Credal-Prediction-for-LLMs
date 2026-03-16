@@ -224,6 +224,38 @@ with open(output_file, 'wb') as outfile:
 
 logging.info(f"Finished. Saved processed data to {output_file}")
 
+logging.info("Extracting and saving similarities specifically for the optimal temperature...")
+
+opt_temp_path = f'{path_prefix}{args.generation_model}_optimal_temperature.pkl'
+if os.path.exists(opt_temp_path):
+    with open(opt_temp_path, 'rb') as f:
+        best_temp = pickle.load(f)
+else:
+    # Fallback if the file doesn't exist
+    best_temp = list(all_temperature_sequences.keys())[0]
+    logging.warning(f"Optimal temperature file not found. Using fallback: {best_temp}")
+
+if best_temp in all_temperature_sequences:
+    optimal_samples = all_temperature_sequences[best_temp]
+    opt_result_dict = {}
+
+    # Format as a dictionary indexed by ID
+    for sample in optimal_samples:
+        q_id = sample['id'][0] if isinstance(sample['id'], list) else sample['id']
+        opt_result_dict[q_id] = {
+            'syntactic_similarities': sample['syntactic_similarities'],
+            'has_semantically_different_answers': sample['has_semantically_different_answers'],
+            'semantic_set_ids': sample['semantic_set_ids']
+        }
+
+    # Save using the exact naming convention required by analyze_results.py
+    opt_sim_path = f'{path_prefix}{args.generation_model}_T{best_temp}_generations_similarities.pkl'
+    with open(opt_sim_path, 'wb') as outfile:
+        pickle.dump(opt_result_dict, outfile)
+
+    logging.info(f"Saved optimal temperature similarities to {opt_sim_path}")
+else:
+    logging.error(f"Temperature {best_temp} not found in evaluated sequences.")
 
 """
 ===============================================================================

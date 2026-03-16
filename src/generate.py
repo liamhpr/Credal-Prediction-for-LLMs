@@ -40,6 +40,8 @@ parser.add_argument('--dataset', type=str, default='coqa')
 #parser.add_argument('--max_temperature', type=float, default=10.1)
 parser.add_argument('--alpha', type=float, default=0.8)
 parser.add_argument('--likelihood_split', type=float, default=0.6)
+parser.add_argument('--use_already_generated_sequences', action='store_true')
+parser.add_argument('--use_20_steps', action='store_true')
 #parser.add_argument('--use_test_split', action='store_true')
 args = parser.parse_args()
 
@@ -83,47 +85,55 @@ device = 'cuda'
 os.environ["HF_DATASETS_CACHE"] = config.hf_datasets_cache
 
 
-#opt-6.7b
-model = AutoModelForCausalLM.from_pretrained(model_path,
-                                             torch_dtype=torch.float16,
-                                             cache_dir=config.hf_cache_dir).cuda()
+if not args.use_already_generated_sequences:
+    #opt-6.7b
+    model = AutoModelForCausalLM.from_pretrained(model_path,
+                                                 torch_dtype=torch.float16,
+                                                 cache_dir=config.hf_cache_dir).cuda()
 
-#opt-6.7b
-tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=config.hf_cache_dir, use_fast=False)
-
-
-
-if args.dataset == 'coqa':
-    full_dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
-    
-    # Create a proper Train/Test split
-    # If you want a fixed test set size (e.g., 10%)
-    split = full_dataset.train_test_split(test_size=(1- args.fraction_of_data_to_use), seed=seed_value)
-    
-    train_split = split['train']
-    test_split = split['test']
-    
-    # Create mapping for ID reference
-    id_to_question_mapping = dict(zip(full_dataset['id'], full_dataset['question']))
-
-    # removed because of the split for the temperature likelihood 
-    #dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
-    #id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
-
-elif args.dataset == 'trivia_qa':
-    raise # I did not implement the dataset yet
-    #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
-
-if args.fraction_of_data_to_use < 1.0:
-    new_split = train_split.train_test_split(test_size=(1 -args.likelihood_split), seed=seed_value)
-    train_dataset = new_split['train']
-    test_dataset = new_split['test']
-else:
-    train_dataset = test_split
+    #opt-6.7b
+    tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir=config.hf_cache_dir, use_fast=False)
 
 
 
-temperatures = np.linspace(0.5, 2.2, 100).tolist()
+    if args.dataset == 'coqa':
+        full_dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+        
+        # Create a proper Train/Test split
+        # If you want a fixed test set size (e.g., 10%)
+        if args.fraction_of_data_to_use < 1.0:
+            split = full_dataset.train_test_split(test_size=(1- args.fraction_of_data_to_use), seed=seed_value)
+            
+            train_split = split['train']
+            test_split = split['test']
+        else: 
+            train_split = full_dataset
+        
+        # Create mapping for ID reference
+        id_to_question_mapping = dict(zip(full_dataset['id'], full_dataset['question']))
+
+        # removed because of the split for the temperature likelihood 
+        #dataset = datasets.load_from_disk(f'{config.data_dir}sets/coqa_dataset')
+        #id_to_question_mapping = dict(zip(dataset['id'], dataset['question']))
+
+    elif args.dataset == 'trivia_qa':
+        raise # I did not implement the dataset yet
+        #dataset = datasets.load_from_disk(f'{config.output_dir}trivia_qa')
+
+    if args.likelihood_split < 1.0:
+        new_split = train_split.train_test_split(test_size=(1 -args.likelihood_split), seed=seed_value)
+        train_dataset = new_split['train']
+        test_dataset = new_split['test']
+    else:
+        train_dataset = test_split
+
+
+
+    if args.use_20_steps: 
+        temperatures = np.linspace(0.4, 2.2, 20).tolist()
+    else:
+        temperatures = np.linspace(0.4, 2.2, 50).tolist()
+    print("temperatures:", temperatures)
 
 def get_model_likelihood(model, tokenizer, dataset):
     """
@@ -297,6 +307,7 @@ def get_model_likelihood(model, tokenizer, dataset):
     best_t = min(stats, key=lambda x: stats[x]['mean'])
     best_mean = stats[best_t]['mean']
     best_sem = stats[best_t]['sem']
+    print("Standard error of best mean:", best_sem)
 
     # Define "Valid": Within 1 Standard Error of the best 
     # (You can also use 1.96 * SEM for a 95% confidence interval)
@@ -372,7 +383,6 @@ def get_model_likelihood(model, tokenizer, dataset):
 # NOTE: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^NOT USED^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-
 def encode(examples):
     return tokenizer(examples['story'] + ' Q: ' + examples['question'] + ' A:', truncation=False, padding=False)
 
@@ -382,20 +392,21 @@ def encode_and_format_dataset(dataset):
     dataset.set_format(type='torch', columns=['input_ids', 'attention_mask'], output_all_columns=True)
     return dataset
 
-if args.dataset == 'coqa':
-    questions = encode_and_format_dataset(test_dataset)
-elif args.dataset == 'trivia_qa':
-    pass
-    #questions = train_dataset
+if not args.use_already_generated_sequences:
+    if args.dataset == 'coqa':
+        questions = encode_and_format_dataset(test_dataset)
+    elif args.dataset == 'trivia_qa':
+        pass
+        #questions = train_dataset
 
-dataloader = torch.utils.data.DataLoader(questions, batch_size=1)
+    dataloader = torch.utils.data.DataLoader(questions, batch_size=1)
 
-period_token_id = tokenizer('. ')['input_ids'][1]
-eos_tokens = ['Question:', ' Question:', '\n', 'Answer:', ' Answer:', 'Q:']
-question_framing_ids = [[tokenizer(eos_token)['input_ids'][1]] for eos_token in eos_tokens]
-squad_metric = evaluate.load("squad")
-rouge = evaluate.load('rouge')
-exact_match_metric = evaluate.load("exact_match")
+    period_token_id = tokenizer('. ')['input_ids'][1]
+    eos_tokens = ['Question:', ' Question:', '\n', 'Answer:', ' Answer:', 'Q:']
+    question_framing_ids = [[tokenizer(eos_token)['input_ids'][1]] for eos_token in eos_tokens]
+    squad_metric = evaluate.load("squad")
+    rouge = evaluate.load('rouge')
+    exact_match_metric = evaluate.load("exact_match")
 
 
 def get_generations(model, dataloader, number_of_generations, temperature):
@@ -524,40 +535,112 @@ def get_generations(model, dataloader, number_of_generations, temperature):
 
     return sequences
 
-# Get the list of valid temperatures using 95% confidence interval logic
-valid_temperatures, global_relative_likelihoods, best_temp = get_model_likelihood(model, tokenizer, train_dataset)
+
+def store_temperatures(valid_temperatures):
+    path_add_on = ''
+    if args.use_20_steps and args.fraction_of_data_to_use < 1:
+        path_add_on = '_20_steps_fraction_of_data'
+    elif args.use_20_steps:
+        path_add_on = '_20_steps'  
+    elif args.fraction_of_data_to_use < 1: 
+        path_add_on = '_fraction_of_data'
+
+    pathlib.Path(f'{path_prefix}').mkdir(parents=True, exist_ok=True)
 
 
-pathlib.Path(f'{path_prefix}').mkdir(parents=True, exist_ok=True)
+    with open(f'{config.output_dir}sequences/{args.model}' + path_add_on + '_ANALYSIS_TEMP_generations.pkl', 'rb') as infile_AT:
+        analysis_temp_sequences = pickle.load(infile_AT)
 
-opt_temp_file = f'{path_prefix}optimal_temperature.pkl'
-with open(opt_temp_file, 'wb') as outfile:
-    pickle.dump(best_temp, outfile)
+    output_file = f'{path_prefix}{args.model}_ANALYSIS_TEMP_generations.pkl' 
+    with open(output_file, 'wb') as outfile_AT:
+        pickle.dump(analysis_temp_sequences, outfile_AT)
 
-logging.info(f"Saved optimal temperature ({best_temp}) to {opt_temp_file}")
 
-# Dictionary to store results separated by temperature 
-all_temperature_sequences = {}
-logging.info(f'Starting generation for valid temperatures: {valid_temperatures}')
+    all_generations_path = f'{config.output_dir}sequences/{args.model}'+ path_add_on +'_all_generations.pkl'
+    with open(all_generations_path, 'rb') as infile_all:
+        all_temperature_sequences = pickle.load(infile_all)
 
-for temp in valid_temperatures:
-    print(f"\n--- Generating {args.num_generations_per_prompt} samples per prompt at Temperature {temp} ---")
-    logging.info('Generating %s generations', args.num_generations_per_prompt)
-    sequences_at_temp = get_generations(model, dataloader, args.num_generations_per_prompt, temperature=temp)
+    if not valid_temperatures:
+        valid_temperatures = []
+        global_likelihoods_path = f'{config.output_dir}sequences/{args.model}'+ path_add_on +'_all_likelihoods.pkl'
+        with open(global_likelihoods_path, 'rb') as infile_ll:
+            global_likelihoods = pickle.load(infile_ll)
 
-    all_temperature_sequences[temp] = sequences_at_temp
+        for temp in global_likelihoods:
+            if global_likelihoods[temp] >= args.alpha: 
+                valid_temperatures.append(temp)
+            if global_likelihoods[temp] == 1.0:
+                best_temp = temp
 
-output_file = f'{path_prefix}{args.model}_all_generations.pkl'
-with open(output_file, 'wb') as outfile:
-    pickle.dump(all_temperature_sequences, outfile)
+    opt_temp_file = f'{path_prefix}{args.model}_optimal_temperature.pkl'
+    with open(opt_temp_file, 'wb') as outfile:
+        pickle.dump(best_temp, outfile)
 
-logging.info(f"Saved generations for {len(valid_temperatures)} temperatures to {output_file}")
+    print('alpha:', args.alpha, '\n valid temperatures:',valid_temperatures)
 
-logging.info(f"Generating sequences for ANALYSIS_TEMP={ANALYSIS_TEMP}")
-analysis_temp_sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
+    valid_temperature_sequences = {
+        temp: all_temperature_sequences[temp]
+        for temp in valid_temperatures
+        if temp in all_temperature_sequences
+    }
 
-output_file = f'{path_prefix}{args.model}_ANALYSIS_TEMP_generations.pkl' 
-with open(output_file, 'wb') as outfile_AT:
-    pickle.dump(analysis_temp_sequences, outfile_AT)
+    valid_output_file = f'{path_prefix}{args.model}_all_generations.pkl'
+    with open(valid_output_file, 'wb') as outfile:
+        pickle.dump(valid_temperature_sequences, outfile)
 
-logging.info(f"Saved generations for ANALYSIS_TEMP={ANALYSIS_TEMP} to {output_file}")
+valid_temperatures = None
+if not args.use_already_generated_sequences:
+    # Get the list of valid temperatures
+    valid_temperatures, global_relative_likelihoods, best_temp = get_model_likelihood(model, tokenizer, train_dataset)
+
+    pathlib.Path(f'{path_prefix}').mkdir(parents=True, exist_ok=True)
+
+    opt_temp_file = f'{path_prefix}{args.model}_optimal_temperature.pkl'
+    with open(opt_temp_file, 'wb') as outfile:
+        pickle.dump(best_temp, outfile)
+
+    logging.info(f"Saved optimal temperature ({best_temp}) to {opt_temp_file}")
+
+    path_add_on = ''
+    if args.use_20_steps and args.fraction_of_data_to_use < 1:
+        path_add_on = '_20_steps_fraction_of_data'
+    elif args.use_20_steps:
+        path_add_on = '_20_steps'  
+    elif args.fraction_of_data_to_use < 1: 
+        path_add_on = '_fraction_of_data'
+
+    likelihoods_file = f'{config.output_dir}sequences/{args.model}'+ path_add_on +'_all_likelihoods.pkl'
+    with open(likelihoods_file, 'wb') as outfile_ll:
+        pickle.dump(global_relative_likelihoods, outfile_ll)
+
+    # Dictionary to store results separated by temperature 
+    all_temperature_sequences = {}
+    logging.info(f'Starting generation for valid temperatures: {valid_temperatures}')
+
+    for temp in temperatures:
+        print(f"\n--- Generating {args.num_generations_per_prompt} samples per prompt at Temperature {temp} ---")
+        logging.info('Generating %s generations', args.num_generations_per_prompt)
+        sequences_at_temp = get_generations(model, dataloader, args.num_generations_per_prompt, temperature=temp)
+
+        all_temperature_sequences[temp] = sequences_at_temp
+
+
+    # NOTE: HERE WE STORE THE GENERATED SEQUENCES
+    all_output_file = f'{config.output_dir}sequences/{args.model}'+ path_add_on +'_all_generations.pkl'
+    with open(all_output_file, 'wb') as outfile:
+        pickle.dump(all_temperature_sequences, outfile)
+
+
+    logging.info(f"Saved generations for {len(temperatures)} temperatures to {all_output_file}")
+
+    logging.info(f"Generating sequences for ANALYSIS_TEMP={ANALYSIS_TEMP}")
+    analysis_temp_sequences = get_generations(model, dataloader, args.num_generations_per_prompt, ANALYSIS_TEMP)
+
+
+    output_file = f'{config.output_dir}sequences/{args.model}' + path_add_on + '_ANALYSIS_TEMP_generations.pkl' 
+    with open(output_file, 'wb') as outfile_AT:
+        pickle.dump(analysis_temp_sequences, outfile_AT)
+
+    logging.info(f"Saved generations for ANALYSIS_TEMP={ANALYSIS_TEMP} to {output_file}")
+
+store_temperatures(valid_temperatures)

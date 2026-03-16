@@ -344,7 +344,7 @@ def get_credal_data_matrices(all_temperatures_likelihoods):
             if isinstance(ids, torch.Tensor): ids = ids.cpu().numpy()
 
             # Sanity Check for NaNs
-            logging.warning("NaN in:", nll)
+            logging.warning(f"NaN in: {nll}")
             if np.isnan(nll).any() or np.isinf(nll).any():
                  nll = np.nan_to_num(nll, nan=1e9, posinf=1e9, neginf=1e9)
 
@@ -538,6 +538,9 @@ for temp in available_temps:
     pred_entropy = get_predictive_entropy(
         -overall_res_temp['neg_log_likelihoods']
     )
+    ln_pred_entropy = get_predictive_entropy(
+        -overall_res_temp['average_neg_log_likelihoods']
+    )
     margin_measures = get_margin_probability_uncertainty_measure(
         -overall_res_temp['average_neg_log_likelihoods']
     )
@@ -557,6 +560,7 @@ for temp in available_temps:
         temp_res_map[val_id] = {
             'semantic_entropy': sem_entropy[i],
             'predictive_entropy': pred_entropy[i],
+            'ln_predictive_entropy': ln_pred_entropy[i],
             'margin_measures': margin_measures[i],
             'unnormalised_margin_measures': unnormalised_margin_measures[i],
             'mutual_information': mutual_information[i],
@@ -567,6 +571,7 @@ for temp in available_temps:
 # ---------------------------------------------------------
 # MERGE INTO OVERALL RESULTS
 # ---------------------------------------------------------
+
 
 # WARNING: RUN STANDARD LOGIC (Uses a single representative temperature)
 with open(f'{path_prefix}{args.generation_model}_ANALYSIS_TEMP_generations_{args.evaluation_model}_likelihoods.pkl',

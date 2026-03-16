@@ -1,38 +1,0 @@
-Using run_id: 7zyh77pd
-Using model: opt-350m
-Starting generate.py
-2026-01-08 13:40:44 INFO     Starting generate.py...
-2026-01-08 13:40:44 INFO     Starting wandb
-wandb: Currently logged in as: liam-heppner (liam-heppner-ludwig-maximilian-university-of-munich) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: setting up run 7zyh77pd
-wandb: Tracking run with wandb version 0.23.1
-wandb: Run data is saved locally in /dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/wandb/run-20260108_134045-7zyh77pd
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run rare-sun-31
-wandb: ⭐️ View project at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models
-wandb: 🚀 View run at https://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/7zyh77pd
-2026-01-08 13:42:57 WARNING  Loading cached split indices for dataset at data/sets/coqa_dataset/cache-c8db36216095fb44.arrow and data/sets/coqa_dataset/cache-f8c3168ff32fa376.arrow
-2026-01-08 13:42:57 WARNING  Parameter 'function'=<function encode at 0x14c67f072b90> of the transform datasets.arrow_dataset.Dataset._map_single couldn't be hashed properly, a random hash was used instead. Make sure your transforms and parameters are serializable with pickle or dill for the dataset fingerprinting and caching to work. If you reuse this transform, the caching mechanism will consider it to be different from the previous calls and recompute everything. This warning is only showed once. Subsequent hashing failures won't be showed.
-  0%|          | 0/159 [00:00<?, ?ex/s]  4%|▍         | 7/159 [00:00<00:02, 67.40ex/s] 10%|█         | 16/159 [00:00<00:01, 78.66ex/s] 15%|█▌        | 24/159 [00:00<00:01, 68.32ex/s] 30%|██▉       | 47/159 [00:00<00:00, 124.37ex/s] 46%|████▌     | 73/159 [00:00<00:00, 169.12ex/s] 62%|██████▏   | 99/159 [00:00<00:00, 196.61ex/s] 79%|███████▉  | 126/159 [00:00<00:00, 216.83ex/s] 98%|█████████▊| 156/159 [00:00<00:00, 240.73ex/s]100%|██████████| 159/159 [00:00<00:00, 183.49ex/s]
-Downloading builder script: 0.00B [00:00, ?B/s]Downloading builder script: 4.53kB [00:00, 2.15MB/s]
-Downloading extra modules: 0.00B [00:00, ?B/s]Downloading extra modules: 3.32kB [00:00, 2.10MB/s]
-Downloading builder script: 0.00B [00:00, ?B/s]Downloading builder script: 6.27kB [00:00, 3.08MB/s]
-Downloading builder script: 0.00B [00:00, ?B/s]Downloading builder script: 5.67kB [00:00, 2.33MB/s]
-2026-01-08 13:43:07 INFO     Generating 5 generations
-  0%|          | 0/159 [00:00<?, ?it/s]  0%|          | 0/159 [00:06<?, ?it/s]
-Traceback (most recent call last):
-  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 275, in <module>
-    sequences = get_generations(model, dataloader, args.num_generations_per_prompt)
-  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 171, in get_generations
-    generation = generation_output.sequences[0] # The single generated sequence
-AttributeError: 'Tensor' object has no attribute 'sequences'
-Traceback (most recent call last):
-  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 275, in <module>
-    sequences = get_generations(model, dataloader, args.num_generations_per_prompt)
-  File "/dss/dsshome1/03/ra54sov2/Credal-Prediction-for-LLMs/src/generate.py", line 171, in get_generations
-    generation = generation_output.sequences[0] # The single generated sequence
-AttributeError: 'Tensor' object has no attribute 'sequences'
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33mrare-sun-31[0m at: [34mhttps://wandb.ai/liam-heppner-ludwig-maximilian-university-of-munich/credal-prediction-for-large-language-models/runs/7zyh77pd[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260108_134045-7zyh77pd/logs[0m
-srun: error: hpdar06c01s01: task 0: Exited with exit code 1

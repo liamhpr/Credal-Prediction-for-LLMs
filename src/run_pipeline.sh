@@ -14,7 +14,7 @@ print(rid)
 EOF
 )
 
-model='opt-350m'
+model='opt-6.7b'
 
 echo "Using run_id: $run_id"
 echo "Using model: $model"
@@ -23,14 +23,15 @@ srun bash -c "
 set -e;
 
 echo 'Starting generate.py';
-python generate.py --num_generations_per_prompt 5 \
+python generate.py --num_generations_per_prompt 10 \
                    --model $model \
-                   --fraction_of_data_to_use 0.02 \
+                   --fraction_of_data_to_use 0.3 \
+		   --use_already_generated_sequences \
 		   --likelihood_split 0.6 \
                    --run_id $run_id \
                    --temperature 0.5 \
                    --num_beams 1 \
-		   --alpha 0.8 \
+		   --alpha 0.7 \
                    --top_p 1.0;
 
 echo 'Starting clean_generated_string.py';
@@ -56,12 +57,13 @@ python get_likelihoods.py \
 
 echo 'Starting get_likelihoods_ANALYSIS_TEMP.py';
 python get_likelihoods_ANALYSIS_TEMP.py \
-		   --evaluation_model $model \ 
-		   --generation_model $model \
-		   --run_id $run_id;
+                   --evaluation_model $model \
+                   --generation_model $model \
+                   --run_id $run_id;
 
 echo 'Starting get_prompting_based_uncertainty.py';
 python get_prompting_based_uncertainty.py \
+		   --generation_model=$model \
 		   --run_id_for_few_shot_prompt=$run_id \
 		   --run_id_for_evaluation=$run_id;
 

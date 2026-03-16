@@ -7,6 +7,7 @@ output_dir = './output/'
 # I pick T=0.5 (because Lorenz Kuhn states that 0.5 is optimal) if available, otherwise the first one.
 ANALYSIS_TEMP = 0.5
 #TEMPERATURES = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0]
+#TEMPERATURES = [0.490, 0.491, 0.492, 0.493, 0.494, 0.495, 0.496, 0.497, 0.498, 0.499, 0.5, 0.501, 0.502, 0.503, 0.504, 0.505]
 
 def get_model_path(model):
     if model == 'opt-350m':
