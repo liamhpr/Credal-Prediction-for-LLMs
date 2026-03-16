@@ -37,6 +37,10 @@ The pipeline breaks down the generation and uncertainty quantification into the 
 ```generate.py```: Produces and stores for every temperature in the temperatuer-interval [0.4, 2.2]
 a batch of answers for a targeted subset of questions and evaluates the base question-answering accuracy of those 
 generations.
+By setting the ```--use_20_steps``` flag, the step size of the temperatuer-interval is decreased and the interval 
+becomes more coarser.
+```--use-already_generated_sequences``` makes the pipeline skip the generation part and load previous generated
+sequences.
 
 ```clean_generated_string.py```: Cleans the raw outputs to remove irrelevant trailing text—for instance, pruning 
 instances where the model answers the prompt and then hallucinates a follow-up question.
