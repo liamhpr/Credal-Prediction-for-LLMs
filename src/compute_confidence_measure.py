@@ -148,7 +148,6 @@ def get_predictive_entropy_over_concepts(log_likelihoods, semantic_set_ids):
     """Compute the semantic entropy"""
     semantic_set_ids = semantic_set_ids.to(log_likelihoods.device)
 
-    print("\n\nShape of log_likelihoods:",log_likelihoods.shape,"\n\n")
     # log_likelihoods is of size (1, Questions, Number of answers)
     # the next line just squeezes the tensor by removing the first dimension  
     # leaving us with a tensor of size (Questions, Number of answers)
@@ -327,15 +326,11 @@ def get_credal_data_matrices(all_temperatures_likelihoods):
 
         # Compute P(Cluster) for each temperature
         for i, (temp, sample) in enumerate(temp_dict.items()):
-            # 1. Get Log Likelihoods (P(generation | context))
-            # We use 'average_neg_log_likelihoods' -> NegLogLikelihood per token
-            # To get Total Log Prob: -1 * avg_nll * length (or just use neg_log_likelihoods if available)
-            
             # WARNING:
             # Using 'neg_log_likelihoods' (Total NLL) is mathematically safer for P(seq)
             # Input is POSITIVE NLL. We need NEGATIVE for log-prob.
             # I could also try using the average-neg-log-likelihoods
-            nll = sample['neg_log_likelihoods']
+            nll = sample['average_neg_log_likelihoods']
             if isinstance(nll, torch.Tensor): nll = nll.cpu().numpy()
 
             # 3. Sum probabilities by Cluster ID

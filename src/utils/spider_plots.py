@@ -174,9 +174,9 @@ def plot_intervals(
                  label_angle_rad, 
                  r * scale_factor,  # Scale the radius down to hit the flat line
                  str(r), 
-                 ha='center', 
-                 va='center', 
-                 fontsize=8.5, 
+                 ha='center',
+                 va='center',
+                 fontsize=16,
                  color="#555555",
                  path_effects=[pe.withStroke(linewidth=3, foreground='white')],
                  zorder=100
@@ -333,7 +333,8 @@ def spider_plot(
 
         # add labels to each spoke the first class (top) usually fits better without breaks
         class_labels = [class_labels[0]] + [lbl.replace(" ", "\n") for lbl in class_labels[1:]]
-        ax.set_varlabels(class_labels, fontfamily="Hiragino Sans GB")
+        ax.set_varlabels(class_labels, fontsize=16, fontfamily="Hiragino Sans GB")
+        ax.tick_params(axis='x', pad=20)
 
         # make the axis lightgrey
         ax.spines['polar'].set_color('#696969')
@@ -374,7 +375,7 @@ if __name__ == '__main__':
 
     # 4. Structure the data dictionary (MLE and Ground-Truth removed)
     plot_data = {
-        "City Classification Probability Intervals": {
+        "": {
             "Credal set": {
                 "start": min_values,
                 "end": max_values,
@@ -404,7 +405,7 @@ if __name__ == '__main__':
     )
 
     # Move legend outside the plot
-    ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
+    ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), fontsize=16)
 
     # 7. Save and Show
     filename = "city_classification_intervals.pdf"

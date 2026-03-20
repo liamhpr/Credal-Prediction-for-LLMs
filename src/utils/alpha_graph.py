@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.rcParams['text.usetex'] = True
+
 alphas = [0.6, 0.7, 0.8, 0.9]
 aurocs = [0.56, 0.60, 0.57, 0.58]
 
@@ -16,15 +18,16 @@ for x, y in zip(alphas, aurocs):
                  textcoords='offset points',
                  xytext=(0,10),
                  ha='center',
-                 fontsize=11,
-                 fontweight='bold',
+                 fontsize=16,
                  color='#333333')
 
-plt.xlabel('alpha', fontsize=12)
-plt.ylabel('AUROC', fontsize=12)
+plt.xlabel(r'alpha ($\alpha$)', fontsize=16)
+plt.ylabel('AUROC', fontsize=16)
 
 plt.xticks(alphas)
 plt.ylim(0.54, 0.62)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
 
 filename = "alpha_results_lineplot_20_steps.pdf"
 plt.savefig(filename, dpi=300, bbox_inches='tight', format='pdf')
