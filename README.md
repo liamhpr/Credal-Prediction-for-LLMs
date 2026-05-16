@@ -1,6 +1,6 @@
 # Credal Prediction for Large Language Models (LLMs)
 
- A framework for robust uncertainty quantification in Large Language Models using Credal Sets.
+ A framework for uncertainty quantification in Large Language Models using Credal Sets.
 
 ## Overview
 
